@@ -21,5 +21,5 @@ package org.mojavemvc.core;
  */
 public enum HttpMethod {
 
-	GET, POST, PUT, TRACE, OPTIONS, HEAD, DELETE
+    GET, POST, PUT, TRACE, OPTIONS, HEAD, DELETE
 }

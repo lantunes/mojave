@@ -22,11 +22,10 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * Only one instance of this controller will exist per request session. 
- * It is kept in the HttpSession. The instance goes away when the 
- * session is invalidated, the session times out, or the application 
- * is restarted. Its dependencies, if any, are re-injected with every 
- * new request.
+ * Only one instance of this controller will exist per request session. It is
+ * kept in the HttpSession. The instance goes away when the session is
+ * invalidated, the session times out, or the application is restarted. Its
+ * dependencies, if any, are re-injected with every new request.
  * </p>
  * 
  * <p>
@@ -52,5 +51,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface StatefulController {
-	String value() default "";
+    String value() default "";
 }

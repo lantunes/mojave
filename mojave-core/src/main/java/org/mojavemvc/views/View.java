@@ -23,39 +23,37 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
- * Represents the renderable view in the model-view-controller
- * pattern. Users can create their own renderable views by
- * implementing this class, and returning a concrete instance
- * in an action method.
+ * Represents the renderable view in the model-view-controller pattern. Users
+ * can create their own renderable views by implementing this class, and
+ * returning a concrete instance in an action method.
  * </p>
  * 
  * @author Luis Antunes
  */
 public interface View {
 
-	/**
-	 * <p>
-	 * This method is invoked last in the sequence of steps
-	 * involved in processing a request sent to the 
-	 * FrontController. The servlet request can be used to set
-	 * any attributes, then to obtain a RequestDispatcher
-	 * for forwarding or including, or the servlet 
-	 * response may be used to send a redirect, for example.
-	 * </p>
-	 * 
-	 * <p>
-	 * Users should note that any exceptions thrown from this
-	 * method are not guaranteed to be caught in the 
-	 * FrontController. They may escape to the requestor. 
-	 * Users should handle any exceptions inside the implementation
-	 * of this method if different behaviour is desired.
-	 * </p>
-	 * 
-	 * @param request the servlet request
-	 * @param response the servlet response
-	 * @throws ServletException 
-	 * @throws IOException
-	 */
-	public void render( HttpServletRequest request, HttpServletResponse response ) 
-		throws ServletException, IOException;
+    /**
+     * <p>
+     * This method is invoked last in the sequence of steps involved in
+     * processing a request sent to the FrontController. The servlet request can
+     * be used to set any attributes, then to obtain a RequestDispatcher for
+     * forwarding or including, or the servlet response may be used to send a
+     * redirect, for example.
+     * </p>
+     * 
+     * <p>
+     * Users should note that any exceptions thrown from this method are not
+     * guaranteed to be caught in the FrontController. They may escape to the
+     * requestor. Users should handle any exceptions inside the implementation
+     * of this method if different behaviour is desired.
+     * </p>
+     * 
+     * @param request
+     *            the servlet request
+     * @param response
+     *            the servlet response
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

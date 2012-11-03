@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * Only one instance of this controller will exist in the application, placed 
- * in the front controller context. Its dependencies, if any, are re-injected with
+ * Only one instance of this controller will exist in the application, placed in
+ * the front controller context. Its dependencies, if any, are re-injected with
  * every new request.
  * </p>
  * 
@@ -46,10 +46,10 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * NOTE: It is up to the developer to address thread-safety in singleton 
- * controllers. The single instance will be accessed simultaneously 
- * by multiple threads, and thus there will be concurrency issues to address. 
- * The container will not attempt to address those issues.
+ * NOTE: It is up to the developer to address thread-safety in singleton
+ * controllers. The single instance will be accessed simultaneously by multiple
+ * threads, and thus there will be concurrency issues to address. The container
+ * will not attempt to address those issues.
  * </p>
  * 
  * @author Luis Antunes
@@ -57,5 +57,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface SingletonController {
-	String value() default "";
+    String value() default "";
 }

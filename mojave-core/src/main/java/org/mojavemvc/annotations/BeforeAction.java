@@ -22,21 +22,21 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * A method annotated with this annotation is invoked before the &#064;Action 
- * method is invoked. There can be only one method with this annotation in 
- * a controller or interceptor. A &#064;BeforeAction method must accept no 
- * arguments, or accept only a {@link org.mojavemvc.aop.RequestContext} 
- * argument. Methods annotated with this annotation must not be annotated 
- * with &#064;Action, &#064;DefaultAction, or &#064;InterceptedBy. A 
+ * A method annotated with this annotation is invoked before the &#064;Action
+ * method is invoked. There can be only one method with this annotation in a
+ * controller or interceptor. A &#064;BeforeAction method must accept no
+ * arguments, or accept only a {@link org.mojavemvc.aop.RequestContext}
+ * argument. Methods annotated with this annotation must not be annotated with
+ * &#064;Action, &#064;DefaultAction, or &#064;InterceptedBy. A
  * &#064;BeforeAction method must be public.
  * </p>
  * 
  * <p>
- * A &#064;BeforeAction method can return any return type, but only a 
- * {@link org.mojavemvc.views.View} return type will have any significance.
- * If a concrete View is returned, the &#064;Action method is not invoked. 
- * However, if a null View is returned, or the method return type is void, 
- * then the &#064;Action method is called.
+ * A &#064;BeforeAction method can return any return type, but only a
+ * {@link org.mojavemvc.views.View} return type will have any significance. If a
+ * concrete View is returned, the &#064;Action method is not invoked. However,
+ * if a null View is returned, or the method return type is void, then the
+ * &#064;Action method is called.
  * </p>
  * 
  * <p>
@@ -45,28 +45,28 @@ import java.lang.annotation.Target;
  * 
  * <pre>
  * &#064;BeforeAction
- * public View doSomethingBefore( ) {
- *  return new View("before.jsp");
+ * public View doSomethingBefore() {
+ *     return new View(&quot;before.jsp&quot;);
  * }
  * </pre>
  * 
  * <pre>
  * &#064;BeforeAction
- * public View doSomethingBefore( ) {
- *  return null; //keep going on to the &#064;Action method
+ * public View doSomethingBefore() {
+ *     return null; // keep going on to the @Action method
  * }
  * </pre>
  * 
  * <pre>
  * &#064;BeforeAction
- * public void doSomethingBefore( ) {
- *  //do something before and keep going on to the &#064;Action method
+ * public void doSomethingBefore() {
+ *     // do something before and keep going on to the @Action method
  * }
  * </pre>
  * 
  * <p>
- * A &#064;BeforeAction method can be used either in a controller or in
- * an interceptor class. For more information about interceptors, see
+ * A &#064;BeforeAction method can be used either in a controller or in an
+ * interceptor class. For more information about interceptors, see
  * {@link org.mojavemvc.annotations.InterceptedBy}.
  * </p>
  * 

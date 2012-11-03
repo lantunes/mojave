@@ -20,22 +20,22 @@ package org.mojavemvc.views;
  */
 public class JSONView extends StreamView {
 
-	private String payload;
-	
-	public JSONView( String payload ) {
-		
-		this.payload = payload;
-	}
-	
-	@Override
-	public String getContentType( ) {
-		
-		return "application/json";
-	}
-	
-	@Override
-	public byte[] getPayload( ) {
-		
-		return payload.getBytes( );
-	}
+    private String payload;
+
+    public JSONView(String payload) {
+
+        this.payload = payload;
+    }
+
+    @Override
+    public String getContentType() {
+
+        return "application/json";
+    }
+
+    @Override
+    public byte[] getPayload() {
+
+        return payload.getBytes();
+    }
 }

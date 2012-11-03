@@ -24,20 +24,18 @@ import java.util.List;
  */
 public class HttpMethodActionSignature extends BaseActionSignature {
 
-	private final HttpMethod httpMethod;
-	
-	public HttpMethodActionSignature( HttpMethod httpMethod, 
-			int fastIndex, String methodName, 
-			Class<?>[] paramTypes, Annotation[][] paramAnnotations ) {
-		
-		super( fastIndex, methodName, paramTypes, paramAnnotations );
-		this.httpMethod = httpMethod;
-	}
-	
-	@Override
-	public List<Class<?>> getInterceptorClasses( ControllerDatabase controllerDb, 
-			Class<?> controllerClass, String action ) {
-		
-		return controllerDb.getInterceptorsForHttpMethodAction( controllerClass, httpMethod );
-	}
+    private final HttpMethod httpMethod;
+
+    public HttpMethodActionSignature(HttpMethod httpMethod, int fastIndex, String methodName, Class<?>[] paramTypes,
+            Annotation[][] paramAnnotations) {
+
+        super(fastIndex, methodName, paramTypes, paramAnnotations);
+        this.httpMethod = httpMethod;
+    }
+
+    @Override
+    public List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action) {
+
+        return controllerDb.getInterceptorsForHttpMethodAction(controllerClass, httpMethod);
+    }
 }

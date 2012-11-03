@@ -22,23 +22,22 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * A controller class's exposed methods are annotated with this annotation 
- * to flag them as action methods. A request always invokes a controller 
- * action method (unless it is intercepted by an interceptor).
- * It's value is the value of the action parameter sent in the request. It's 
- * value is optional. If no value is specified, the method's name will be 
- * used as its value.
+ * A controller class's exposed methods are annotated with this annotation to
+ * flag them as action methods. A request always invokes a controller action
+ * method (unless it is intercepted by an interceptor). It's value is the value
+ * of the action parameter sent in the request. It's value is optional. If no
+ * value is specified, the method's name will be used as its value.
  * </p>
  * 
  * <p>
- * As an example, consider the following method (we'll assume it is declared
- * in the context of a controller class, called "some-controller"):
+ * As an example, consider the following method (we'll assume it is declared in
+ * the context of a controller class, called "some-controller"):
  * </p>
  * 
  * <pre>
  * &#064;Action
- * public View sayHello( ) {
- *  return new View("hello.jsp");
+ * public View sayHello() {
+ *     return new View(&quot;hello.jsp&quot;);
  * }
  * </pre>
  * 
@@ -51,14 +50,14 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * If we provide a value to the annotation, then we specify the name of 
- * action that is referred to in the request parameter:
+ * If we provide a value to the annotation, then we specify the name of action
+ * that is referred to in the request parameter:
  * </p>
  * 
  * <pre>
- * &#064;Action("say-hello")
- * public View sayHello( ) {
- *  return new View("hello.jsp");
+ * &#064;Action(&quot;say-hello&quot;)
+ * public View sayHello() {
+ *     return new View(&quot;hello.jsp&quot;);
  * }
  * </pre>
  * 
@@ -71,15 +70,15 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * A method annotated with this annotation must be public. It must also return a View. 
- * If it does not, the application will throw an Exception during the initialization
- * of the application in the servlet container. An Exception will also be thrown if it 
- * returns a null View.
+ * A method annotated with this annotation must be public. It must also return a
+ * View. If it does not, the application will throw an Exception during the
+ * initialization of the application in the servlet container. An Exception will
+ * also be thrown if it returns a null View.
  * </p>
  * 
  * <p>
- * Action methods can also accept parameters. Please see {@link Param} for 
- * more information.
+ * Action methods can also accept parameters. Please see {@link Param} for more
+ * information.
  * </p>
  * 
  * @author Luis Antunes
@@ -87,5 +86,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Action {
-	String value() default "";
+    String value() default "";
 }

@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * This annotation is used to flag an &#064;Action method parameter as 
- * a data model for the request.
+ * This annotation is used to flag an &#064;Action method parameter as a data
+ * model for the request.
  * <p/>
  * 
  * @author Luis Antunes

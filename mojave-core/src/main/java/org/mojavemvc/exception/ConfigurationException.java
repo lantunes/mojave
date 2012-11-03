@@ -16,33 +16,35 @@
 package org.mojavemvc.exception;
 
 /**
- * <p> 
- * Signals that the application is using the framework's annotations incorrectly. This
- * exception will typically be thrown during the initialization of the front controller.
- * It will prevent the application from starting up, as it cannot do so correctly given
- * the state of the annotation-defined configuration.
+ * <p>
+ * Signals that the application is using the framework's annotations
+ * incorrectly. This exception will typically be thrown during the
+ * initialization of the front controller. It will prevent the application from
+ * starting up, as it cannot do so correctly given the state of the
+ * annotation-defined configuration.
  * </p>
  * 
  * @author Luis Antunes
  */
 public final class ConfigurationException extends RuntimeException {
 
-	private static final long serialVersionUID = 0;
-	
-	public ConfigurationException( ) { }
-	
-	public ConfigurationException( String message ) {
-		
-		super( message );
-	}
-	
-	public ConfigurationException( Throwable e ) {
-		
-		super( e );
-	}
-	
-	public ConfigurationException( String message, Throwable e ) {
-		
-		super( message, e );
-	}
+    private static final long serialVersionUID = 0;
+
+    public ConfigurationException() {
+    }
+
+    public ConfigurationException(String message) {
+
+        super(message);
+    }
+
+    public ConfigurationException(Throwable e) {
+
+        super(e);
+    }
+
+    public ConfigurationException(String message, Throwable e) {
+
+        super(message, e);
+    }
 }

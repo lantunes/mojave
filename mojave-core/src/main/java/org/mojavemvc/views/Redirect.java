@@ -22,25 +22,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Sends a redirect to the given path, through
- * the servlet response.
+ * Sends a redirect to the given path, through the servlet response.
  * 
  * @author Luis Antunes
  */
 public class Redirect implements View {
 
-	private final String path;
-	
-	public Redirect( String path ) {
-		
-		this.path = path;
-	}
-	
-	@Override
-	public void render(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    private final String path;
 
-		response.sendRedirect( path );
-	}
+    public Redirect(String path) {
+
+        this.path = path;
+    }
+
+    @Override
+    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        response.sendRedirect(path);
+    }
 
 }

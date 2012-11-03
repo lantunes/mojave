@@ -21,55 +21,53 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An instance of this class is not thread-safe and should not be 
- * shared by multiple threads.
+ * An instance of this class is not thread-safe and should not be shared by
+ * multiple threads.
  * 
  * @author Luis Antunes
  */
 public class RequestProcessor {
 
-	private static final Logger logger = LoggerFactory.getLogger( RequestProcessor.class );
-	
-	private final ActionResolver resolver;
-	private final ActionInvoker invoker;
-	private final ErrorHandler errorHandler;
-	
-	private String controllerClassName;
-	
-	public RequestProcessor( ActionResolver resolver, ActionInvoker invoker, 
-			ErrorHandler errorHandler ) {
-		
-		this.resolver = resolver;
-		this.invoker = invoker;
-		this.errorHandler = errorHandler;
-	}
-	
-	public View process( String controller, String action ) {
-		
-		View view;
-		
-		try {
-			
-			resolver.resolve( controller, action );
-			
-			controllerClassName = resolver.getControllerClassName( );
-			Object actionController = resolver.getActionController( );
-			ActionSignature actionSignature = resolver.getActionSignature( );
-			
-			view = invoker.invokeAction( actionController, actionSignature );
-			
-		}
-		catch (Throwable e) {
-			
-			logger.error( "error invoking action controller: ", e );
-			view = errorHandler.handleError( e );
-		}
-		
-		return view;
-	}
-	
-	public String getControllerClassName( ) {
-		
-		return controllerClassName;
-	}
+    private static final Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
+
+    private final ActionResolver resolver;
+    private final ActionInvoker invoker;
+    private final ErrorHandler errorHandler;
+
+    private String controllerClassName;
+
+    public RequestProcessor(ActionResolver resolver, ActionInvoker invoker, ErrorHandler errorHandler) {
+
+        this.resolver = resolver;
+        this.invoker = invoker;
+        this.errorHandler = errorHandler;
+    }
+
+    public View process(String controller, String action) {
+
+        View view;
+
+        try {
+
+            resolver.resolve(controller, action);
+
+            controllerClassName = resolver.getControllerClassName();
+            Object actionController = resolver.getActionController();
+            ActionSignature actionSignature = resolver.getActionSignature();
+
+            view = invoker.invokeAction(actionController, actionSignature);
+
+        } catch (Throwable e) {
+
+            logger.error("error invoking action controller: ", e);
+            view = errorHandler.handleError(e);
+        }
+
+        return view;
+    }
+
+    public String getControllerClassName() {
+
+        return controllerClassName;
+    }
 }

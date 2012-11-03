@@ -22,22 +22,22 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * A controller class or its methods can be annotated with this annotation 
- * to specify which interceptors will intercept &#064;Action method
- * invocations. The order of the interceptors specified is important, as 
- * they will be invoked in the sequence in which they are declared.
+ * A controller class or its methods can be annotated with this annotation to
+ * specify which interceptors will intercept &#064;Action method invocations.
+ * The order of the interceptors specified is important, as they will be invoked
+ * in the sequence in which they are declared.
  * </p>
  * 
  * <p>
- * If a controller class is annotated with this 
- * annotation, all &#064;Action methods, and any &#064;DefaultAction
- * method, will be intercepted by the declared interceptor(s).
+ * If a controller class is annotated with this annotation, all &#064;Action
+ * methods, and any &#064;DefaultAction method, will be intercepted by the
+ * declared interceptor(s).
  * </p>
  * 
  * @author Luis Antunes
  */
-@Retention(value=RetentionPolicy.RUNTIME)
-@Target(value={ElementType.TYPE,ElementType.METHOD})
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value = { ElementType.TYPE, ElementType.METHOD })
 public @interface InterceptedBy {
-	Class<?>[] value();
+    Class<?>[] value();
 }

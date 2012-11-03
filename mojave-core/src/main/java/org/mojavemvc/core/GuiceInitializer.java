@@ -28,46 +28,45 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
- * A Guice Injector is thread-safe, and can be shared by
- * multiple threads. This class creates a single
- * instance of a Guice Injector to be added to the controller 
- * context during startup.
+ * A Guice Injector is thread-safe, and can be shared by multiple threads. This
+ * class creates a single instance of a Guice Injector to be added to the
+ * controller context during startup.
  * <p>
- * NOTE: All modules must extend com.google.inject.AbstractModule due to 
- * limitations of the classpath component scanning framework. Also,
- * all modules must provide a no-arg contructor.
+ * NOTE: All modules must extend com.google.inject.AbstractModule due to
+ * limitations of the classpath component scanning framework. Also, all modules
+ * must provide a no-arg contructor.
  * 
  * @author Luis Antunes
  */
 public class GuiceInitializer {
 
-	private static final Logger logger = LoggerFactory.getLogger(GuiceInitializer.class);
-	
-	public static final String KEY = Injector.class.getName();
-	
-	private final Set<Class<? extends AbstractModule>> moduleClasses;
-	
-	public GuiceInitializer( Set<Class<? extends AbstractModule>> moduleClasses ) {
-		
-		this.moduleClasses = moduleClasses;
-	}
-	
-	public Injector initializeInjector( ) throws Exception {
-		
-		Module[] modules = new Module[moduleClasses.size( ) + 1];
-		
-		logger.debug( "adding " + ServletResourceModule.class.getName( ) + " ..." );
-		modules[0] = new ServletResourceModule( );
-		
-		int i = 1;
-		for ( Class<?> moduleClass : moduleClasses ) {
-			
-			logger.debug("found module class: " + moduleClass.getName());
-			
-			modules[i] = (Module)FastClass.create(moduleClass).newInstance( );
-			i++;
-		}
-		
-		return Guice.createInjector( modules );
-	}
+    private static final Logger logger = LoggerFactory.getLogger(GuiceInitializer.class);
+
+    public static final String KEY = Injector.class.getName();
+
+    private final Set<Class<? extends AbstractModule>> moduleClasses;
+
+    public GuiceInitializer(Set<Class<? extends AbstractModule>> moduleClasses) {
+
+        this.moduleClasses = moduleClasses;
+    }
+
+    public Injector initializeInjector() throws Exception {
+
+        Module[] modules = new Module[moduleClasses.size() + 1];
+
+        logger.debug("adding " + ServletResourceModule.class.getName() + " ...");
+        modules[0] = new ServletResourceModule();
+
+        int i = 1;
+        for (Class<?> moduleClass : moduleClasses) {
+
+            logger.debug("found module class: " + moduleClass.getName());
+
+            modules[i] = (Module) FastClass.create(moduleClass).newInstance();
+            i++;
+        }
+
+        return Guice.createInjector(modules);
+    }
 }

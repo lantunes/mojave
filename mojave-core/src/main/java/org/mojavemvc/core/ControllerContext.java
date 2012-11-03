@@ -17,7 +17,7 @@ package org.mojavemvc.core;
 
 public interface ControllerContext {
 
-	void setAttribute(String name, Object object);
-	
-	Object getAttribute(String name);
+    void setAttribute(String name, Object object);
+
+    Object getAttribute(String name);
 }

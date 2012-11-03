@@ -20,22 +20,22 @@ package org.mojavemvc.views;
  */
 public class XMLView extends StreamView {
 
-	private String payload;
-	
-	public XMLView( String payload ) {
-		
-		this.payload = payload;
-	}
-	
-	@Override
-	public String getContentType( ) {
-		
-		return "application/xml";
-	}
-	
-	@Override
-	public byte[] getPayload( ) {
-		
-		return payload.getBytes( );
-	}
+    private String payload;
+
+    public XMLView(String payload) {
+
+        this.payload = payload;
+    }
+
+    @Override
+    public String getContentType() {
+
+        return "application/xml";
+    }
+
+    @Override
+    public byte[] getPayload() {
+
+        return payload.getBytes();
+    }
 }

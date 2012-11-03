@@ -22,13 +22,12 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * This annotation specifies the default action for a controller. There can 
- * be only one method with this annotation in a controller. A method 
- * annotated with this annotation must be public. Generally, a default 
- * action behaves like an &#064;Action method, in that it must return a 
- * View, and can accept web parameters. (See {@link Action} for more
- * information.) However, it is invoked only if no action variable is
- * specified in the request.
+ * This annotation specifies the default action for a controller. There can be
+ * only one method with this annotation in a controller. A method annotated with
+ * this annotation must be public. Generally, a default action behaves like an
+ * &#064;Action method, in that it must return a View, and can accept web
+ * parameters. (See {@link Action} for more information.) However, it is invoked
+ * only if no action variable is specified in the request.
  * </p>
  * 
  * <p>
@@ -36,14 +35,14 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * &#064;StatelessController("test")
+ * &#064;StatelessController(&quot;test&quot;)
  * public class SomeController {
  * 
- *  &#064;DefaultAction
- *  public View defaultAction( ) {
- *  
- *   return new View("test.jsp");
- *  }
+ *     &#064;DefaultAction
+ *     public View defaultAction() {
+ * 
+ *         return new View(&quot;test.jsp&quot;);
+ *     }
  * }
  * </pre>
  * 
@@ -56,8 +55,8 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * Note that we cannot invoke the default action method by supplying 
- * "actn=defaultAction" in the query string above. 
+ * Note that we cannot invoke the default action method by supplying
+ * "actn=defaultAction" in the query string above.
  * </p>
  * 
  * @author Luis Antunes

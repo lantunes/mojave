@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * A new instance of this controller is created per request. Its 
- * dependencies are injected after creation.
+ * A new instance of this controller is created per request. Its dependencies
+ * are injected after creation.
  * </p>
  * 
  * <p>
@@ -45,17 +45,18 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * NOTE: As a new instance of a stateless controller is created with every request, 
- * the developer should not design the stateless controller with state. That 
- * is, class fields should not be used with the intention of storing state between 
- * requests, but they can be used for storing state in the object during a request. 
- * For storing state between requests, use a {@link StatefulController}.
- * </p> 
+ * NOTE: As a new instance of a stateless controller is created with every
+ * request, the developer should not design the stateless controller with state.
+ * That is, class fields should not be used with the intention of storing state
+ * between requests, but they can be used for storing state in the object during
+ * a request. For storing state between requests, use a
+ * {@link StatefulController}.
+ * </p>
  * 
  * @author Luis Antunes
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface StatelessController {
-	String value() default "";
+    String value() default "";
 }

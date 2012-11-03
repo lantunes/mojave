@@ -19,19 +19,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  
+ * 
  * @author Luis Antunes
  */
 public interface ActionSignature {
 
-	public String methodName( );
+    public String methodName();
 
-	public Class<?>[] parameterTypes( );
-	
-	public int fastIndex( );
-	
-	public List<Class<?>> getInterceptorClasses( ControllerDatabase controllerDb, 
-			Class<?> controllerClass, String action );
-	
-	public Object[] getArgs( Map<String, ?> parametersMap );
+    public Class<?>[] parameterTypes();
+
+    public int fastIndex();
+
+    public List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action);
+
+    public Object[] getArgs(Map<String, ?> parametersMap);
 }

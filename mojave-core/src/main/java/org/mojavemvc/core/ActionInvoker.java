@@ -22,6 +22,5 @@ import org.mojavemvc.views.View;
  */
 public interface ActionInvoker {
 
-	public View invokeAction( Object actionController, 
-			ActionSignature actionSignature ) throws Exception;
+    public View invokeAction(Object actionController, ActionSignature actionSignature) throws Exception;
 }

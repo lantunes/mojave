@@ -23,39 +23,36 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * An instance of this class obtains the servlet's
- * OutputStream, and writes the payload to that 
- * stream. It sets the content type and content
- * length before writing the content to the stream.
+ * An instance of this class obtains the servlet's OutputStream, and writes the
+ * payload to that stream. It sets the content type and content length before
+ * writing the content to the stream.
  * 
  * @author Luis Antunes
  */
 public abstract class StreamView implements View {
 
-	/**
-	 * Gets the content type of the response to be streamed
-	 * back to the requestor.
-	 * 
-	 * @return the content type of the response
-	 */
-	protected abstract String getContentType( );
+    /**
+     * Gets the content type of the response to be streamed back to the
+     * requestor.
+     * 
+     * @return the content type of the response
+     */
+    protected abstract String getContentType();
 
-	/**
-	 * Gets the content of the response to be streamed back
-	 * to the requestor.
-	 * 
-	 * @return the payload content
-	 */
-	protected abstract byte[] getPayload( );
-	
-	@Override
-	public void render( HttpServletRequest request, HttpServletResponse response )
-			throws ServletException, IOException {
+    /**
+     * Gets the content of the response to be streamed back to the requestor.
+     * 
+     * @return the payload content
+     */
+    protected abstract byte[] getPayload();
 
-		response.setContentType( getContentType( ) );
-		byte[] buf = getPayload( );
-		response.setContentLength( buf.length );
-	    ServletOutputStream servletOut = response.getOutputStream( );
-	    servletOut.write( buf );
-	}
+    @Override
+    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        response.setContentType(getContentType());
+        byte[] buf = getPayload();
+        response.setContentLength(buf.length);
+        ServletOutputStream servletOut = response.getOutputStream();
+        servletOut.write(buf);
+    }
 }

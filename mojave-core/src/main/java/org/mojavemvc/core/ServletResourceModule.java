@@ -28,38 +28,39 @@ import com.google.inject.Provides;
  */
 public class ServletResourceModule extends AbstractModule {
 
-	private static final ThreadLocal<HttpServletRequest> threadRequest = 
-		new ThreadLocal<HttpServletRequest>( );
-	
-	private static final ThreadLocal<HttpServletResponse> threadResponse = 
-		new ThreadLocal<HttpServletResponse>( );
-	
-	@Override
-	protected void configure( ) {
-	}
-	
-	@Provides HttpServletRequest provideRequest( ) {
-		
-		return threadRequest.get( );
-	}
-	
-	@Provides HttpServletResponse provideResponse( ) {
-		
-		return threadResponse.get( );
-	}
-	
-	@Provides HttpSession provideSession( ) {
-		
-		HttpServletRequest request = threadRequest.get( );
-		if ( request != null ) {
-			return request.getSession( );
-		}
-		return null;
-	}
-	
-	public static void set( HttpServletRequest req, HttpServletResponse resp ) {
-		
-		threadRequest.set(req);
-		threadResponse.set(resp);
-	}
+    private static final ThreadLocal<HttpServletRequest> threadRequest = new ThreadLocal<HttpServletRequest>();
+
+    private static final ThreadLocal<HttpServletResponse> threadResponse = new ThreadLocal<HttpServletResponse>();
+
+    @Override
+    protected void configure() {
+    }
+
+    @Provides
+    HttpServletRequest provideRequest() {
+
+        return threadRequest.get();
+    }
+
+    @Provides
+    HttpServletResponse provideResponse() {
+
+        return threadResponse.get();
+    }
+
+    @Provides
+    HttpSession provideSession() {
+
+        HttpServletRequest request = threadRequest.get();
+        if (request != null) {
+            return request.getSession();
+        }
+        return null;
+    }
+
+    public static void set(HttpServletRequest req, HttpServletResponse resp) {
+
+        threadRequest.set(req);
+        threadResponse.set(resp);
+    }
 }

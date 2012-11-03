@@ -24,16 +24,15 @@ import java.util.List;
  */
 public class DefaultActionSignature extends BaseActionSignature {
 
-	public DefaultActionSignature( int fastIndex, String methodName, 
-			Class<?>[] paramTypes, Annotation[][] paramAnnotations ) {
-		
-		super( fastIndex, methodName, paramTypes, paramAnnotations );
-	}
-	
-	@Override
-	public List<Class<?>> getInterceptorClasses( ControllerDatabase controllerDb, 
-			Class<?> controllerClass, String action ) {
-		
-		return controllerDb.getInterceptorsForDefaultAction( controllerClass );
-	}
+    public DefaultActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes,
+            Annotation[][] paramAnnotations) {
+
+        super(fastIndex, methodName, paramTypes, paramAnnotations);
+    }
+
+    @Override
+    public List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action) {
+
+        return controllerDb.getInterceptorsForDefaultAction(controllerClass);
+    }
 }

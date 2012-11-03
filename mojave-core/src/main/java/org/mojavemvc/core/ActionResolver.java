@@ -20,11 +20,11 @@ package org.mojavemvc.core;
  */
 public interface ActionResolver {
 
-	public void resolve( String controller, String action )	throws Exception;
-	
-	public ActionSignature getActionSignature( );
-	
-	public Object getActionController( );
-	
-	public String getControllerClassName( );
+    public void resolve(String controller, String action) throws Exception;
+
+    public ActionSignature getActionSignature();
+
+    public Object getActionController();
+
+    public String getControllerClassName();
 }

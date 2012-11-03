@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * 
  * <p>
- * An instance of this class can be made available to intercepting action 
- * methods, simply by writing the method signature with it as a parameter.
- * It contains a reference to the servlet request and response objects, as
- * well as to the Java parameters sent in the request, and to the String
- * names of the action and controller being invoked in this request.
+ * An instance of this class can be made available to intercepting action
+ * methods, simply by writing the method signature with it as a parameter. It
+ * contains a reference to the servlet request and response objects, as well as
+ * to the Java parameters sent in the request, and to the String names of the
+ * action and controller being invoked in this request.
  * </p>
  * 
  * <p>
@@ -38,86 +38,85 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * <pre>
  * &#064;BeforeAction
- * public void doSomethingBefore( RequestContext ctx ) {
- *  //do something
+ * public void doSomethingBefore(RequestContext ctx) {
+ *     // do something
  * }
  * </pre>
  * 
  * <p>
- * Developers should note that while all the fields are declared final,
- * the class is not completely immutable, as it exports state through
- * the request, response, and paramters objects. When an accessor is
- * called for one of these fields, a reference to the actual object, 
- * not to a copy, is returned.
+ * Developers should note that while all the fields are declared final, the
+ * class is not completely immutable, as it exports state through the request,
+ * response, and paramters objects. When an accessor is called for one of these
+ * fields, a reference to the actual object, not to a copy, is returned.
  * </p>
  * 
  * @author Luis Antunes
  */
 public class RequestContext {
 
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
-	private final Object[] parameters;
-	private final String action;
-	private final String controller;
-	
-	public RequestContext( HttpServletRequest request, HttpServletResponse response, 
-			Object[] parameters, String action, String controller) {
-		
-		this.request = request;
-		this.response = response;
-		this.parameters = parameters;
-		this.action = action;
-		this.controller = controller;
-	}
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private final Object[] parameters;
+    private final String action;
+    private final String controller;
 
-	/**
-	 * Gets the HttpServletRequest associated with the request.
-	 * 
-	 * @return the HttpServletRequest associated with the request
-	 */
-	public HttpServletRequest getRequest() {
-		return request;
-	}
+    public RequestContext(HttpServletRequest request, HttpServletResponse response, Object[] parameters, String action,
+            String controller) {
 
-	/**
-	 * Gets the HttpServletResponse associated with the request.
-	 * 
-	 * @return the HttpServletResponse associated with the request
-	 */
-	public HttpServletResponse getResponse() {
-		return response;
-	}
+        this.request = request;
+        this.response = response;
+        this.parameters = parameters;
+        this.action = action;
+        this.controller = controller;
+    }
 
-	/**
-	 * Gets the parameters associated with the request, as their
-	 * Java types as defined in the Action signature.
-	 * 
-	 * @return the parameters associated with the request
-	 */
-	public Object[] getParameters() {
-		return parameters;
-	}
+    /**
+     * Gets the HttpServletRequest associated with the request.
+     * 
+     * @return the HttpServletRequest associated with the request
+     */
+    public HttpServletRequest getRequest() {
+        return request;
+    }
 
-	/**
-	 * Gets the action invoked for this request, or an 
-	 * empty String if the default action was invoked.
-	 * 
-	 * @return the action parameter, or an empty 
-	 * String if the default action was invoked
-	 */
-	public String getAction() {
-		return action;
-	}
+    /**
+     * Gets the HttpServletResponse associated with the request.
+     * 
+     * @return the HttpServletResponse associated with the request
+     */
+    public HttpServletResponse getResponse() {
+        return response;
+    }
 
-	/**
-	 * Gets the controller invoked for this request, or
-	 * an empty String if the default controller was invoked.
-	 * 
-	 * @return the controller parameter, or an empty 
-	 * String if the default controller was invoked
-	 */
-	public String getController() {
-		return controller;
-	}
+    /**
+     * Gets the parameters associated with the request, as their Java types as
+     * defined in the Action signature.
+     * 
+     * @return the parameters associated with the request
+     */
+    public Object[] getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Gets the action invoked for this request, or an empty String if the
+     * default action was invoked.
+     * 
+     * @return the action parameter, or an empty String if the default action
+     *         was invoked
+     */
+    public String getAction() {
+        return action;
+    }
+
+    /**
+     * Gets the controller invoked for this request, or an empty String if the
+     * default controller was invoked.
+     * 
+     * @return the controller parameter, or an empty String if the default
+     *         controller was invoked
+     */
+    public String getController() {
+        return controller;
+    }
 }

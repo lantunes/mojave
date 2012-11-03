@@ -20,16 +20,16 @@ import org.mojavemvc.views.JspView;
 import org.mojavemvc.views.View;
 
 /**
- * The default {@link ErrorHandler} for the application. Simply
- * returns a {@link JspView} based on the 'jsp-error-file' init
- * parameter (see {@link org.mojavemvc.FrontController}).
+ * The default {@link ErrorHandler} for the application. Simply returns a
+ * {@link JspView} based on the 'jsp-error-file' init parameter (see
+ * {@link org.mojavemvc.FrontController}).
  * 
  * @author Luis Antunes
  */
 public class DefaultJspErrorHandler implements ErrorHandler {
 
-	public View handleError( Throwable e ) {
-		
-		return new JspView( FrontController.getJspErrorFile( ) );
-	}
+    public View handleError(Throwable e) {
+
+        return new JspView(FrontController.getJspErrorFile());
+    }
 }

@@ -22,13 +22,13 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * This annotation is used to map &#064;Action method parameters to 
- * their request variable names.
+ * This annotation is used to map &#064;Action method parameters to their
+ * request variable names.
  * </p>
  * 
  * <p>
- * This annotation will only be recognized in methods annotated with 
- * either &#064;Action or &#064;DefaultAction
+ * This annotation will only be recognized in methods annotated with either
+ * &#064;Action or &#064;DefaultAction
  * </p>
  * 
  * @author Luis Antunes
@@ -36,5 +36,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Param {
-	String value();
+    String value();
 }

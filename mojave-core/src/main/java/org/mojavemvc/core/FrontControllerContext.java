@@ -20,15 +20,15 @@ import java.util.Map;
 
 public class FrontControllerContext implements ControllerContext {
 
-	private final Map<String, Object> attributes = new HashMap<String, Object>();
-	
-	@Override
-	public Object getAttribute( String name ) {
-		return attributes.get( name );
-	}
+    private final Map<String, Object> attributes = new HashMap<String, Object>();
 
-	@Override
-	public void setAttribute( String name, Object object ) {
-		attributes.put( name, object );
-	}
+    @Override
+    public Object getAttribute(String name) {
+        return attributes.get(name);
+    }
+
+    @Override
+    public void setAttribute(String name, Object object) {
+        attributes.put(name, object);
+    }
 }

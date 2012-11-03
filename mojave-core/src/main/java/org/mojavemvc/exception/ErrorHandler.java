@@ -17,31 +17,29 @@ package org.mojavemvc.exception;
 
 import org.mojavemvc.views.View;
 
-
 /**
  * <p>
- * Users can implement this interface in their own classes
- * to define their own error handling behaviour. This class
- * is created using an ErrorHandlerFactory. The factory
- * is invoked once per request, before the action is processed.
- * See {@link ErrorHandlerFactory}.
+ * Users can implement this interface in their own classes to define their own
+ * error handling behaviour. This class is created using an ErrorHandlerFactory.
+ * The factory is invoked once per request, before the action is processed. See
+ * {@link ErrorHandlerFactory}.
  * </p>
  * 
  * @author Luis Antunes
  */
 public interface ErrorHandler {
 
-	/**
-	 * <p>
-	 * This method is invoked when an error occurs during action
-	 * processing. Specifically, if a controller or action cannot
-	 * be resolved, or the action cannot be invoked, or the original 
-	 * View cannot be rendered, this method is called, and the 
-	 * returned View is rendered.
-	 * </p>
-	 * 
-	 * @param e the Throwable thrown during action processing
-	 * @return a View that will be rendered instead
-	 */
-	public View handleError( Throwable e );
+    /**
+     * <p>
+     * This method is invoked when an error occurs during action processing.
+     * Specifically, if a controller or action cannot be resolved, or the action
+     * cannot be invoked, or the original View cannot be rendered, this method
+     * is called, and the returned View is rendered.
+     * </p>
+     * 
+     * @param e
+     *            the Throwable thrown during action processing
+     * @return a View that will be rendered instead
+     */
+    public View handleError(Throwable e);
 }

@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * <p>
  * This annotation must be used only with singleton controllers. The singleton
- * controller instance will be created at startup if it is annotated with this 
+ * controller instance will be created at startup if it is annotated with this
  * annotation.
  * </p>
  * 
@@ -41,8 +41,8 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * The controller above will be instantiated during initialization of the 
- * org.mojavemvc.FrontController servlet. 
+ * The controller above will be instantiated during initialization of the
+ * org.mojavemvc.FrontController servlet.
  * </p>
  * 
  * @author Luis Antunes

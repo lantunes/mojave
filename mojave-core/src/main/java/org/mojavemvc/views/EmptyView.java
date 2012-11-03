@@ -23,22 +23,21 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
- * This view does nothing during the call to render().
- * It is used when the content of the response is specified
- * in the response headers, instead of the response body.  
+ * This view does nothing during the call to render(). It is used when the
+ * content of the response is specified in the response headers, instead of the
+ * response body.
  * </p>
  * 
  * @author Luis Antunes
  */
 public class EmptyView implements View {
 
-	@Override
-	public void render(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-		/*
-		 * do nothing to render the view
-		 */
-	}
+    @Override
+    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        /*
+         * do nothing to render the view
+         */
+    }
 
 }

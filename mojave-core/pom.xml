@@ -137,6 +137,25 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <doctitle>
+                        <![CDATA[<h1>Mojave MVC Web Framework ${project.version}</h1>]]>
+                    </doctitle>
+                    <bottom>
+                        <![CDATA[<i>Copyright &#169; 2011-2012 MojaveMVC.org</i>]]>
+                    </bottom>
+                    <excludePackageNames>org.mojavemvc.test.*</excludePackageNames>
+                    <author>true</author>
+                    <version>true</version>
+                    <use>true</use>
+                    <destDir>javadocs</destDir>
+                    <windowtitle>Mojave MVC Web Framework</windowtitle><use></use>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>

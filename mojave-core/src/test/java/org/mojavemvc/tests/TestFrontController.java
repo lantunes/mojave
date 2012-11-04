@@ -248,8 +248,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestAll() throws Exception {
 
-        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-all&" +
-        		"p1=2011-03-01&p2=hello&p3=123&p4=1.45")
+        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-all&p1=2011-03-01&p2=hello&p3=123&p4=1.45")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 2011-03-01, hello, 123, 1.45"));
@@ -327,9 +326,8 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestIntCollection() throws Exception {
 
-        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-ints&" +
-        		"p1=123&p1=456&p1=789&p1=321")
-		    .producesPage()
+        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-ints&p1=123&p1=456&p1=789&p1=321")
+            .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 123, 456, 789, 321"));
     }
@@ -337,9 +335,8 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestStringCollection() throws Exception {
 
-        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-strings&" +
-        		"p1=abc&p1=def&p1=ghi&p1=jkl")
-        	.producesPage()
+        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-strings&p1=abc&p1=def&p1=ghi&p1=jkl")
+            .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from abc, def, ghi, jkl"));
     }
@@ -347,9 +344,8 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestDoubleCollection() throws Exception {
 
-        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-doubles&" +
-        		"p1=1.1&p1=2.2&p1=3.3&p1=4.4")
-        	.producesPage()
+        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-doubles&p1=1.1&p1=2.2&p1=3.3&p1=4.4")
+            .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 1.1, 2.2, 3.3, 4.4"));
     }
@@ -367,9 +363,8 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestBooleanCollection() throws Exception {
 
-        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-bools&" +
-        		"p1=t&p1=false&p1=f&p1=1")
-        	.producesPage()
+        assertThatRequestFor("/mvc/mvctest?c=index&a=param-annotation-bools&p1=t&p1=false&p1=f&p1=1")
+            .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from true, false, false, true"));
     }

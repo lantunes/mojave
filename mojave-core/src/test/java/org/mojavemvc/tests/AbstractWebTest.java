@@ -79,7 +79,7 @@ public abstract class AbstractWebTest {
     
     /*-------DSL----------*/
     
-    protected RequestedPage makeRequest(String uri) throws Exception {
+    protected RequestedPage makeRequestFor(String uri) throws Exception {
         return new RequestedPage(uri);
     }
     
@@ -172,11 +172,15 @@ public abstract class AbstractWebTest {
             assertNotNull(page);
         }
         
-        public String getTagContent(String name) {
+        public String andGetTagContent(String name) {
             DomNodeList<HtmlElement> elements = ((HtmlPage)page).getElementsByTagName(name);
             assertEquals(1, elements.size());
             HtmlElement tag = elements.get(0);
             return tag.getTextContent();
+        }
+        
+        public String andGetH2TagContent() {
+            return andGetTagContent("h2");
         }
     }
     
@@ -355,6 +359,10 @@ public abstract class AbstractWebTest {
             return this;
         }
         
+        public PageAssertion withFlagElement(PageElementContentAssertion pageElementAssertion) {
+            return withElement("flag", pageElementAssertion);
+        }
+        
         public PageAssertion withContentType(String contentType) {
             assertEquals(contentType, page.getWebResponse().getContentType());
             return this;
@@ -363,6 +371,14 @@ public abstract class AbstractWebTest {
         public PageAssertion withContent(String content) {
             assertEquals(content, page.getWebResponse().getContentAsString());
             return this;
+        }
+        
+        public PageAssertion withH1Tag(PageElementContentAssertion pageElementAssertion) {
+            return withTag("h1", pageElementAssertion);
+        }
+        
+        public PageAssertion withH2Tag(PageElementContentAssertion pageElementAssertion) {
+            return withTag("h2", pageElementAssertion);
         }
     }
     

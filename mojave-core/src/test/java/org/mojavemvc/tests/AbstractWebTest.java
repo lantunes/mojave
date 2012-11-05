@@ -32,9 +32,11 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 
 public abstract class AbstractWebTest {
 
+    private static final String host = "http://localhost:";
+    
     private static final int port = 8989;
 
-    private static final String host = "http://localhost:";
+    private static final String ctx = "/mvc";
     
     private static Server jetty;
 
@@ -79,47 +81,47 @@ public abstract class AbstractWebTest {
     
     /*-------DSL----------*/
     
-    protected RequestedPage makeRequestFor(String uri) throws Exception {
-        return new RequestedPage(uri);
+    protected RequestedPage makeRequestFor(String path) throws Exception {
+        return new RequestedPage(path);
     }
     
-    protected RequestAssertion assertThatRequestFor(String uri) throws Exception {
-        return new RequestAssertion(uri);
+    protected RequestAssertion assertThatRequestFor(String path) throws Exception {
+        return new RequestAssertion(path);
     }
     
-    protected RequestAssertion assertThatPOSTRequestFor(String uri, 
+    protected RequestAssertion assertThatPOSTRequestFor(String path, 
             RequestParameter...params) throws Exception {
         
-        return new RequestAssertion(HttpMethod.POST, uri, params);
+        return new RequestAssertion(HttpMethod.POST, path, params);
     }
     
-    protected RequestAssertion assertThatGETRequestFor(String uri, 
+    protected RequestAssertion assertThatGETRequestFor(String path, 
             RequestParameter...params) throws Exception {
         
-        return new RequestAssertion(HttpMethod.GET, uri, params);
+        return new RequestAssertion(HttpMethod.GET, path, params);
     }
     
-    protected RequestAssertion assertThatPUTRequestFor(String uri, 
+    protected RequestAssertion assertThatPUTRequestFor(String path, 
             RequestParameter...params) throws Exception {
         
-        return new RequestAssertion(HttpMethod.PUT, uri, params);
+        return new RequestAssertion(HttpMethod.PUT, path, params);
     }
     
-    protected RequestAssertion assertThatDELETERequestFor(String uri, 
+    protected RequestAssertion assertThatDELETERequestFor(String path, 
             RequestParameter...params) throws Exception {
         
-        return new RequestAssertion(HttpMethod.DELETE, uri, params);
+        return new RequestAssertion(HttpMethod.DELETE, path, params);
     }
     
-    protected RequestAssertion assertThatOPTIONSRequestFor(String uri, 
+    protected RequestAssertion assertThatOPTIONSRequestFor(String path, 
             RequestParameter...params) throws Exception {
         
-        return new RequestAssertion(HttpMethod.OPTIONS, uri, params);
+        return new RequestAssertion(HttpMethod.OPTIONS, path, params);
     }
     
-    protected HEADRequestAssertion assertThatHEADRequestFor(String uri) 
+    protected HEADRequestAssertion assertThatHEADRequestFor(String path) 
                 throws Exception {
-        return new HEADRequestAssertion(uri);
+        return new HEADRequestAssertion(path);
     }
     
     protected RequestParameter withParam(String name, String value) {
@@ -167,8 +169,8 @@ public abstract class AbstractWebTest {
     protected class RequestedPage {
         private Page page;
         
-        public RequestedPage(String uri) throws Exception {
-            page = client.getPage(host + port + uri);
+        public RequestedPage(String path) throws Exception {
+            page = client.getPage(toUrl(path));
             assertNotNull(page);
         }
         
@@ -187,14 +189,14 @@ public abstract class AbstractWebTest {
     protected class RequestAssertion {
         private Page page;
         
-        public RequestAssertion(String uri) throws Exception {
-            page = client.getPage(host + port + uri);
+        public RequestAssertion(String path) throws Exception {
+            page = client.getPage(toUrl(path));
         }
         
-        public RequestAssertion(HttpMethod method, String uri, 
+        public RequestAssertion(HttpMethod method, String path, 
                 RequestParameter...params) throws Exception {
             
-            WebRequest wr = new WebRequest(new URL(host + port + uri), method);
+            WebRequest wr = new WebRequest(new URL(toUrl(path)), method);
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
             for (RequestParameter pair : params) {
                 pairs.add(new NameValuePair(pair.getName(), pair.getValue()));
@@ -230,8 +232,8 @@ public abstract class AbstractWebTest {
         
         private Page page;
         
-        public HEADRequestAssertion(String uri) throws Exception {
-            WebRequest wr = new WebRequest(new URL(host + port + uri),
+        public HEADRequestAssertion(String path) throws Exception {
+            WebRequest wr = new WebRequest(new URL(toUrl(path)),
                     HttpMethod.HEAD);
             page = client.getPage(wr);
             assertNotNull(page);
@@ -418,5 +420,9 @@ public abstract class AbstractWebTest {
         public void doAssertion(HtmlElement element) {
             assertEquals(expected, element.getAttribute(attribute));
         }   
+    }
+    
+    private String toUrl(String path) {
+        return host + port + ctx + path;
     }
 }

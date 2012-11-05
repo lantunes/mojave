@@ -53,7 +53,7 @@ public abstract class AbstractWebTest {
         WebAppContext wactx = new WebAppContext();
         wactx.setClassLoader(TestFrontController.class.getClassLoader());
         wactx.setParentLoaderPriority(true);
-        wactx.setContextPath("/mvc");
+        wactx.setContextPath(ctx);
         wactx.setWar("src/test/resources/standard");
 
         HandlerCollection handlers = new HandlerCollection();

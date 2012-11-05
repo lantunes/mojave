@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.cglib.reflect.FastClass;
 
-import org.mojavemvc.FrontController;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.View;
@@ -52,17 +51,17 @@ public class HttpActionInvoker implements ActionInvoker {
     private ActionSignature actionSignature;
 
     public HttpActionInvoker(HttpServletRequest request, HttpServletResponse response, ControllerDatabase controllerDb,
-            Injector injector) {
+            RoutedRequest routed, Injector injector) {
 
         this.request = request;
         this.response = response;
         this.controllerDb = controllerDb;
         this.injector = injector;
 
-        String cntrl = request.getParameter(FrontController.getControllerVariable());
+        String cntrl = routed.getController();
         controller = (cntrl == null || cntrl.trim().length() == 0) ? "" : cntrl;
 
-        String actn = request.getParameter(FrontController.getActionVariable());
+        String actn = routed.getAction();
         action = (actn == null || actn.trim().length() == 0) ? "" : actn;
     }
 

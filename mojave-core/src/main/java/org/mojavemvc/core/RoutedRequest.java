@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
-
-import org.mojavemvc.annotations.Action;
-import org.mojavemvc.annotations.DefaultAction;
-import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
-import org.mojavemvc.views.Redirect;
-import org.mojavemvc.views.View;
+package org.mojavemvc.core;
 
 /**
  * @author Luis Antunes
  */
-@StatelessController("redirecting")
-public class RedirectingController {
+public class RoutedRequest {
 
-    @Action("redirect")
-    public View doRedirect() {
-        return new Redirect("/mvc/serv/redirecting");
+    private final String controller;
+    private final String action;
+
+    public RoutedRequest(String controller, String action) {
+        this.controller = controller;
+        this.action = action;
     }
 
-    @DefaultAction
-    public View defAction() {
-        return new JspView("redirected.jsp");
+    public String getController() {
+        return controller;
+    }
+
+    public String getAction() {
+        return action;
     }
 }

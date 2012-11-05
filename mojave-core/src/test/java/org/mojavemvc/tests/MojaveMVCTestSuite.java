@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
     TestDefaultJspErrorHandler.class,
     TestDefaultErrorHandlerFactory.class,
     TestViews.class,
+    TestHttpRequestRouter.class,
     TestFrontController.class,
     TestMultiClient.class
 })

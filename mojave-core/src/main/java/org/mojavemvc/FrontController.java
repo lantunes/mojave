@@ -32,7 +32,10 @@ import org.mojavemvc.core.GuiceInitializer;
 import org.mojavemvc.core.HttpActionInvoker;
 import org.mojavemvc.core.HttpActionResolver;
 import org.mojavemvc.core.HttpMethod;
+import org.mojavemvc.core.HttpRequestRouter;
 import org.mojavemvc.core.RequestProcessor;
+import org.mojavemvc.core.RequestRouter;
+import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
 import org.mojavemvc.exception.ErrorHandler;
 import org.mojavemvc.exception.ErrorHandlerFactory;
@@ -52,8 +55,6 @@ import com.google.inject.Injector;
 public final class FrontController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 
-    private static String CONTROLLER_VARIABLE = null;
-    private static String ACTION_VARIABLE = null;
     private static String JSP_PATH = null;
     private static String JSP_ERROR_FILE = null;
 
@@ -73,8 +74,6 @@ public final class FrontController extends HttpServlet {
 
         initializer.performInitialization();
 
-        CONTROLLER_VARIABLE = initializer.getControllerVariable();
-        ACTION_VARIABLE = initializer.getActionVariable();
         JSP_PATH = initializer.getJspPath();
         JSP_ERROR_FILE = initializer.getJspErrorFile();
 
@@ -89,16 +88,6 @@ public final class FrontController extends HttpServlet {
     public static String getJspErrorFile() {
 
         return JSP_ERROR_FILE;
-    }
-
-    public static String getControllerVariable() {
-
-        return CONTROLLER_VARIABLE;
-    }
-
-    public static String getActionVariable() {
-
-        return ACTION_VARIABLE;
     }
 
     /**
@@ -220,13 +209,16 @@ public final class FrontController extends HttpServlet {
 
         ServletResourceModule.set(req, res);
 
+        RequestRouter router = new HttpRequestRouter(req);
+        RoutedRequest routed = router.route();
+        
         ActionResolver resolver = new HttpActionResolver(ctx, req, httpMethod, controllerDb, injector);
 
-        ActionInvoker invoker = new HttpActionInvoker(req, res, controllerDb, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, controllerDb, routed, injector);
 
         RequestProcessor requestProcessor = new RequestProcessor(resolver, invoker, errorHandler);
-
-        View view = requestProcessor.process(req.getParameter(CONTROLLER_VARIABLE), req.getParameter(ACTION_VARIABLE));
+        
+        View view = requestProcessor.process(routed.getController(), routed.getAction());
 
         logger.debug("processed request for " + requestProcessor.getControllerClassName() + "; rendering...");
         try {

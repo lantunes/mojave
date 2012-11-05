@@ -45,14 +45,10 @@ public class FrontControllerInitializer {
     private static final String CONTROLLER_CLASS_NAMESPACE = "controller-classes";
     private static final String JSP_PATH = "jsp-path";
     private static final String JSP_ERROR_FILE = "jsp-error-file";
-    private static final String CONTROLLER_VARIABLE = "controller-variable";
-    private static final String ACTION_VARIABLE = "action-variable";
     private static final String GUICE_MODULES = "guice-modules";
     private static final String ERROR_HANDLER_FACTORY = "error-handler-factory";
 
     private String controllerClassNamespace;
-    private String controllerVariable;
-    private String actionVariable;
     private String jspPath;
     private String jspErrorFile;
     private String guiceModulesNamespace;
@@ -81,8 +77,6 @@ public class FrontControllerInitializer {
         readControllerClassNamespace();
         readJspPath();
         readJspErrorFile();
-        readControllerVariable();
-        readActionVariable();
         readGuiceModulesNamespace();
         readErrorHandlerFactory();
     }
@@ -123,34 +117,6 @@ public class FrontControllerInitializer {
 
             jspErrorFile = "error.jsp";
             logger.debug("no " + JSP_ERROR_FILE + " init-param specified; setting to " + jspErrorFile);
-        }
-    }
-
-    private void readControllerVariable() {
-
-        controllerVariable = servletConfig.getInitParameter(CONTROLLER_VARIABLE);
-        if (!isEmpty(controllerVariable)) {
-
-            logger.debug("setting " + CONTROLLER_VARIABLE + " to " + controllerVariable);
-
-        } else {
-
-            controllerVariable = "cntrl";
-            logger.debug("no " + CONTROLLER_VARIABLE + " init-param specified; setting to " + controllerVariable);
-        }
-    }
-
-    private void readActionVariable() {
-
-        actionVariable = servletConfig.getInitParameter(ACTION_VARIABLE);
-        if (!isEmpty(actionVariable)) {
-
-            logger.debug("setting " + ACTION_VARIABLE + " to " + actionVariable);
-
-        } else {
-
-            actionVariable = "actn";
-            logger.debug("no " + ACTION_VARIABLE + " init-param specified; setting to " + actionVariable);
         }
     }
 
@@ -296,14 +262,6 @@ public class FrontControllerInitializer {
 
     private boolean isEmpty(String arg) {
         return arg == null || arg.trim().length() == 0;
-    }
-
-    public String getControllerVariable() {
-        return controllerVariable;
-    }
-
-    public String getActionVariable() {
-        return actionVariable;
     }
 
     public String getJspPath() {

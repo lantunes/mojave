@@ -29,14 +29,6 @@
             <param-value>error.jsp</param-value>
         </init-param>
         <init-param>
-            <param-name>controller-variable</param-name>
-            <param-value>c</param-value>
-        </init-param>
-        <init-param>
-            <param-name>action-variable</param-name>
-            <param-value>a</param-value>
-        </init-param>
-        <init-param>
             <param-name>guice-modules</param-name>
             <param-value>org.mojavemvc.tests.modules</param-value>
         </init-param>
@@ -44,7 +36,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
-        <url-pattern>/mvctest</url-pattern>
+        <url-pattern>/serv/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

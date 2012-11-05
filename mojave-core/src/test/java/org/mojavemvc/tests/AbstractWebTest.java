@@ -38,6 +38,8 @@ public abstract class AbstractWebTest {
 
     private static final String ctx = "/mvc";
     
+    private static final String servlet = "/serv";
+    
     private static Server jetty;
 
     private WebClient client;
@@ -423,6 +425,6 @@ public abstract class AbstractWebTest {
     }
     
     private String toUrl(String path) {
-        return host + port + ctx + path;
+        return host + port + ctx + servlet + path;
     }
 }

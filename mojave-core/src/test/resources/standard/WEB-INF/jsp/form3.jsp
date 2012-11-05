@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 <body>
-	<form name="test-form" action="/mvc/mvctest?c=form-controller&a=process3" method="post">
+	<form name="test-form" action="/mvc/serv/form-controller/process3" method="post">
 		<input id="userName" name="userName" type="text" /><br />
 		<input id="password" name="password" type="password" /><br />
 		<input id="submit" value="submit" type="submit" />

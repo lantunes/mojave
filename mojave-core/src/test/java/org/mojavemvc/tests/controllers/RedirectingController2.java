@@ -43,7 +43,7 @@ public class RedirectingController2 {
 
         try {
 
-            response.sendRedirect("mvctest?c=redirecting");
+            response.sendRedirect("/mvc/serv/redirecting");
 
             /*
              * in Tomcat, calling response.sendRedirect() commits the response,

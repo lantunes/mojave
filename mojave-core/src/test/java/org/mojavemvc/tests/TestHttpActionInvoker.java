@@ -18,7 +18,6 @@ package org.mojavemvc.tests;
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,12 +33,12 @@ import net.sf.cglib.reflect.FastClass;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mojavemvc.FrontController;
 import org.mojavemvc.core.ActionInvoker;
 import org.mojavemvc.core.ActionSignature;
 import org.mojavemvc.core.ControllerDatabase;
 import org.mojavemvc.core.HttpActionInvoker;
 import org.mojavemvc.core.MappedControllerDatabase;
+import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
 import org.mojavemvc.tests.controllers.InterceptedController1;
 import org.mojavemvc.tests.controllers.InterceptedController2;
@@ -71,6 +70,8 @@ public class TestHttpActionInvoker {
     private HttpServletResponse resp;
 
     private HttpSession sess;
+    
+    private RoutedRequest routed;
 
     private Injector injector;
 
@@ -88,12 +89,13 @@ public class TestHttpActionInvoker {
         injector = Guice.createInjector(new ServletResourceModule(), new SomeModule());
         ServletResourceModule.set(req, resp);
 
-        Field f = FrontController.class.getDeclaredField("ACTION_VARIABLE");
-        f.setAccessible(true);
-        f.set(null, "actn");
-        f = FrontController.class.getDeclaredField("CONTROLLER_VARIABLE");
-        f.setAccessible(true);
-        f.set(null, "cntrl");
+//        Field f = FrontController.class.getDeclaredField("ACTION_VARIABLE");
+//        f.setAccessible(true);
+//        f.set(null, "actn");
+//        f = FrontController.class.getDeclaredField("CONTROLLER_VARIABLE");
+//        f.setAccessible(true);
+//        f.set(null, "cntrl");
+        routed = new RoutedRequest(null, null);
     }
 
     @Test
@@ -116,7 +118,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -150,7 +152,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -188,7 +190,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), "some-action"));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -211,7 +213,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        when(req.getParameter("actn")).thenReturn("some-action");
+        routed = new RoutedRequest(null, action);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController2.invocationList = invocationList;
@@ -232,7 +234,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -273,7 +275,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -315,7 +317,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), "some-action"));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -340,7 +342,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        when(req.getParameter("actn")).thenReturn(action);
+        routed = new RoutedRequest(null, action);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController4.invocationList = invocationList;
@@ -362,7 +364,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -387,7 +389,7 @@ public class TestHttpActionInvoker {
         String methodName = "defaultAction";
         String action = "some-action";
 
-        when(req.getParameter("actn")).thenReturn("some-action");
+        routed = new RoutedRequest(null, action);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController4.invocationList = invocationList;
@@ -409,7 +411,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -452,7 +454,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -494,7 +496,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -538,7 +540,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -563,7 +565,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        when(req.getParameter("actn")).thenReturn("some-action");
+        routed = new RoutedRequest(null, action);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController5.invocationList = invocationList;
@@ -585,7 +587,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -628,7 +630,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -670,7 +672,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -712,7 +714,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -741,7 +743,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        when(req.getParameter("actn")).thenReturn("some-action");
+        routed = new RoutedRequest(null, action);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController8.invocationList = invocationList;
@@ -765,7 +767,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -815,7 +817,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 
@@ -846,7 +848,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        when(req.getParameter("actn")).thenReturn("some-action");
+        routed = new RoutedRequest(null, action);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController9.invocationList = invocationList;
@@ -870,7 +872,7 @@ public class TestHttpActionInvoker {
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, injector);
+        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
         JspView view = (JspView) invoker.invokeAction(cntrl, sig);
 

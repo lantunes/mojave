@@ -166,7 +166,7 @@ public class TestMultiClient {
          * testing with an external container
          */
         beforeTests();
-        String url = "http://localhost:8989/mvc";
+        String url = "http://localhost:8989/mvc/serv";
 
         int i = 0;
         while (true) {
@@ -235,7 +235,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=afterctx2");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/afterctx2");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
@@ -260,7 +260,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=index");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -285,7 +285,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -310,7 +310,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=index&a=test");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/test");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -335,7 +335,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=index&a=with-param&var=hello");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/with-param?var=hello");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -364,7 +364,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=index&a=another-param&var=hello");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/another-param?var=hello");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -393,7 +393,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=index&a=some-service&var=hello");
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/some-service?var=hello");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -424,7 +424,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
-                        + "/mvctest?c=index&a=test-annotation&var=annotationTest");
+                        + "/index/test-annotation?var=annotationTest");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -454,7 +454,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
-                        + "/mvctest?c=annot&a=some-action&var=contollerAnnotationTest");
+                        + "/annot/some-action?var=contollerAnnotationTest");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -485,7 +485,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
-                        + "/mvctest?c=index&a=param-annotation-string&p1=param1");
+                        + "/index/param-annotation-string?p1=param1");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -516,7 +516,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
-                        + "/mvctest?c=index&a=param-annotation-string&p1=param2");
+                        + "/index/param-annotation-string?p1=param2");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -547,7 +547,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
-                        + "/mvctest?c=index&a=param-annotation-string&p1=param3");
+                        + "/index/param-annotation-string?p1=param3");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -578,7 +578,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client
-                        .getPage(baseURL + "/mvctest?c=some-stateful&a=set-var&var=statetest1");
+                        .getPage(baseURL + "/some-stateful/set-var?var=statetest1");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -586,7 +586,7 @@ public class TestMultiClient {
                         h1.getTextContent());
 
                 /* make a second request */
-                page = client.getPage(baseURL + "/mvctest?c=some-stateful&a=get-var");
+                page = client.getPage(baseURL + "/some-stateful/get-var");
                 elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
@@ -612,7 +612,7 @@ public class TestMultiClient {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client
-                        .getPage(baseURL + "/mvctest?c=some-stateful&a=set-var&var=statetest2");
+                        .getPage(baseURL + "/some-stateful/set-var?var=statetest2");
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
@@ -620,7 +620,7 @@ public class TestMultiClient {
                         h1.getTextContent());
 
                 /* make a second request */
-                page = client.getPage(baseURL + "/mvctest?c=some-stateful&a=get-var");
+                page = client.getPage(baseURL + "/some-stateful/get-var");
                 elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
@@ -644,7 +644,7 @@ public class TestMultiClient {
 
         public void run() {
             try {
-                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/mvctest?c=index&a=param-annotation-string&p1="
+                HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/param-annotation-string?p1="
                         + param);
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
@@ -665,7 +665,7 @@ public class TestMultiClient {
 
     private static abstract class BaseClient {
 
-        protected String baseURL = "http://localhost:8989/mvc";
+        protected String baseURL = "http://localhost:8989/mvc/serv";
         protected WebClient client;
 
         public BaseClient() {

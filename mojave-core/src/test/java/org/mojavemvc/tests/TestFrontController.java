@@ -65,13 +65,13 @@ public class TestFrontController extends AbstractWebTest {
          * there is no action called 'default' in the controller; this should
          * throw an IllegalArgumentException internally
          */
-        assertThatRequestFor("/mvctest?c=index&a=default").producesErrorPage();
+        assertThatRequestFor("/index/default").producesErrorPage();
     }
 
     @Test
     public void indexControllerDefaultAction2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index")
+        assertThatRequestFor("/index")
             .producesPage()
             .withH2Tag(withContent("Hello from index "));
     }
@@ -79,7 +79,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerDefaultAction3() throws Exception {
 
-        assertThatRequestFor("/mvctest")
+        assertThatRequestFor("/")
             .producesPage()
             .withH2Tag(withContent("Hello from  "));
     }
@@ -87,7 +87,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerTestAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=test")
+        assertThatRequestFor("/index/test")
             .producesPage()
             .withH1Tag(withContent("This is the test.jsp file of the IndexController testAction!"));
     }
@@ -95,7 +95,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerWithParamAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=with-param&var=hello")
+        assertThatRequestFor("/index/with-param?var=hello")
             .producesPage()
             .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
             .withH2Tag(withContent("Hello from hello"));
@@ -104,7 +104,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerAnotherParamAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=another-param&var=hello")
+        assertThatRequestFor("/index/another-param?var=hello")
             .producesPage()
             .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
             .withH2Tag(withContent("Hello from hello"));
@@ -113,7 +113,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerSomeServiceAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=some-service&var=hello")
+        assertThatRequestFor("/index/some-service?var=hello")
             .producesPage()
             .withH1Tag(withContent("This is the some-service.jsp file of the IndexController someServiceAction!"))
             .withH2Tag(withContent("answered hello"));
@@ -122,7 +122,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerActionAnnotation() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=test-annotation&var=annotationTest")
+        assertThatRequestFor("/index/test-annotation?var=annotationTest")
             .producesPage()
             .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
             .withH2Tag(withContent("Hello from annotationTest"));
@@ -131,7 +131,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someControllerClassControllerAnnotation() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=annot&a=some-action&var=contollerAnnotationTest")
+        assertThatRequestFor("/annot/some-action?var=contollerAnnotationTest")
             .producesPage()
             .withH1Tag(withContent("This is the some-controller.jsp file of the SomeControllerClass doSomething action!"))
             .withH2Tag(withContent("contollerAnnotationTest"));
@@ -140,7 +140,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest1() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-string&p1=param1")
+        assertThatRequestFor("/index/param-annotation-string?p1=param1")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from param1"));
@@ -149,7 +149,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest1_WithNull() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-string")
+        assertThatRequestFor("/index/param-annotation-string")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from null"));
@@ -158,7 +158,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-string2&p1=param1&p2=param2")
+        assertThatRequestFor("/index/param-annotation-string2?p1=param1&p2=param2")
             .producesPage()
             .withH1Tag(withContent("This is the params2.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from param1, param2"));
@@ -167,7 +167,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest2_WithNull() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-string2&p2=param2")
+        assertThatRequestFor("/index/param-annotation-string2?p2=param2")
             .producesPage()
             .withH1Tag(withContent("This is the params2.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from null, param2"));
@@ -176,7 +176,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-int&p1=123456")
+        assertThatRequestFor("/index/param-annotation-int?p1=123456")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 123456"));
@@ -185,7 +185,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest3_WithNull() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-int")
+        assertThatRequestFor("/index/param-annotation-int")
             .producesPage()
                 .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
                 .withH2Tag(withContent("Hello from 0"));
@@ -194,13 +194,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest3_WithError() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-int&p1=hello").producesErrorPage();
+        assertThatRequestFor("/index/param-annotation-int?p1=hello").producesErrorPage();
     }
 
     @Test
     public void indexControllerParamAnnotationTest4() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-double&p1=123.456")
+        assertThatRequestFor("/index/param-annotation-double?p1=123.456")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 123.456"));
@@ -209,7 +209,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest4_WithNull() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-double")
+        assertThatRequestFor("/index/param-annotation-double")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 0.0"));
@@ -218,13 +218,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest4_WithError() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-double&p1=hello").producesErrorPage();
+        assertThatRequestFor("/index/param-annotation-double?p1=hello").producesErrorPage();
     }
 
     @Test
     public void indexControllerParamAnnotationTest5() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-date&p1=2011-03-01")
+        assertThatRequestFor("/index/param-annotation-date?p1=2011-03-01")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 2011-03-01"));
@@ -233,7 +233,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest5_WithNull() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-date")
+        assertThatRequestFor("/index/param-annotation-date")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from null"));
@@ -242,13 +242,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest5_WithError() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-date&p1=hello").producesErrorPage();
+        assertThatRequestFor("/index/param-annotation-date?p1=hello").producesErrorPage();
     }
 
     @Test
     public void indexControllerParamAnnotationTestAll() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-all&p1=2011-03-01&p2=hello&p3=123&p4=1.45")
+        assertThatRequestFor("/index/param-annotation-all?p1=2011-03-01&p2=hello&p3=123&p4=1.45")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 2011-03-01, hello, 123, 1.45"));
@@ -257,7 +257,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=true")
+        assertThatRequestFor("/index/param-annotation-bool?p1=true")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from true"));
@@ -266,7 +266,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6b() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=false")
+        assertThatRequestFor("/index/param-annotation-bool?p1=false")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from false"));
@@ -275,7 +275,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6c() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=t")
+        assertThatRequestFor("/index/param-annotation-bool?p1=t")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from true"));
@@ -284,7 +284,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6d() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=f")
+        assertThatRequestFor("/index/param-annotation-bool?p1=f")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from false"));
@@ -293,7 +293,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6e() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=1")
+        assertThatRequestFor("/index/param-annotation-bool?p1=1")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from true"));
@@ -302,7 +302,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6f() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=0")
+        assertThatRequestFor("/index/param-annotation-bool?p1=0")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from false"));
@@ -311,13 +311,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTest6_WithError() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool&p1=hello").producesErrorPage();
+        assertThatRequestFor("/index/param-annotation-bool?p1=hello").producesErrorPage();
     }
 
     @Test
     public void indexControllerParamAnnotationTest6_WithError2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bool")
+        assertThatRequestFor("/index/param-annotation-bool")
             .producesPage()
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from false"));
@@ -326,7 +326,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestIntCollection() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-ints&p1=123&p1=456&p1=789&p1=321")
+        assertThatRequestFor("/index/param-annotation-ints?p1=123&p1=456&p1=789&p1=321")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 123, 456, 789, 321"));
@@ -335,7 +335,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestStringCollection() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-strings&p1=abc&p1=def&p1=ghi&p1=jkl")
+        assertThatRequestFor("/index/param-annotation-strings?p1=abc&p1=def&p1=ghi&p1=jkl")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from abc, def, ghi, jkl"));
@@ -344,7 +344,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestDoubleCollection() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-doubles&p1=1.1&p1=2.2&p1=3.3&p1=4.4")
+        assertThatRequestFor("/index/param-annotation-doubles?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 1.1, 2.2, 3.3, 4.4"));
@@ -353,7 +353,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestDateCollection() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-dates&"
+        assertThatRequestFor("/index/param-annotation-dates?"
                 + "p1=2011-03-01&p1=2010-02-09&p1=2009-11-23&p1=2008-05-03")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
@@ -363,7 +363,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerParamAnnotationTestBooleanCollection() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=param-annotation-bools&p1=t&p1=false&p1=f&p1=1")
+        assertThatRequestFor("/index/param-annotation-bools?p1=t&p1=false&p1=f&p1=1")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from true, false, false, true"));
@@ -372,7 +372,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerInjectedAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=injected")
+        assertThatRequestFor("/index/injected")
             .producesPage()
             .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
             .withH2Tag(withContent("Hello from injected-index"));
@@ -381,7 +381,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void indexControllerTestInitAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=index&a=test-init")
+        assertThatRequestFor("/index/test-init")
             .producesPage()
             .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
             .withH2Tag(withContent("Hello from init-called"));
@@ -390,7 +390,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void formController() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=form-controller")
+        assertThatRequestFor("/form-controller")
             .afterSubmittingForm("test-form", 
                     withValueFor("userName").setTo("john"),
                     withValueFor("password").setTo("doe"))
@@ -402,7 +402,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void formControllerWithRegularParam() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=form-controller&a=form2")
+        assertThatRequestFor("/form-controller/form2")
             .afterSubmittingForm("test-form", 
                     withValueFor("userName").setTo("john"),
                     withValueFor("password").setTo("doe"))
@@ -415,7 +415,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void formControllerSubmittable() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=form-controller&a=form3")
+        assertThatRequestFor("/form-controller/form3")
             .afterSubmittingForm("test-form", 
                     withValueFor("userName").setTo("john"),
                     withValueFor("password").setTo("doe"))
@@ -427,7 +427,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void formControllerPopulated() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=form-controller&a=populated")
+        assertThatRequestFor("/form-controller/populated")
             .producesPage()
             .withElement("userName", withAttribute("value").setTo("uname"))
             .withElement("password", withAttribute("value").setTo("pswd"));
@@ -436,7 +436,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void formControllerWithBooleanTrue() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=form-controller&a=form4")
+        assertThatRequestFor("/form-controller/form4")
             .afterSubmittingForm("test-form", withCheckBox("someFlag").checked())
             .producesPage()
             .withFlagElement(withContent("true"));
@@ -445,7 +445,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void formControllerWithBooleanFalse() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=form-controller&a=form4")
+        assertThatRequestFor("/form-controller/form4")
             .afterSubmittingForm("test-form")
             .producesPage()
             .withFlagElement(withContent("false"));
@@ -454,7 +454,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void redirectingController() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=redirecting&a=redirect")
+        assertThatRequestFor("/redirecting/redirect")
             .producesPage()
             .withH1Tag(withContent("redirected!"));
     }
@@ -462,7 +462,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void redirectingController2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=redirecting2&a=doSomething")
+        assertThatRequestFor("/redirecting2/doSomething")
             .producesPage()
             .withH1Tag(withContent("redirected!"));
     }
@@ -470,7 +470,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void streamingControllerXML() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=stream&a=xml")
+        assertThatRequestFor("/stream/xml")
             .producesPage()
             .withContentType("application/xml")
             .withContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?><Test><hello/></Test>");
@@ -479,7 +479,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void streamingControllerJSON() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=stream&a=json")
+        assertThatRequestFor("/stream/json")
             .producesPage()
             .withContentType("application/json")
             .withContent("{\"Test\":{\"hello\": 1}}");
@@ -488,7 +488,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void streamingController2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=stream2&a=doSomething")
+        assertThatRequestFor("/stream2/doSomething")
             .producesPage()
             .withContentType("application/xml")
             .withContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?><Test><hello/></Test>");
@@ -497,7 +497,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void streamingController3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=stream3&a=doSomething")
+        assertThatRequestFor("/stream3/doSomething")
             .producesPage()
             .withContentType("application/xml")
             .withContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?><Test><hello/></Test>");
@@ -506,7 +506,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void dispatchingController() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=dispatching&a=doSomething")
+        assertThatRequestFor("/dispatching/doSomething")
             .producesPage()
             .withH2Tag(withContent("Hello from dispatched"));
     }
@@ -514,7 +514,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someStatefulControllerDefaultAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-stateful")
+        assertThatRequestFor("/some-stateful")
             .producesPage()
             .withH1Tag(withContent("This is the index.jsp file of the IndexController defaultAction!"));
     }
@@ -522,7 +522,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someStatefulControllerSomeAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-stateful&a=some-action")
+        assertThatRequestFor("/some-stateful/some-action")
             .producesPage()
             .withH1Tag(withContent("This is the stateful.jsp file of the SomeStatefulController someAction!"));
     }
@@ -530,12 +530,12 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someStatefulControllerVarAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-stateful&a=set-var&var=statetest")
+        assertThatRequestFor("/some-stateful/set-var?var=statetest")
             .producesPage()
             .withH1Tag(withContent("This is the stateful.jsp file of the SomeStatefulController someAction!"));
 
         /* make a second request */
-        assertThatRequestFor("/mvctest?c=some-stateful&a=get-var")
+        assertThatRequestFor("/some-stateful/get-var")
             .producesPage()
             .withH2Tag(withContent("Hello from statetest"));
     }
@@ -543,13 +543,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someStatefulControllerVarAction2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-stateful&a=set-var&var=statetest")
+        assertThatRequestFor("/some-stateful/set-var?var=statetest")
             .producesPage()
             .withH1Tag(withContent("This is the stateful.jsp file of the SomeStatefulController someAction!"));
 
         /* make a second request with a new client, creating a new session */
         newWebClient();
-        assertThatRequestFor("/mvctest?c=some-stateful&a=get-var")
+        assertThatRequestFor("/some-stateful/get-var")
             .producesPage()
             .withH2Tag(withContent("Hello from null")); /* no state stored */
     }
@@ -563,10 +563,10 @@ public class TestFrontController extends AbstractWebTest {
          * by calling toString() in the request instance.
          */
 
-        String hexHashcode1 = makeRequestFor("/mvctest?c=some-stateful&a=get-req").andGetH2TagContent();
+        String hexHashcode1 = makeRequestFor("/some-stateful/get-req").andGetH2TagContent();
 
         /* make a second request */
-        String hexHashcode2 = makeRequestFor("/mvctest?c=some-stateful&a=get-req").andGetH2TagContent();
+        String hexHashcode2 = makeRequestFor("/some-stateful/get-req").andGetH2TagContent();
 
         /* check that a new servlet resource was injected */
         assertFalse(hexHashcode1.equals(hexHashcode2));
@@ -581,10 +581,10 @@ public class TestFrontController extends AbstractWebTest {
          * toString() in the request instance.
          */
 
-        String hexHashcode1 = makeRequestFor("/mvctest?c=some-stateful&a=get-inj").andGetH2TagContent();
+        String hexHashcode1 = makeRequestFor("/some-stateful/get-inj").andGetH2TagContent();
 
         /* make a second request */
-        String hexHashcode2 = makeRequestFor("/mvctest?c=some-stateful&a=get-inj").andGetH2TagContent();
+        String hexHashcode2 = makeRequestFor("/some-stateful/get-inj").andGetH2TagContent();
 
         /* check that a new @Inject dependency was injected */
         assertFalse(hexHashcode1.equals(hexHashcode2));
@@ -593,7 +593,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someStatefulControllerTestInitAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-stateful&a=test-init")
+        assertThatRequestFor("/some-stateful/test-init")
             .producesPage()
             .withH2Tag(withContent("Hello from init-called: 1"));
 
@@ -601,7 +601,7 @@ public class TestFrontController extends AbstractWebTest {
          * test that init() is called only once after construction, and not per
          * request
          */
-        assertThatRequestFor("/mvctest?c=some-stateful&a=test-init")
+        assertThatRequestFor("/some-stateful/test-init")
             .producesPage()
             .withH2Tag(withContent("Hello from init-called: 1"));
     }
@@ -609,7 +609,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void injectableControllerTestAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=injectable&a=test&var=inj")
+        assertThatRequestFor("/injectable/test?var=inj")
             .producesPage()
             .withH1Tag(withContent("This is the injectable.jsp file of the InjectableController testAction!"))
             .withH2Tag(withContent("injected-inj"));
@@ -618,7 +618,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someSingletonControllerSomeAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-singleton&a=some-action")
+        assertThatRequestFor("/some-singleton/some-action")
             .producesPage()
             .withH1Tag(withContent("This is the singleton.jsp file of the SomeSingletonController someAction!"));
     }
@@ -626,12 +626,12 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someSingletonControllerVarAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-singleton&a=set-var&var=statetest")
+        assertThatRequestFor("/some-singleton/set-var?var=statetest")
             .producesPage()
             .withH1Tag(withContent("This is the singleton.jsp file of the SomeSingletonController someAction!"));
 
         /* make a second request */
-        assertThatRequestFor("/mvctest?c=some-singleton&a=get-var")
+        assertThatRequestFor("/some-singleton/get-var")
             .producesPage()
             .withH2Tag(withContent("Hello from statetest"));
     }
@@ -639,13 +639,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void someSingletonControllerVarAction2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=some-singleton&a=set-var&var=statetest")
+        assertThatRequestFor("/some-singleton/set-var?var=statetest")
             .producesPage()
             .withH1Tag(withContent("This is the singleton.jsp file of the SomeSingletonController someAction!"));
 
         /* make a second request with a new client */
         newWebClient();
-        assertThatRequestFor("/mvctest?c=some-singleton&a=get-var")
+        assertThatRequestFor("/some-singleton/get-var")
             .producesPage()
             .withH2Tag(withContent("Hello from statetest"));
     }
@@ -659,10 +659,10 @@ public class TestFrontController extends AbstractWebTest {
          * by calling toString() in the request instance.
          */
 
-        String hexHashcode1 = makeRequestFor("/mvctest?c=some-singleton&a=get-req").andGetH2TagContent();
+        String hexHashcode1 = makeRequestFor("/some-singleton/get-req").andGetH2TagContent();
 
         /* make a second request */
-        String hexHashcode2 = makeRequestFor("/mvctest?c=some-singleton&a=get-req").andGetH2TagContent();
+        String hexHashcode2 = makeRequestFor("/some-singleton/get-req").andGetH2TagContent();
 
         /* check that a new servlet resource was injected */
         assertFalse(hexHashcode1.equals(hexHashcode2));
@@ -677,10 +677,10 @@ public class TestFrontController extends AbstractWebTest {
          * toString() in the request instance.
          */
 
-        String hexHashcode1 = makeRequestFor("/mvctest?c=some-singleton&a=get-inj").andGetH2TagContent();
+        String hexHashcode1 = makeRequestFor("/some-singleton/get-inj").andGetH2TagContent();
 
         /* make a second request */
-        String hexHashcode2 = makeRequestFor("/mvctest?c=some-singleton&a=get-inj").andGetH2TagContent();
+        String hexHashcode2 = makeRequestFor("/some-singleton/get-inj").andGetH2TagContent();
 
         /* check that a new @Inject dependency was injected */
         assertFalse(hexHashcode1.equals(hexHashcode2));
@@ -701,7 +701,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void beforeControllerIndexAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=before&a=index")
+        assertThatRequestFor("/before/index")
             .producesPage()
             .withH1Tag(withContent("This is the before.jsp file of the BeforeController beforeAction!"));
     }
@@ -709,7 +709,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void afterControllerIndexAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=after&a=index")
+        assertThatRequestFor("/after/index")
             .producesPage()
             .withH1Tag(withContent("This is the after.jsp file of the AfterController afterAction!"));
     }
@@ -717,7 +717,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void beforeWithContextControllerIndexAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=beforectx&a=index&p1=testctx")
+        assertThatRequestFor("/beforectx/index?p1=testctx")
             .producesPage()
             .withH2Tag(withContent("Hello from testctx"));
     }
@@ -725,7 +725,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void afterWithContextControllerIndexAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=afterctx&a=index&p1=testctx")
+        assertThatRequestFor("/afterctx/index?p1=testctx")
             .producesPage()
             .withH2Tag(withContent("Hello from testctx"));
     }
@@ -733,7 +733,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void afterWithContextControllerDefaultAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=afterctx2")
+        assertThatRequestFor("/afterctx2")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -741,7 +741,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void beforeWithModelControllerIndexAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=beforectx2&a=index&userName=john&password=doe")
+        assertThatRequestFor("/beforectx2/index?userName=john&password=doe")
             .producesPage()
             .withH2Tag(withContent("Hello from john doe"));
     }
@@ -753,7 +753,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController1.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted1&a=some-action")
+        assertThatRequestFor("/intercepted1/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -770,7 +770,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController2.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted2&a=some-action")
+        assertThatRequestFor("/intercepted2/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -787,7 +787,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController2.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted2")
+        assertThatRequestFor("/intercepted2")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -805,7 +805,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted3&a=some-action")
+        assertThatRequestFor("/intercepted3/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -825,7 +825,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted4&a=some-action")
+        assertThatRequestFor("/intercepted4/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -845,7 +845,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted4")
+        assertThatRequestFor("/intercepted4")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -864,7 +864,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController1.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted1")
+        assertThatRequestFor("/intercepted1")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -882,7 +882,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted3")
+        assertThatRequestFor("/intercepted3")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -902,7 +902,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted5")
+        assertThatRequestFor("/intercepted5")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -922,7 +922,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted5&a=some-action")
+        assertThatRequestFor("/intercepted5/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -941,7 +941,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController6.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
         
-        assertThatRequestFor("/mvctest?c=intercepted6")
+        assertThatRequestFor("/intercepted6")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -956,7 +956,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController7.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted7&a=some-action")
+        assertThatRequestFor("/intercepted7/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -974,7 +974,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted8")
+        assertThatRequestFor("/intercepted8")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -1000,7 +1000,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted8&a=some-action")
+        assertThatRequestFor("/intercepted8/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -1026,7 +1026,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted9")
+        assertThatRequestFor("/intercepted9")
             .producesPage()
             .withH2Tag(withContent("Hello from defaultAction"));
 
@@ -1054,7 +1054,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted9&a=some-action")
+        assertThatRequestFor("/intercepted9/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -1079,7 +1079,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController10.invocationList = invocationList;
         Interceptor4.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted10&a=some-action")
+        assertThatRequestFor("/intercepted10/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -1095,7 +1095,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController11.invocationList = invocationList;
         Interceptor9.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted11&a=some-action")
+        assertThatRequestFor("/intercepted11/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from someAction"));
 
@@ -1107,7 +1107,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController12InterceptedBeforeAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=intercepted-before")
+        assertThatRequestFor("/intercepted12/intercepted-before")
             .producesPage()
                 .withH2Tag(withContent("Hello from interceptor5-beforeAction:req:resp:sess:someService"));
     }
@@ -1115,7 +1115,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController12InterceptedAfterAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=intercepted-after")
+        assertThatRequestFor("/intercepted12/intercepted-after")
             .producesPage()
             .withH2Tag(withContent("Hello from interceptor7-afterAction:req:resp:sess:someService"));
     }
@@ -1127,7 +1127,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController12.invocationList = invocationList;
         Interceptor6.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=intercepted-before2")
+        assertThatRequestFor("/intercepted12/intercepted-before2")
             .producesPage()
             .withH2Tag(withContent("Hello from interceptedBefore2"));
 
@@ -1143,7 +1143,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController12.invocationList = invocationList;
         Interceptor8.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=intercepted-after2")
+        assertThatRequestFor("/intercepted12/intercepted-after2")
             .producesPage()
             .withH2Tag(withContent("Hello from interceptedAfter2"));
 
@@ -1159,7 +1159,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController12.invocationList = invocationList;
         Interceptor2.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=some-action")
+        assertThatRequestFor("/intercepted12/some-action")
             .producesPage()
             .withH2Tag(withContent("Hello from interceptor2-beforeAction:req:resp:sess:someService"));
 
@@ -1173,7 +1173,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController12.invocationList = invocationList;
         Interceptor3.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=some-action2")
+        assertThatRequestFor("/intercepted12/some-action2")
             .producesPage()
             .withH2Tag(withContent("Hello from interceptor3-afterAction:req:resp:sess:someService"));
 
@@ -1189,7 +1189,7 @@ public class TestFrontController extends AbstractWebTest {
         InterceptedController12.invocationList = invocationList;
         Interceptor10.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted12&a=param&p1=test")
+        assertThatRequestFor("/intercepted12/param?p1=test")
             .producesPage()
             .withH2Tag(withContent("Hello from test"));
 
@@ -1202,15 +1202,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void defaultActionWithArgs() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=default-args&p1=test")
-            .producesPage()
-            .withH2Tag(withContent("Hello from test"));
-    }
-
-    @Test
-    public void defaultControllerWithAction() throws Exception {
-
-        assertThatRequestFor("/mvctest?a=with-param&var=test")
+        assertThatRequestFor("/default-args?p1=test")
             .producesPage()
             .withH2Tag(withContent("Hello from test"));
     }
@@ -1218,7 +1210,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void classNameController() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=ClassNameController&a=sayHello&name=John")
+        assertThatRequestFor("/ClassNameController/sayHello?name=John")
             .producesPage()
             .withH2Tag(withContent("Hello from classNameControllerAction:John"));
     }
@@ -1226,7 +1218,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodGET() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "httpmethod1"))
+        assertThatPOSTRequestFor("/httpmethod1")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1234,7 +1226,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodGET2() throws Exception {
 
-        assertThatGETRequestFor("/mvctest?c=httpmethod1")
+        assertThatGETRequestFor("/httpmethod1")
             .producesPage()
             .withH2Tag(withContent("Hello from get"));
     }
@@ -1242,13 +1234,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodGET3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod1&a=sayHello").producesErrorPage();
+        assertThatRequestFor("/httpmethod1/sayHello").producesErrorPage();
     }
 
     @Test
     public void httpMethodPOST() throws Exception {
 
-        assertThatGETRequestFor("/mvctest?c=httpmethod2")
+        assertThatGETRequestFor("/httpmethod2")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1256,7 +1248,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodPOST2() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "httpmethod2"))
+        assertThatPOSTRequestFor("/httpmethod2")
             .producesPage()
             .withH2Tag(withContent("Hello from post"));
     }
@@ -1264,13 +1256,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodPOST3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod2&a=sayHello").producesErrorPage();
+        assertThatRequestFor("/httpmethod2/sayHello").producesErrorPage();
     }
 
     @Test
     public void httpMethodPUT() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod3")
+        assertThatRequestFor("/httpmethod3")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1278,7 +1270,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodPUT2() throws Exception {
 
-        assertThatPUTRequestFor("/mvctest?c=httpmethod3")
+        assertThatPUTRequestFor("/httpmethod3")
             .producesPage()
             .withH2Tag(withContent("Hello from put"));
     }
@@ -1286,13 +1278,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodPUT3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod3&a=doPutAction").producesErrorPage();
+        assertThatRequestFor("/httpmethod3/doPutAction").producesErrorPage();
     }
 
     @Test
     public void httpMethodHEAD() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod4")
+        assertThatRequestFor("/httpmethod4")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1300,19 +1292,19 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodHEAD2() throws Exception {
         
-        assertThatHEADRequestFor("/mvctest?c=httpmethod4").succeeds();
+        assertThatHEADRequestFor("/httpmethod4").succeeds();
     }
 
     @Test
     public void httpMethodHEAD3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod4&a=doHeadAction").producesErrorPage();
+        assertThatRequestFor("/httpmethod4/doHeadAction").producesErrorPage();
     }
 
     @Test
     public void httpMethodTRACE() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod5")
+        assertThatRequestFor("/httpmethod5")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1320,13 +1312,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodTRACE2() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod5&a=doTraceAction").producesErrorPage();
+        assertThatRequestFor("/httpmethod5/doTraceAction").producesErrorPage();
     }
 
     @Test
     public void httpMethodDELETE() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod6")
+        assertThatRequestFor("/httpmethod6")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1334,7 +1326,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodDELETE2() throws Exception {
 
-        assertThatDELETERequestFor("/mvctest?c=httpmethod6")
+        assertThatDELETERequestFor("/httpmethod6")
             .producesPage()
             .withH2Tag(withContent("Hello from delete"));
     }
@@ -1342,13 +1334,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodDELETE3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod6&a=doDeleteAction").producesErrorPage();
+        assertThatRequestFor("/httpmethod6/doDeleteAction").producesErrorPage();
     }
 
     @Test
     public void httpMethodOPTIONS() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod7")
+        assertThatRequestFor("/httpmethod7")
             .producesPage()
             .withH2Tag(withContent("Hello from default"));
     }
@@ -1356,7 +1348,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodOPTIONS2() throws Exception {
 
-        assertThatOPTIONSRequestFor("/mvctest?c=httpmethod7")
+        assertThatOPTIONSRequestFor("/httpmethod7")
             .producesPage()
             .withH2Tag(withContent("Hello from options"));
     }
@@ -1364,13 +1356,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodOPTIONS3() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=httpmethod7&a=doOptionsAction").producesErrorPage();
+        assertThatRequestFor("/httpmethod7/doOptionsAction").producesErrorPage();
     }
 
     @Test
     public void httpMethodMulti() throws Exception {
 
-        assertThatGETRequestFor("/mvctest?c=httpmethod8")
+        assertThatGETRequestFor("/httpmethod8")
             .producesPage()
             .withH2Tag(withContent("Hello from multi"));
     }
@@ -1378,7 +1370,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodMulti2() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "httpmethod8"))
+        assertThatPOSTRequestFor("/httpmethod8")
             .producesPage()
             .withH2Tag(withContent("Hello from multi"));
     }
@@ -1386,7 +1378,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodMulti3() throws Exception {
 
-        assertThatGETRequestFor("/mvctest?c=httpmethod8&a=sayHello")
+        assertThatGETRequestFor("/httpmethod8/sayHello")
             .producesPage()
             .withH2Tag(withContent("Hello from sayHello"));
     }
@@ -1394,9 +1386,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void httpMethodMulti4() throws Exception {
         
-        assertThatPOSTRequestFor("/mvctest", 
-                withParam("c", "httpmethod8"),
-                withParam("a", "sayHello"))
+        assertThatPOSTRequestFor("/httpmethod8/sayHello")
             .producesPage()
             .withH2Tag(withContent("Hello from sayHello"));
     }
@@ -1404,7 +1394,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController13NoAction() throws Exception {
 
-        assertThatRequestFor("/mvctest?c=intercepted13").producesErrorPage();
+        assertThatRequestFor("/intercepted13").producesErrorPage();
     }
 
     @Test
@@ -1415,7 +1405,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted13"))
+        assertThatPOSTRequestFor("/intercepted13")
             .producesPage()
             .withH2Tag(withContent("Hello from postAction"));
 
@@ -1430,7 +1420,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController14NoAction() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted14")).producesErrorPage();
+        assertThatPOSTRequestFor("/intercepted14").producesErrorPage();
     }
 
     @Test
@@ -1441,7 +1431,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatRequestFor("/mvctest?c=intercepted14")
+        assertThatRequestFor("/intercepted14")
             .producesPage()
             .withH2Tag(withContent("Hello from getAction"));
 
@@ -1456,7 +1446,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController15NoAction() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted15")).producesErrorPage();
+        assertThatPOSTRequestFor("/intercepted15").producesErrorPage();
     }
 
     @Test
@@ -1467,7 +1457,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatPUTRequestFor("/mvctest?c=intercepted15")
+        assertThatPUTRequestFor("/intercepted15")
             .producesPage()
             .withH2Tag(withContent("Hello from putAction"));
 
@@ -1482,13 +1472,13 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController16NoAction() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted16")).producesErrorPage();
+        assertThatPOSTRequestFor("/intercepted16").producesErrorPage();
     }
 
     @Test
     public void interceptedController17NoAction() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted17")).producesErrorPage();
+        assertThatPOSTRequestFor("/intercepted17").producesErrorPage();
     }
 
     @Test
@@ -1499,7 +1489,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatHEADRequestFor("/mvctest?c=intercepted17").succeeds();
+        assertThatHEADRequestFor("/intercepted17").succeeds();
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1512,7 +1502,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController18NoAction() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted18")).producesErrorPage();
+        assertThatPOSTRequestFor("/intercepted18").producesErrorPage();
     }
 
     @Test
@@ -1523,7 +1513,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatOPTIONSRequestFor("/mvctest?c=intercepted18")
+        assertThatOPTIONSRequestFor("/intercepted18")
             .producesPage()
             .withH2Tag(withContent("Hello from optionsAction"));
 
@@ -1538,7 +1528,7 @@ public class TestFrontController extends AbstractWebTest {
     @Test
     public void interceptedController19NoAction() throws Exception {
 
-        assertThatPOSTRequestFor("/mvctest", withParam("c", "intercepted19")).producesErrorPage();
+        assertThatPOSTRequestFor("/intercepted19").producesErrorPage();
     }
 
     @Test
@@ -1549,7 +1539,7 @@ public class TestFrontController extends AbstractWebTest {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        assertThatDELETERequestFor("/mvctest?c=intercepted19")
+        assertThatDELETERequestFor("/intercepted19")
             .producesPage()
             .withH2Tag(withContent("Hello from deleteAction"));
 

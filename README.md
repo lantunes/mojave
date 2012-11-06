@@ -14,4 +14,85 @@ Mojave MVC incorporates the Google Guice framework. All user components in the a
 be configured with injectable dependencies, through use of the standard @Inject annotation. 
 Injection is configured through user-supplied Guice Modules, using only idiomatic Java.
 
-Learn more: http://mojavemvc.org
+# Getting Started
+===================
+
+Download the Mojave jar, which includes all dependencies:
+
+    http://mojavemvc.org/downloads
+
+Create a java web application project, and add the downloaded jar to the WEB-INF/lib folder. Also,
+add the following web.xml:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" 
+xmlns="http://java.sun.com/xml/ns/j2ee" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+ 
+  <display-name>HelloWorld</display-name>
+ 
+  <servlet>
+    <servlet-name>FrontController</servlet-name>
+    <servlet-class>org.mojavemvc.FrontController</servlet-class>
+    <init-param>
+      <param-name>controller-classes</param-name>
+      <param-value>helloworld.controllers</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jsp-path</param-name>
+      <param-value>/WEB-INF/jsp/</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FrontController</servlet-name>
+    <url-pattern>/serv/*</url-pattern>
+  </servlet-mapping>
+   
+</web-app>
+```
+
+Next, create controller class:
+
+```java
+package helloworld.controllers;
+ 
+import org.mojavemvc.annotations.Action;
+import org.mojavemvc.annotations.Param;
+import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.View;
+ 
+@StatelessController
+public class HelloWorld {
+ 
+  @Action
+  public View sayHello(@Param("name") String name) {
+ 
+    return new JspView("hello.jsp").withAttribute("name", name);
+  }
+}
+```
+
+Finally, create a jsp file, and add it to WEB-INF/jsp:
+
+```html
+<html>
+  <body>
+    <p>Hello <%=request.getAttribute("name") %>!</p>
+  </body>
+</html>
+```
+
+Deploy your war file (assuming it's called app.war), and in a browser, go to:
+
+    http://localhost:8080/app/serv/HelloWorld/sayHello?name=John
+    
+In a browser, you should see the following response:
+
+    Hello John!
+
+Learn more: http://mojavemvc.org/documentation

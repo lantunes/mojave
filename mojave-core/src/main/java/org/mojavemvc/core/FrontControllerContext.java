@@ -15,12 +15,12 @@
  */
 package org.mojavemvc.core;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FrontControllerContext implements ControllerContext {
 
-    private final Map<String, Object> attributes = new HashMap<String, Object>();
+    private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
     @Override
     public Object getAttribute(String name) {

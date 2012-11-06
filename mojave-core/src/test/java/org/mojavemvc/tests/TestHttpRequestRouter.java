@@ -100,10 +100,10 @@ public class TestHttpRequestRouter {
     }
     
     @Test
-    public void handlesControllerAndActionWithQueryString() {
+    public void handlesControllerAndAction2() {
         
         HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getPathInfo()).thenReturn("/cntrl/actn?var=x");
+        when(req.getPathInfo()).thenReturn("/cntrl/actn/unknown");
         
         HttpRequestRouter router = new HttpRequestRouter(req);
         

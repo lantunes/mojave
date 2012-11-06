@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 public class HttpRequestRouter implements RequestRouter {
 
     private static final String SEPARATOR = "/";
-    private static final String QUERY_STRING = "?";
     
     private final HttpServletRequest req;
     
@@ -45,9 +44,6 @@ public class HttpRequestRouter implements RequestRouter {
                 controller = pathTokens[1];
                 if (pathTokens.length > 2) {
                     action = pathTokens[2];
-                    if (action.contains(QUERY_STRING)) {
-                        action = action.substring(0, action.indexOf(QUERY_STRING));
-                    }
                 }
             }
         }

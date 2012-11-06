@@ -19,9 +19,9 @@ Injection is configured through user-supplied Guice Modules, using only idiomati
 
 Download the Mojave jar, which includes all dependencies:
 
-    http://mojavemvc.org/downloads
+http://mojavemvc.org/downloads
 
-Create a java web application project, and add the downloaded jar to the WEB-INF/lib folder. Also,
+Create a Java web application project, and add the downloaded jar to the WEB-INF/lib folder. Also,
 add the following web.xml:
 
 ```xml
@@ -55,7 +55,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 </web-app>
 ```
 
-Next, create controller class:
+Next, create a controller class:
 
 ```java
 package helloworld.controllers;
@@ -77,9 +77,9 @@ public class HelloWorld {
 }
 ```
 
-Finally, create a jsp file, and add it to WEB-INF/jsp:
+Finally, create a JSP file, and add it to WEB-INF/jsp:
 
-```html
+```jsp
 <html>
   <body>
     <p>Hello <%=request.getAttribute("name") %>!</p>

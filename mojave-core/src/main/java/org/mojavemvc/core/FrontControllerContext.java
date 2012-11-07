@@ -18,6 +18,11 @@ package org.mojavemvc.core;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * And instance of this class is thread-safe. 
+ * 
+ * @author Luis Antunes
+ */
 public class FrontControllerContext implements ControllerContext {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();

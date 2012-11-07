@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * http://...?cntrl=some-controller&actn=sayHello
+ * http://.../some-controller/sayHello
  * </pre>
  * 
  * <p>
@@ -66,7 +66,7 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * http://...?cntrl=some-controller&actn=say-hello
+ * http://.../some-controller/say-hello
  * </pre>
  * 
  * <p>

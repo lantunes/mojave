@@ -51,12 +51,12 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * http://...?cntrl=test
+ * http://.../test
  * </pre>
  * 
  * <p>
- * Note that we cannot invoke the default action method by supplying
- * "actn=defaultAction" in the query string above.
+ * Note that we cannot invoke the default action method by appending
+ * "/defaultAction" to the path above.
  * </p>
  * 
  * @author Luis Antunes

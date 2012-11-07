@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * &#064;StatelessController(&quot;test&quot;)
  * public class SomeController {
  * 
- *     &#064;Action(&quot;some-action&quot;)
+ *     &#064;DefaultAction
  *     public View someAction() {
  *         return new View(&quot;test.jsp&quot;);
  *     }
@@ -44,15 +44,15 @@ import java.lang.annotation.Target;
  * </pre>
  * 
  * <p>
- * We can invoke the "some-action" method by making the following request:
+ * We can invoke the someAction method by making the following request:
  * </p>
  * 
  * <pre>
- * http://...?actn=some-action
+ * http://.../
  * </pre>
  * 
  * <p>
- * Since there was no controller variable supplied, the default controller was
+ * Since there was no controller name supplied, the default controller was
  * used as the controller for the request.
  * </p>
  * 

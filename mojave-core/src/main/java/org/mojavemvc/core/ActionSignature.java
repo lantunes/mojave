@@ -24,13 +24,13 @@ import java.util.Map;
  */
 public interface ActionSignature {
 
-    public String methodName();
+    String methodName();
 
-    public Class<?>[] parameterTypes();
+    Class<?>[] parameterTypes();
 
-    public int fastIndex();
+    int fastIndex();
 
-    public List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action);
+    List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action);
 
-    public Object[] getArgs(Map<String, ?> parametersMap);
+    Object[] getArgs(Map<String, ?> parametersMap);
 }

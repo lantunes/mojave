@@ -52,5 +52,5 @@ public interface ErrorHandlerFactory {
      * 
      * @return an instance of an ErrorHandler
      */
-    public ErrorHandler createErrorHandler();
+    ErrorHandler createErrorHandler();
 }

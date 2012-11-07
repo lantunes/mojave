@@ -17,5 +17,5 @@ package org.mojavemvc.tests.controllers;
 
 public interface IInjectableController {
 
-    public String process(String arg);
+    String process(String arg);
 }

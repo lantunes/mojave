@@ -21,5 +21,5 @@ package org.mojavemvc.tests.services;
  */
 public interface SomeService {
 
-    public String answerRequest(String param);
+    String answerRequest(String param);
 }

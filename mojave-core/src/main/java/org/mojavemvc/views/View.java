@@ -55,5 +55,5 @@ public interface View {
      * @throws ServletException
      * @throws IOException
      */
-    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

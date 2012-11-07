@@ -41,5 +41,5 @@ public interface ErrorHandler {
      *            the Throwable thrown during action processing
      * @return a View that will be rendered instead
      */
-    public View handleError(Throwable e);
+    View handleError(Throwable e);
 }

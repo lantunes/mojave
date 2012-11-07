@@ -34,7 +34,7 @@ public interface ControllerDatabase {
      * @param controllerVariable
      * @return the controller class associated with the variable name
      */
-    public Class<?> getControllerClass(String controllerVariable);
+    Class<?> getControllerClass(String controllerVariable);
 
     /**
      * Get the ActionSignature associated with the given controller class.
@@ -46,7 +46,7 @@ public interface ControllerDatabase {
      *            the request action
      * @return the ActionSignature associated with the controller class
      */
-    public ActionSignature getActionMethodSignature(Class<?> controllerClass, String action);
+    ActionSignature getActionMethodSignature(Class<?> controllerClass, String action);
 
     /**
      * Get the ActionSignature annotated with @BeforeAction for the given
@@ -57,7 +57,7 @@ public interface ControllerDatabase {
      * @return the ActionSignature, or null if there is no ActionSignature
      *         annotated with @BeforeAction
      */
-    public ActionSignature getBeforeActionMethodFor(Class<?> controllerClass);
+    ActionSignature getBeforeActionMethodFor(Class<?> controllerClass);
 
     /**
      * Get the ActionSignature annotated with @AfterAction for the given
@@ -68,7 +68,7 @@ public interface ControllerDatabase {
      * @return the ActionSignature, or null if there is no ActionSignature
      *         annotated with @AfterAction
      */
-    public ActionSignature getAfterActionMethodFor(Class<?> controllerClass);
+    ActionSignature getAfterActionMethodFor(Class<?> controllerClass);
 
     /**
      * Get the ActionSignature annotated with @DefaultAction for the given
@@ -78,7 +78,7 @@ public interface ControllerDatabase {
      *            the controller class
      * @return the ActionSignature, or null if there is no method annotated with @DefaultAction
      */
-    public ActionSignature getDefaultActionMethodFor(Class<?> controllerClass);
+    ActionSignature getDefaultActionMethodFor(Class<?> controllerClass);
 
     /**
      * Get the ActionSignature annotated with @AfterConstruct for the given
@@ -89,7 +89,7 @@ public interface ControllerDatabase {
      * @return the ActionSignature, or null if there is no ActionSignature
      *         annotated with @AfterConstruct
      */
-    public ActionSignature getAfterConstructMethodFor(Class<?> controllerClass);
+    ActionSignature getAfterConstructMethodFor(Class<?> controllerClass);
 
     /**
      * Get an unmodifiable set of singleton conroller classes that are marked
@@ -97,7 +97,7 @@ public interface ControllerDatabase {
      * 
      * @return the singleton controller class
      */
-    public Set<Class<?>> getInitControllers();
+    Set<Class<?>> getInitControllers();
 
     /**
      * Get an unmodifiable list of Classes that represent interceptors for the
@@ -108,7 +108,7 @@ public interface ControllerDatabase {
      *            the controller class
      * @return the classes of interceptors associated with the given class
      */
-    public List<Class<?>> getInterceptorsFor(Class<?> controllerClass);
+    List<Class<?>> getInterceptorsFor(Class<?> controllerClass);
 
     /**
      * Get the ActionSignature annotated with @AfterAction for the given
@@ -119,7 +119,7 @@ public interface ControllerDatabase {
      * @return the ActionSignature, or null if there is no ActionSignature
      *         annotated with @AfterAction
      */
-    public ActionSignature getAfterActionMethodForInterceptor(Class<?> interceptorClass);
+    ActionSignature getAfterActionMethodForInterceptor(Class<?> interceptorClass);
 
     /**
      * Get the ActionSignature annotated with @BeforeAction for the given
@@ -130,7 +130,7 @@ public interface ControllerDatabase {
      * @return the ActionSignature, or null if there is no ActionSignature
      *         annotated with @BeforeAction
      */
-    public ActionSignature getBeforeActionMethodForInterceptor(Class<?> interceptorClass);
+    ActionSignature getBeforeActionMethodForInterceptor(Class<?> interceptorClass);
 
     /**
      * Get the default controller for the application, if specified.
@@ -138,7 +138,7 @@ public interface ControllerDatabase {
      * @return the default controller class, or null if no @DefaultController is
      *         specified
      */
-    public Class<?> getDefaultControllerClass();
+    Class<?> getDefaultControllerClass();
 
     /**
      * Get an unmodifiable list of Classes that represent interceptors for the
@@ -152,7 +152,7 @@ public interface ControllerDatabase {
      * @return an unmodifiable List of interceptor classes in the order in which
      *         they are declared, or null if there are no interceptors
      */
-    public List<Class<?>> getInterceptorsForAction(Class<?> controllerClass, String action);
+    List<Class<?>> getInterceptorsForAction(Class<?> controllerClass, String action);
 
     /**
      * Get an unmodifiable list of Classes that represent interceptors for the
@@ -164,7 +164,7 @@ public interface ControllerDatabase {
      * @return an unmodifiable List of interceptor classes in the order in which
      *         they are declared
      */
-    public List<Class<?>> getInterceptorsForDefaultAction(Class<?> controllerClass);
+    List<Class<?>> getInterceptorsForDefaultAction(Class<?> controllerClass);
 
     /**
      * Get an unmodifiable list of Classes that represent interceptors for the
@@ -178,7 +178,7 @@ public interface ControllerDatabase {
      * @return an unmodifiable List of interceptor classes in the order in which
      *         they are declared, or null if there are no interceptors
      */
-    public List<Class<?>> getInterceptorsForHttpMethodAction(Class<?> controllerClass, HttpMethod httpMethod);
+    List<Class<?>> getInterceptorsForHttpMethodAction(Class<?> controllerClass, HttpMethod httpMethod);
 
     /**
      * Get the cached FastClass version of the given controller or interceptor
@@ -188,7 +188,7 @@ public interface ControllerDatabase {
      *            the controller or interceptor class
      * @return the FastClass version of the class
      */
-    public FastClass getFastClass(Class<?> clazz);
+    FastClass getFastClass(Class<?> clazz);
 
     /**
      * Get the HTTP method ActionSignature associated with the given controller
@@ -201,5 +201,5 @@ public interface ControllerDatabase {
      * @return the ActionSignature associated with the controller class, or null
      *         if there is no Action for the given HttpMethod
      */
-    public ActionSignature getHttpMethodActionSignature(Class<?> controllerClass, HttpMethod httpMethod);
+    ActionSignature getHttpMethodActionSignature(Class<?> controllerClass, HttpMethod httpMethod);
 }

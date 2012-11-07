@@ -20,5 +20,5 @@ package org.mojavemvc.forms;
  */
 public interface Submittable {
 
-    public void onSubmit();
+    void onSubmit();
 }

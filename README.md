@@ -95,4 +95,42 @@ In a browser, you should see the following response:
 
     Hello John!
 
+Mojave supports dependency injection through the Google Guice framework. Users specify resources that are to be injected using the @Inject 
+annotation, as they would normally in any Guice-enabled application. To wire objects together, and to configure injection, users provide 
+their own modules, which extend Guice's AbstractModule. Finally, users report the location of their modules to the Mojave framework 
+through an init param.
+
+To illustrate the use of a controller with injected dependencies, consider the following class:
+
+```java
+package injected.controllers;
+ 
+import org.mojavemvc.annotations.Action;
+import org.mojavemvc.annotations.Param;
+import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.View;
+ 
+import com.google.inject.Inject;
+ 
+@StatelessController
+public class InjectedController {
+ 
+  private final SomeService service;
+ 
+  @Inject
+  public InjectedController(SomeService service) {
+ 
+    this.service = service;
+  }
+ 
+  @Action
+  public View registerName(@Param("name") String name) {
+ 
+    service.register(name);
+    return new JspView("index.jsp");
+  }
+}
+```
+
 Learn more: http://mojavemvc.org/documentation

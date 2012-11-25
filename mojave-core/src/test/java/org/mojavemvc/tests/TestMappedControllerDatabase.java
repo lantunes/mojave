@@ -49,9 +49,9 @@ import org.mojavemvc.core.HttpMethod;
 import org.mojavemvc.core.HttpMethodActionSignature;
 import org.mojavemvc.core.MappedControllerDatabase;
 import org.mojavemvc.exception.ConfigurationException;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
-import org.mojavemvc.views.XMLView;
+import org.mojavemvc.views.XML;
 
 /**
  * 
@@ -1090,37 +1090,37 @@ public class TestMappedControllerDatabase {
 
         @GETAction
         public View getAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         @POSTAction
         public View postAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         @PUTAction
         public View putAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         @DELETEAction
         public View deleteAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         @OPTIONSAction
         public View optionsAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         @TRACEAction
         public View traceAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         @HEADAction
         public View headAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
     }
 
@@ -1130,7 +1130,7 @@ public class TestMappedControllerDatabase {
 
         @Action("test")
         public View testAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
     }
 
@@ -1142,7 +1142,7 @@ public class TestMappedControllerDatabase {
 
         @Action("test")
         public View testAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
     }
 
@@ -1197,9 +1197,9 @@ public class TestMappedControllerDatabase {
     private static class TestValidActionController1 {
 
         @Action("someAction")
-        public XMLView someAction() {
+        public XML someAction() {
 
-            return new XMLView("<test/>");
+            return new XML("<test/>");
         }
     }
 
@@ -1207,9 +1207,9 @@ public class TestMappedControllerDatabase {
     private static class TestValidActionController2 {
 
         @DefaultAction
-        public XMLView defaultAction() {
+        public XML defaultAction() {
 
-            return new XMLView("<test/>");
+            return new XML("<test/>");
         }
     }
 
@@ -1486,12 +1486,12 @@ public class TestMappedControllerDatabase {
 
         @DefaultAction
         public View defaultAction() {
-            return new JspView("index.jsp");
+            return new JSP("index");
         }
 
         @Action("test")
         public View testAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
     }
 
@@ -1517,12 +1517,12 @@ public class TestMappedControllerDatabase {
 
         @DefaultAction
         public View defaultAction() {
-            return new JspView("index.jsp");
+            return new JSP("index");
         }
 
         @Action("test")
         public View testAction() {
-            return new JspView("test.jsp");
+            return new JSP("test");
         }
 
         public void mockMethod() {
@@ -1530,22 +1530,22 @@ public class TestMappedControllerDatabase {
 
         @Action("with-param")
         public View withParamAction() {
-            return new JspView("param.jsp");
+            return new JSP("param");
         }
 
         @Action("another-param")
         public View anotherParamAction() {
-            return new JspView("param.jsp");
+            return new JSP("param");
         }
 
         @Action("some-service")
         public View someServiceAction() {
-            return new JspView("some-service.jsp");
+            return new JSP("some-service");
         }
 
         @Action("test-annotation")
         public View doAnnotationTest() {
-            return new JspView("param.jsp");
+            return new JSP("param");
         }
 
         @BeforeAction

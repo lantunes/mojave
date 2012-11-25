@@ -22,6 +22,6 @@ public class DefaultErrorHandlerFactory implements ErrorHandlerFactory {
 
     public ErrorHandler createErrorHandler() {
 
-        return new DefaultJspErrorHandler();
+        return new DefaultJSPErrorHandler();
     }
 }

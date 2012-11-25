@@ -18,11 +18,11 @@ package org.mojavemvc.views;
 /**
  * @author Luis Antunes
  */
-public class JSONView extends StreamView {
+public class JSON extends StreamView {
 
     private String payload;
 
-    public JSONView(String payload) {
+    public JSON(String payload) {
 
         this.payload = payload;
     }

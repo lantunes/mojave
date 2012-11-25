@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.forms.SomeForm;
 import org.mojavemvc.tests.forms.SomeFormWithBoolean;
 import org.mojavemvc.tests.forms.SubmittableForm;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
@@ -35,31 +35,31 @@ public class FormController {
     @Action("process")
     public View processForm(@Model SomeForm form) {
 
-        return new JspView("form-result.jsp").withAttribute("username", form.getUserName()).withAttribute("password",
+        return new JSP("form-result").withAttribute("username", form.getUserName()).withAttribute("password",
                 form.getPassword());
     }
 
     @Action("form2")
     public View form2() {
-        return new JspView("form2.jsp");
+        return new JSP("form2");
     }
 
     @Action("process2")
     public View processForm2(@Model SomeForm form, @Param("p1") String p1) {
 
-        return new JspView("form-result2.jsp").withAttribute("username", form.getUserName())
+        return new JSP("form-result2").withAttribute("username", form.getUserName())
                 .withAttribute("password", form.getPassword()).withAttribute("p1", p1);
     }
 
     @Action("form3")
     public View form3() {
-        return new JspView("form3.jsp");
+        return new JSP("form3");
     }
 
     @Action("process3")
     public View processForm3(@Model SubmittableForm form) {
 
-        return new JspView("form-result3.jsp").withAttribute("username", form.getUserName()).withAttribute("password",
+        return new JSP("form-result3").withAttribute("username", form.getUserName()).withAttribute("password",
                 form.getPassword());
     }
 
@@ -70,24 +70,24 @@ public class FormController {
         form.setPassword("pswd");
         form.setUserName("uname");
 
-        return new JspView("form.jsp").withModel(form);
+        return new JSP("form").withModel(form);
     }
 
     @Action("process4")
     public View processFormWithBoolean(@Model SomeFormWithBoolean form) {
 
-        return new JspView("form-result4.jsp").withAttribute("flag", form.isSomeFlag());
+        return new JSP("form-result4").withAttribute("flag", form.isSomeFlag());
     }
 
     @Action("form4")
     public View form4() {
-        return new JspView("form4.jsp");
+        return new JSP("form4");
     }
 
     @DefaultAction
     public View someDefaultAction() {
 
-        return new JspView("form.jsp");
+        return new JSP("form");
     }
 
 }

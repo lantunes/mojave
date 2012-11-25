@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -51,30 +51,30 @@ public class SomeStatefulController {
 
     @Action("test-init")
     public View testInitAction() {
-        return new JspView("param.jsp").withAttribute("var", "init-called: " + initVal);
+        return new JSP("param").withAttribute("var", "init-called: " + initVal);
     }
 
     @DefaultAction
     public View defaultAction() {
-        return new JspView("index.jsp");
+        return new JSP("index");
     }
 
     @Action("some-action")
     public View someAction() {
-        return new JspView("stateful.jsp");
+        return new JSP("stateful");
     }
 
     @Action("set-var")
     public View setVarAction(@Param("var") String var) {
 
         someStatefulVar = var;
-        return new JspView("stateful.jsp");
+        return new JSP("stateful");
     }
 
     @Action("get-var")
     public View getVarAction() {
 
-        return new JspView("param.jsp").withAttribute("var", someStatefulVar);
+        return new JSP("param").withAttribute("var", someStatefulVar);
     }
 
     @Action("get-req")
@@ -94,6 +94,6 @@ public class SomeStatefulController {
         String objectName = object.toString();
         String hexHashcode = objectName.substring(objectName.indexOf('@') + 1);
 
-        return new JspView("param.jsp").withAttribute("var", hexHashcode);
+        return new JSP("param").withAttribute("var", hexHashcode);
     }
 }

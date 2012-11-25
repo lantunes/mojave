@@ -21,12 +21,12 @@ import java.lang.reflect.Field;
 
 import org.junit.Test;
 import org.mojavemvc.FrontController;
-import org.mojavemvc.exception.DefaultJspErrorHandler;
+import org.mojavemvc.exception.DefaultJSPErrorHandler;
 import org.mojavemvc.exception.ErrorHandler;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
-public class TestDefaultJspErrorHandler {
+public class TestDefaultJSPErrorHandler {
 
     @Test
     public void handleError() throws Exception {
@@ -37,11 +37,11 @@ public class TestDefaultJspErrorHandler {
         f.setAccessible(true);
         f.set(null, errorJsp);
 
-        ErrorHandler errorHandler = new DefaultJspErrorHandler();
+        ErrorHandler errorHandler = new DefaultJSPErrorHandler();
         View view = errorHandler.handleError(null);
 
-        assertTrue(view instanceof JspView);
-        JspView jspView = (JspView) view;
-        assertEquals(errorJsp, jspView.getJsp());
+        assertTrue(view instanceof JSP);
+        JSP jspView = (JSP) view;
+        assertEquals(errorJsp, jspView.getJSPName());
     }
 }

@@ -21,7 +21,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.HEADAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.views.EmptyView;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -39,7 +39,7 @@ public class HttpMethodController4 {
     @DefaultAction
     public View defaultAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "default");
+        return new JSP("param").withAttribute("var", "default");
     }
 
     @HEADAction

@@ -74,18 +74,18 @@ public final class FrontController extends HttpServlet {
 
         initializer.performInitialization();
 
-        JSP_PATH = initializer.getJspPath();
-        JSP_ERROR_FILE = initializer.getJspErrorFile();
+        JSP_PATH = initializer.getJSPPath();
+        JSP_ERROR_FILE = initializer.getJSPErrorFile();
 
         initializer.createInitControllers();
     }
 
-    public static String getJspPath() {
+    public static String getJSPPath() {
 
         return JSP_PATH;
     }
 
-    public static String getJspErrorFile() {
+    public static String getJSPErrorFile() {
 
         return JSP_ERROR_FILE;
     }

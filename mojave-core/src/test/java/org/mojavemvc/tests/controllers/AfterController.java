@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 @StatelessController("after")
@@ -27,12 +27,12 @@ public class AfterController {
     @Action("index")
     public View someAction() {
 
-        return new JspView("index.jsp");
+        return new JSP("index");
     }
 
     @AfterAction
     public View afterAction() {
 
-        return new JspView("after.jsp");
+        return new JSP("after");
     }
 }

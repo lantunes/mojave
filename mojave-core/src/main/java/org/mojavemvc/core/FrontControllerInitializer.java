@@ -75,8 +75,8 @@ public class FrontControllerInitializer {
 
         logger.debug("reading init parameters...");
         readControllerClassNamespace();
-        readJspPath();
-        readJspErrorFile();
+        readJSPPath();
+        readJSPErrorFile();
         readGuiceModulesNamespace();
         readErrorHandlerFactory();
     }
@@ -91,7 +91,7 @@ public class FrontControllerInitializer {
         }
     }
 
-    private void readJspPath() {
+    private void readJSPPath() {
 
         jspPath = servletConfig.getInitParameter(JSP_PATH);
         if (!isEmpty(jspPath)) {
@@ -106,7 +106,7 @@ public class FrontControllerInitializer {
         }
     }
 
-    private void readJspErrorFile() {
+    private void readJSPErrorFile() {
 
         jspErrorFile = servletConfig.getInitParameter(JSP_ERROR_FILE);
         if (!isEmpty(jspErrorFile)) {
@@ -264,11 +264,11 @@ public class FrontControllerInitializer {
         return arg == null || arg.trim().length() == 0;
     }
 
-    public String getJspPath() {
+    public String getJSPPath() {
         return jspPath;
     }
 
-    public String getJspErrorFile() {
+    public String getJSPErrorFile() {
         return jspErrorFile;
     }
 }

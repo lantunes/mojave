@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
@@ -46,7 +46,7 @@ public class InjectableController implements IInjectableController {
     public View testAction(@Param("var") String var) {
 
         String processed = process(var);
-        return new JspView("injectable.jsp").withAttribute("var", processed);
+        return new JSP("injectable").withAttribute("var", processed);
     }
 
     public String process(String arg) {

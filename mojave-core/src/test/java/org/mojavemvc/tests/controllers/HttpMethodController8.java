@@ -20,7 +20,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.GETAction;
 import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
@@ -33,19 +33,19 @@ public class HttpMethodController8 {
     @DefaultAction
     public View defaultAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "default");
+        return new JSP("param").withAttribute("var", "default");
     }
 
     @POSTAction
     @GETAction
     public View doMultiAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "multi");
+        return new JSP("param").withAttribute("var", "multi");
     }
 
     @Action
     public View sayHello() {
 
-        return new JspView("param.jsp").withAttribute("var", "sayHello");
+        return new JSP("param").withAttribute("var", "sayHello");
     }
 }

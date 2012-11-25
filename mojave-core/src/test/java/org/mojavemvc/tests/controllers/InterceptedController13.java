@@ -22,7 +22,7 @@ import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.interceptors.Interceptor1b;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
@@ -40,6 +40,6 @@ public class InterceptedController13 {
     public View someAction() {
 
         invocationList.add("postAction");
-        return new JspView("param.jsp").withAttribute("var", "postAction");
+        return new JSP("param").withAttribute("var", "postAction");
     }
 }

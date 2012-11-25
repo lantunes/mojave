@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.annotations.TRACEAction;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
@@ -31,12 +31,12 @@ public class HttpMethodController5 {
     @DefaultAction
     public View defaultAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "default");
+        return new JSP("param").withAttribute("var", "default");
     }
 
     @TRACEAction
     public View doTraceAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "trace");
+        return new JSP("param").withAttribute("var", "trace");
     }
 }

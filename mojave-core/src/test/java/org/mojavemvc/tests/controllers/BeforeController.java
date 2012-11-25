@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 @StatelessController("before")
@@ -27,12 +27,12 @@ public class BeforeController {
     @BeforeAction
     public View beforeAction() {
 
-        return new JspView("before.jsp");
+        return new JSP("before");
     }
 
     @Action("index")
     public View someAction() {
 
-        return new JspView("index.jsp");
+        return new JSP("index");
     }
 }

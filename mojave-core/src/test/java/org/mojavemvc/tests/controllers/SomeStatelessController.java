@@ -24,7 +24,7 @@ import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -52,7 +52,7 @@ public class SomeStatelessController {
     @Action("do-something")
     public View doSomething() {
 
-        return new JspView("param.jsp").withAttribute("var", "test");
+        return new JSP("param").withAttribute("var", "test");
     }
 
     @AfterAction
@@ -62,7 +62,7 @@ public class SomeStatelessController {
 
     @DefaultAction
     public View defaultAction() {
-        return new JspView("param.jsp").withAttribute("var", "default");
+        return new JSP("param").withAttribute("var", "default");
     }
 
     /*

@@ -18,10 +18,10 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JSONView;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSON;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
-import org.mojavemvc.views.XMLView;
+import org.mojavemvc.views.XML;
 
 /**
  * 
@@ -31,23 +31,23 @@ import org.mojavemvc.views.XMLView;
 public class StreamController {
 
     @Action("xml")
-    public XMLView sendXML() {
+    public XML sendXML() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Test><hello/></Test>";
 
-        return new XMLView(xml);
+        return new XML(xml);
     }
 
     @Action("json")
-    public JSONView sendJSON() {
+    public JSON sendJSON() {
 
         String json = "{\"Test\":{\"hello\": 1}}";
 
-        return new JSONView(json);
+        return new JSON(json);
     }
 
     @DefaultAction
     public View defaultAction() {
-        return new JspView("index.jsp");
+        return new JSP("index");
     }
 }

@@ -23,7 +23,7 @@ import org.mojavemvc.FrontController;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class DispatchingController {
         try {
 
             request.setAttribute("var", "dispatched");
-            RequestDispatcher dispatcher = request.getRequestDispatcher(FrontController.getJspPath() + "param.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher(FrontController.getJSPPath() + "param.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -62,6 +62,6 @@ public class DispatchingController {
     @Action
     public View doSomething() {
 
-        return new JspView("param.jsp").withAttribute("var", "streaming3");
+        return new JSP("param").withAttribute("var", "streaming3");
     }
 }

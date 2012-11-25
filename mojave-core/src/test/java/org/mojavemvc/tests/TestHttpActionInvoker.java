@@ -55,7 +55,7 @@ import org.mojavemvc.tests.interceptors.Interceptor1b;
 import org.mojavemvc.tests.interceptors.Interceptor1c;
 import org.mojavemvc.tests.interceptors.Interceptor1d;
 import org.mojavemvc.tests.modules.SomeModule;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -120,7 +120,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -154,7 +154,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -192,7 +192,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -236,7 +236,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -277,7 +277,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -319,7 +319,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -366,7 +366,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -413,7 +413,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -456,7 +456,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -498,7 +498,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -542,7 +542,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -589,7 +589,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -632,7 +632,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -674,7 +674,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -716,7 +716,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -769,7 +769,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -819,7 +819,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
@@ -874,7 +874,7 @@ public class TestHttpActionInvoker {
 
         ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
 
-        JspView view = (JspView) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");

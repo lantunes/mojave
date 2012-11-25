@@ -21,7 +21,7 @@ import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor4;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 @StatelessController("intercepted10")
@@ -34,6 +34,6 @@ public class InterceptedController10 {
     public View someAction() {
 
         invocationList.add("someAction");
-        return new JspView("param.jsp").withAttribute("var", "someAction");
+        return new JSP("param").withAttribute("var", "someAction");
     }
 }

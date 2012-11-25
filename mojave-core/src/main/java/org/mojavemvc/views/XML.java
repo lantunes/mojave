@@ -18,11 +18,11 @@ package org.mojavemvc.views;
 /**
  * @author Luis Antunes
  */
-public class XMLView extends StreamView {
+public class XML extends StreamView {
 
     private String payload;
 
-    public XMLView(String payload) {
+    public XML(String payload) {
 
         this.payload = payload;
     }

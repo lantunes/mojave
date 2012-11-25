@@ -33,23 +33,42 @@ import org.mojavemvc.FrontController;
 /**
  * An instance of this class is not thread-safe, and should not be cached and/or
  * re-used.
+ * <p>
+ * JSP files used in the framework must have a .jsp extension. The JSP servlet in
+ * the container must not be re-mapped to handle files with other extensions.
  * 
  * @author Luis Antunes
  */
-public class JspView implements View {
+public class JSP implements View {
 
+    private static final String DOT_JSP = ".jsp";
+    
     protected final String jsp;
 
     protected Map<String, Object> attributes = new HashMap<String, Object>();
 
-    public JspView(String jsp) {
+    /**
+     * Requires the name of the underlying JSP file. If the name is not suffixed
+     * with .jsp, the suffix will be added.
+     * 
+     * @param jsp the name of the underlying JSP file represented by this View
+     */
+    public JSP(String jsp) {
 
+        if (jsp == null || jsp.trim().length() == 0) { 
+            throw new IllegalArgumentException("jsp name is null or empty");
+        }
+        
+        if (!jsp.toLowerCase().endsWith(DOT_JSP)) {
+            jsp += DOT_JSP;
+        }
+        
         this.jsp = jsp;
     }
 
-    public JspView(String path, String[] keys, Object[] values) {
+    public JSP(String jsp, String[] keys, Object[] values) {
 
-        this(path);
+        this(jsp);
         setAttributesFromPairs(keys, values);
     }
 
@@ -68,7 +87,7 @@ public class JspView implements View {
         return attributes.get(key);
     }
 
-    public JspView withAttribute(String key, Object value) {
+    public JSP withAttribute(String key, Object value) {
 
         setAttribute(key, value);
         return this;
@@ -79,7 +98,7 @@ public class JspView implements View {
         attributes.put(key, value);
     }
 
-    public JspView withAttributesFromPairs(String[] keys, Object[] values) {
+    public JSP withAttributesFromPairs(String[] keys, Object[] values) {
 
         setAttributesFromPairs(keys, values);
         return this;
@@ -93,7 +112,7 @@ public class JspView implements View {
         }
     }
 
-    public JspView withModel(Object javaBean) {
+    public JSP withModel(Object javaBean) {
 
         setModel(javaBean);
         return this;
@@ -165,9 +184,12 @@ public class JspView implements View {
     }
 
     /**
+     * Returns the name of the underlying JSP file.
+     * It will be suffixed with .jsp.
+     * 
      * @return the jsp page
      */
-    public String getJsp() {
+    public String getJSPName() {
 
         return jsp;
     }
@@ -183,7 +205,7 @@ public class JspView implements View {
             }
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(FrontController.getJspPath() + jsp);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(FrontController.getJSPPath() + jsp);
         dispatcher.forward(request, response);
     }
 }

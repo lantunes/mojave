@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 @StatelessController("afterctx")
@@ -32,7 +32,7 @@ public class AfterWithContextController {
     @Action("index")
     public View someAction(@Param("p1") String name) {
 
-        return new JspView("index.jsp");
+        return new JSP("index");
     }
 
     @AfterAction
@@ -62,6 +62,6 @@ public class AfterWithContextController {
             throw new RuntimeException("controller incorrect");
         }
 
-        return new JspView("param.jsp").withAttribute("var", parameters[0]);
+        return new JSP("param").withAttribute("var", parameters[0]);
     }
 }

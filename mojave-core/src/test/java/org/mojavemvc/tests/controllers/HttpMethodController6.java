@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.DELETEAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
@@ -31,12 +31,12 @@ public class HttpMethodController6 {
     @DefaultAction
     public View defaultAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "default");
+        return new JSP("param").withAttribute("var", "default");
     }
 
     @DELETEAction
     public View doDeleteAction() {
 
-        return new JspView("param.jsp").withAttribute("var", "delete");
+        return new JSP("param").withAttribute("var", "delete");
     }
 }

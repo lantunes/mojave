@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
     TestMappedControllerDatabase.class,
     TestGuiceInitializer.class,
     TestHttpActionInvoker.class,
-    TestDefaultJspErrorHandler.class,
+    TestDefaultJSPErrorHandler.class,
     TestDefaultErrorHandlerFactory.class,
     TestViews.class,
     TestHttpRequestRouter.class,

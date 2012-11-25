@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +64,6 @@ public class StreamController3 {
     @Action
     public View doSomething() {
 
-        return new JspView("param.jsp").withAttribute("var", "streaming3");
+        return new JSP("param").withAttribute("var", "streaming3");
     }
 }

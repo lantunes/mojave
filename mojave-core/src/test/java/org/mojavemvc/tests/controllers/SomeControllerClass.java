@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -37,12 +37,12 @@ public class SomeControllerClass {
 
     @DefaultAction
     public View defaultAction() {
-        return new JspView("index.jsp");
+        return new JSP("index");
     }
 
     @Action("some-action")
     public View doSomething() {
-        return new JspView("some-controller.jsp").withAttribute("var", getParameter("var"));
+        return new JSP("some-controller").withAttribute("var", getParameter("var"));
     }
 
     public String getParameter(String key) {

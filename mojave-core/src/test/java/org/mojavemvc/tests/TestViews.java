@@ -20,19 +20,27 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 
 /**
  * @author Luis Antunes
  */
 public class TestViews {
 
-    public void testJspView_getJsp() throws Exception {
+    @Test
+    public void testJspView_getJSPName() throws Exception {
 
-        JspView view = new JspView("test.jsp");
-        assertEquals("test.jsp", view.getJsp());
+        JSP view = new JSP("test.jsp");
+        assertEquals("test.jsp", view.getJSPName());
     }
 
+    @Test
+    public void testJspView_getJSPName_noSuffix() throws Exception {
+
+        JSP view = new JSP("test");
+        assertEquals("test.jsp", view.getJSPName());
+    }
+    
     @Test
     public void testJspView_setModel() throws Exception {
 
@@ -40,7 +48,7 @@ public class TestViews {
         model.setName("John");
         model.setNum(21);
 
-        JspView view = new JspView("test.jsp");
+        JSP view = new JSP("test.jsp");
         view.setModel(model);
 
         Map<String, Object> attributes = view.getAttributes();
@@ -57,7 +65,7 @@ public class TestViews {
         model.setName("John");
         model.setNum(21);
 
-        JspView view = new JspView("test.jsp").withModel(model);
+        JSP view = new JSP("test.jsp").withModel(model);
 
         Map<String, Object> attributes = view.getAttributes();
         assertNotNull(attributes);
@@ -73,7 +81,7 @@ public class TestViews {
         model.setName("John");
         model.setNum(21);
 
-        JspView view = new JspView("test.jsp").withModel(model);
+        JSP view = new JSP("test.jsp").withModel(model);
 
         SomeModel model2 = view.getModel(SomeModel.class);
 
@@ -85,7 +93,7 @@ public class TestViews {
     @Test
     public void testJspView_getModelNoAttributes() throws Exception {
 
-        JspView view = new JspView("test.jsp");
+        JSP view = new JSP("test.jsp");
         SomeModel model2 = view.getModel(SomeModel.class);
 
         assertNotNull(model2);
@@ -96,7 +104,7 @@ public class TestViews {
     @Test
     public void testJspView_setAttributesFromPairs() throws Exception {
 
-        JspView view = new JspView("test.jsp");
+        JSP view = new JSP("test.jsp");
         view.setAttributesFromPairs(new String[] { "name", "num" }, new Object[] { "John", 21 });
 
         Map<String, Object> attributes = view.getAttributes();
@@ -109,7 +117,7 @@ public class TestViews {
     @Test
     public void testJspView_withAttributesFromPairs() throws Exception {
 
-        JspView view = new JspView("test.jsp").withAttributesFromPairs(new String[] { "name", "num" }, new Object[] {
+        JSP view = new JSP("test.jsp").withAttributesFromPairs(new String[] { "name", "num" }, new Object[] {
                 "John", 21 });
 
         Map<String, Object> attributes = view.getAttributes();
@@ -122,7 +130,7 @@ public class TestViews {
     @Test
     public void testJspView_setAttribute() throws Exception {
 
-        JspView view = new JspView("test.jsp");
+        JSP view = new JSP("test.jsp");
         view.setAttribute("name", "John");
         view.setAttribute("num", 21);
 
@@ -136,7 +144,7 @@ public class TestViews {
     @Test
     public void testJspView_withAttribute() throws Exception {
 
-        JspView view = new JspView("test.jsp").withAttribute("name", "John").withAttribute("num", 21);
+        JSP view = new JSP("test.jsp").withAttribute("name", "John").withAttribute("num", 21);
 
         Map<String, Object> attributes = view.getAttributes();
         assertNotNull(attributes);
@@ -148,7 +156,7 @@ public class TestViews {
     @Test
     public void testJspView_getAttribute() throws Exception {
 
-        JspView view = new JspView("test.jsp").withAttribute("name", "John").withAttribute("num", 21);
+        JSP view = new JSP("test.jsp").withAttribute("name", "John").withAttribute("num", 21);
 
         assertEquals("John", view.getAttribute("name"));
         assertEquals(21, view.getAttribute("num"));

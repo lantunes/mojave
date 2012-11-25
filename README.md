@@ -63,7 +63,7 @@ package helloworld.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
  
 @StatelessController
@@ -72,7 +72,7 @@ public class HelloWorld {
   @Action
   public View sayHello(@Param("name") String name) {
  
-    return new JspView("hello.jsp").withAttribute("name", name);
+    return new JSP("hello").withAttribute("name", name);
   }
 }
 ```
@@ -108,7 +108,7 @@ package injected.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JspView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
  
 import com.google.inject.Inject;
@@ -128,7 +128,7 @@ public class InjectedController {
   public View registerName(@Param("name") String name) {
  
     service.register(name);
-    return new JspView("index.jsp");
+    return new JSP("index");
   }
 }
 ```

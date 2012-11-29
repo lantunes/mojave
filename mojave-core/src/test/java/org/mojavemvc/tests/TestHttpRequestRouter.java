@@ -46,32 +46,31 @@ public class TestHttpRequestRouter {
         paramMap = new HashMap<String, Object>();
         routeMap = mock(RouteMap.class);
         req = mock(HttpServletRequest.class);
+        when(req.getParameterMap()).thenReturn(paramMap);
     }
     
     @Test
     public void handlesNullPath() {
         
         when(req.getPathInfo()).thenReturn(null);
-        when(req.getParameterMap()).thenReturn(paramMap);
         
         RoutedRequest routed = newRouter().route();
         
         assertNull(routed.getController());
         assertNull(routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        assertTrue(routed.getParameterMap().isEmpty());
     }
     
     @Test
     public void handlesEmptyPath() {
         
         when(req.getPathInfo()).thenReturn("");
-        when(req.getParameterMap()).thenReturn(paramMap);
         
         RoutedRequest routed = newRouter().route();
         
         assertNull(routed.getController());
         assertNull(routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        assertTrue(routed.getParameterMap().isEmpty());
     }
     
     @Test
@@ -86,7 +85,7 @@ public class TestHttpRequestRouter {
         
         assertNull(routed.getController());
         assertNull(routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        assertTrue(routed.getParameterMap().isEmpty());
     }
     
     @Test
@@ -102,7 +101,7 @@ public class TestHttpRequestRouter {
         
         assertEquals("cntrl", routed.getController());
         assertNull(routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        assertTrue(routed.getParameterMap().isEmpty());
     }
     
     @Test
@@ -117,7 +116,7 @@ public class TestHttpRequestRouter {
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        assertTrue(routed.getParameterMap().isEmpty());
     }
     
     @Test
@@ -143,16 +142,15 @@ public class TestHttpRequestRouter {
         when(req.getPathInfo()).thenReturn(pathInfo);
         when(routeMap.getRoute(pathInfo))
             .thenReturn(new Route("cntrl", "actn", ":id"));
-        when(req.getParameterMap()).thenReturn(paramMap);
         
         RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        Map<String, Object> paramMap = routed.getParameterMap();
         Object val = paramMap.get("id");
         assertNotNull(val);
-        assertEquals("123", val);
+        assertArrayEquals(new String[]{"123"}, (String[])val);
     }
     
     @Test
@@ -162,19 +160,18 @@ public class TestHttpRequestRouter {
         when(req.getPathInfo()).thenReturn(pathInfo);
         when(routeMap.getRoute(pathInfo))
             .thenReturn(new Route("cntrl", "actn", ":id/:name"));
-        when(req.getParameterMap()).thenReturn(paramMap);
         
         RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        Map<String, Object> paramMap = routed.getParameterMap();
         Object val = paramMap.get("id");
         assertNotNull(val);
-        assertEquals("123", val);
+        assertArrayEquals(new String[]{"123"}, (String[])val);
         val = paramMap.get("name");
         assertNotNull(val);
-        assertEquals("tom", val);
+        assertArrayEquals(new String[]{"tom"}, (String[])val);
     }
     
     @Test
@@ -184,17 +181,16 @@ public class TestHttpRequestRouter {
         when(req.getPathInfo()).thenReturn(pathInfo);
         when(routeMap.getRoute(pathInfo))
             .thenReturn(new Route("cntrl", "actn", ":id"));
-        paramMap.put("id", "456");
-        when(req.getParameterMap()).thenReturn(paramMap);
+        paramMap.put("id", new String[]{"456"});
         
         RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        Map<String, Object> paramMap = routed.getParameterMap();
         Object val = paramMap.get("id");
         assertNotNull(val);
-        assertEquals("123", val);
+        assertArrayEquals(new String[]{"123"}, (String[])val);
     }
     
     @Test
@@ -204,20 +200,19 @@ public class TestHttpRequestRouter {
         when(req.getPathInfo()).thenReturn(pathInfo);
         when(routeMap.getRoute(pathInfo))
             .thenReturn(new Route("cntrl", "actn", ":id"));
-        paramMap.put("name", "tom");
-        when(req.getParameterMap()).thenReturn(paramMap);
+        paramMap.put("name", new String[]{"tom"});
         
         RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
-        assertEquals(paramMap, routed.getParameterMap());
+        Map<String, Object> paramMap = routed.getParameterMap();
         Object val = paramMap.get("id");
         assertNotNull(val);
-        assertEquals("123", val);
+        assertArrayEquals(new String[]{"123"}, (String[])val);
         val = paramMap.get("name");
         assertNotNull(val);
-        assertEquals("tom", val);
+        assertArrayEquals(new String[]{"tom"}, (String[])val);
     }
     
     /*----------------------*/

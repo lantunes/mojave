@@ -1556,4 +1556,34 @@ public class TestFrontController extends AbstractWebTest {
         assertEquals("interceptor1b-afterAction:req:resp:sess:someService:ok", invocationList.get(3));
         assertEquals("interceptor1-afterAction:req:resp:sess:someService:ok", invocationList.get(4));
     }
+    
+    @Test
+    public void paramPathController() throws Exception {
+        
+        assertThatRequestFor("/parampath/say/John")
+            .producesPage()
+            .withH2Tag(withContent("Hello from John"));
+    }
+    
+    @Test
+    public void paramPathController_NoMatchingRoute() throws Exception {
+        
+        assertThatRequestFor("/parampath/regex/John").producesErrorPage();
+    }
+    
+    @Test
+    public void paramPathController_MatchingRegexRoute() throws Exception {
+        
+        assertThatRequestFor("/parampath/regex/john")
+        .producesPage()
+        .withH2Tag(withContent("Hello from john"));
+    }
+    
+    @Test
+    public void paramPathController_MultiParams() throws Exception {
+        
+        assertThatRequestFor("/parampath/multi/John/123")
+        .producesPage()
+        .withH2Tag(withContent("Hello from John, 123"));
+    }
 }

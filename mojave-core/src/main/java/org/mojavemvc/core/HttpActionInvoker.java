@@ -45,6 +45,7 @@ public class HttpActionInvoker implements ActionInvoker {
     private final Injector injector;
     private final String controller;
     private final String action;
+    private final Map<String, Object> parameterMap;
 
     private Object actionController;
     private Class<?> actionControllerClass;
@@ -63,6 +64,8 @@ public class HttpActionInvoker implements ActionInvoker {
 
         String actn = routed.getAction();
         action = (actn == null || actn.trim().length() == 0) ? "" : actn;
+        
+        this.parameterMap = routed.getParameterMap();
     }
 
     public View invokeAction(Object actionController, ActionSignature actionSignature) throws Exception {
@@ -88,12 +91,11 @@ public class HttpActionInvoker implements ActionInvoker {
         logger.debug(message);
     }
 
-    @SuppressWarnings("unchecked")
     private View invokeActionMethod() throws Exception {
 
         View view = null;
 
-        Object[] args = actionSignature.getArgs((Map<String, ?>) request.getParameterMap());
+        Object[] args = actionSignature.getArgs(parameterMap);
 
         List<Object> classInterceptors = createInterceptors(controllerDb.getInterceptorsFor(actionControllerClass));
 

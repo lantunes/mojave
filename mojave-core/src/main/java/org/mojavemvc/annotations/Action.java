@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
  * <pre>
  * &#064;Action
  * public View sayHello() {
- *     return new View(&quot;hello.jsp&quot;);
+ *     return new JSP(&quot;hello&quot;);
  * }
  * </pre>
  * 
@@ -57,7 +57,7 @@ import java.lang.annotation.Target;
  * <pre>
  * &#064;Action(&quot;say-hello&quot;)
  * public View sayHello() {
- *     return new View(&quot;hello.jsp&quot;);
+ *     return new JSP(&quot;hello&quot;);
  * }
  * </pre>
  * 

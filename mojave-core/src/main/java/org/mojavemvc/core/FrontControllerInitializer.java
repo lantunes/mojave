@@ -166,7 +166,8 @@ public class FrontControllerInitializer {
         try {
 
             Set<Class<?>> controllerClasses = scanControllerClasses();
-            ControllerDatabase controllerDatabase = new MappedControllerDatabase(controllerClasses);
+            ControllerDatabase controllerDatabase = 
+                    new MappedControllerDatabase(controllerClasses, new RegexRouteMap());
             context.setAttribute(ControllerDatabase.KEY, controllerDatabase);
 
         } catch (Throwable e) {

@@ -15,32 +15,30 @@
  */
 package org.mojavemvc.core;
 
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
 
 /**
  * @author Luis Antunes
  */
-public class RoutedRequest {
-
-    private final String controller;
-    private final String action;
-    private final Map<String, Object> parameterMap;
-
-    public RoutedRequest(String controller, String action, Map<String, Object> parameterMap) {
-        this.controller = controller;
-        this.action = action;
-        this.parameterMap = parameterMap;
-    }
-
-    public String getController() {
-        return controller;
-    }
-
-    public String getAction() {
-        return action;
+public class RegexRouteMap implements RouteMap {
+    
+    private final Set<RegexRoute> routes = new HashSet<RegexRoute>();
+    
+    public void add(Route route) {
+        routes.add(new RegexRoute(route));
     }
     
-    public Map<String, Object> getParameterMap() {
-        return parameterMap;
+    public Route getRoute(String path) {
+        
+        for (RegexRoute route : routes) {
+            Matcher m = route.pattern().matcher(path);
+            if (m.find()) {
+                return route.getRoute();
+            }
+        }
+        
+        return null;
     }
 }

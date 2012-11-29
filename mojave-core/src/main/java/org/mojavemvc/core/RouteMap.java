@@ -15,32 +15,12 @@
  */
 package org.mojavemvc.core;
 
-import java.util.Map;
-
 /**
  * @author Luis Antunes
  */
-public class RoutedRequest {
+public interface RouteMap {
 
-    private final String controller;
-    private final String action;
-    private final Map<String, Object> parameterMap;
-
-    public RoutedRequest(String controller, String action, Map<String, Object> parameterMap) {
-        this.controller = controller;
-        this.action = action;
-        this.parameterMap = parameterMap;
-    }
-
-    public String getController() {
-        return controller;
-    }
-
-    public String getAction() {
-        return action;
-    }
+    void add(Route route);
     
-    public Map<String, Object> getParameterMap() {
-        return parameterMap;
-    }
+    Route getRoute(String path);
 }

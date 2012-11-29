@@ -73,7 +73,8 @@ public class BaseActionSignature implements ActionSignature {
      */
     private final int fastIndex;
 
-    public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, Annotation[][] paramAnnotations) {
+    public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
+            Annotation[][] paramAnnotations) {
 
         this.fastIndex = fastIndex;
         this.methodName = methodName;

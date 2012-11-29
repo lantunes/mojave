@@ -32,6 +32,11 @@ import org.junit.runners.Suite;
     TestDefaultErrorHandlerFactory.class,
     TestViews.class,
     TestHttpRequestRouter.class,
+    TestParamPathHelper.class,
+    TestRouteHelper.class,
+    TestRegexRouteMap.class,
+    TestRegexRoute.class,
+    TestRoute.class,
     TestFrontController.class,
     TestMultiClient.class
 })

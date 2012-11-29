@@ -13,34 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.core;
+package org.mojavemvc.tests;
 
-import java.util.Map;
+import org.mojavemvc.core.RegexRouteMap;
+import org.mojavemvc.core.RouteMap;
 
 /**
+ * 
  * @author Luis Antunes
  */
-public class RoutedRequest {
+public class TestRegexRouteMap extends RouteMapContractTest {
 
-    private final String controller;
-    private final String action;
-    private final Map<String, Object> parameterMap;
-
-    public RoutedRequest(String controller, String action, Map<String, Object> parameterMap) {
-        this.controller = controller;
-        this.action = action;
-        this.parameterMap = parameterMap;
-    }
-
-    public String getController() {
-        return controller;
-    }
-
-    public String getAction() {
-        return action;
-    }
-    
-    public Map<String, Object> getParameterMap() {
-        return parameterMap;
+    @Override
+    protected RouteMap newRouteMap() {
+        return new RegexRouteMap();
     }
 }

@@ -15,39 +15,71 @@
  */
 package org.mojavemvc.core;
 
+import static org.mojavemvc.util.RouteHelper.*;
+
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.mojavemvc.core.Route.PathParameterElement;
+import org.mojavemvc.exception.NoMatchingRouteException;
 
 /**
  * @author Luis Antunes
  */
 public class HttpRequestRouter implements RequestRouter {
 
-    private static final String SEPARATOR = "/";
-    
     private final HttpServletRequest req;
+    private final RouteMap routeMap;
     
-    public HttpRequestRouter(HttpServletRequest req) {
+    public HttpRequestRouter(HttpServletRequest req, RouteMap routeMap) {
         this.req = req;
+        this.routeMap = routeMap;
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public RoutedRequest route() {
         
         String controller = null;
         String action = null;
         String path = req.getPathInfo();
+        Map<String, Object> paramMap = (Map<String, Object>) req.getParameterMap();
         
-        if (path != null && path.startsWith(SEPARATOR)) {
+        if (path != null && path.startsWith(PATH_ELEMENT_SEPARATOR)) {
             
-            String[] pathTokens = path.split(SEPARATOR);
-            if (pathTokens.length > 1) {
-                controller = pathTokens[1];
-                if (pathTokens.length > 2) {
-                    action = pathTokens[2];
-                }
+            Route route = routeMap.getRoute(path);
+            
+            if (route == null) {
+                throw new NoMatchingRouteException(
+                        "no matching routes were found for " + path);
             }
+            
+            controller = route.getController();
+            action = route.getAction();
+            handleParameters(path, paramMap, route);
         }
         
-        return new RoutedRequest(controller, action);
+        return new RoutedRequest(controller, action, paramMap);
+    }
+
+    private void handleParameters(String path, 
+            Map<String, Object> paramMap, Route route) {
+        
+        List<PathParameterElement> paramElements = 
+                route.pathParameterElements();
+        if (!paramElements.isEmpty()) {
+            
+            /*
+             * we matched the path, so we can assume that there
+             * are the required number of tokens in the request
+             * path as there are in the route path
+             */
+            String[] pathTokens = getPathElements(path);
+            for (PathParameterElement elem : paramElements) {
+                paramMap.put(elem.name(), pathTokens[elem.index()]);
+            }
+        }
     }
 }

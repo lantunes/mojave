@@ -33,7 +33,7 @@ import org.mojavemvc.core.BaseActionSignature;
  * @author Luis Antunes
  */
 public class TestBaseActionSignature {
-
+    
     @Test
     public void noParameters() {
 

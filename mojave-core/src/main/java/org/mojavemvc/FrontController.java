@@ -209,25 +209,27 @@ public final class FrontController extends HttpServlet {
 
         ServletResourceModule.set(req, res);
 
-        RequestRouter router = new HttpRequestRouter(req);
-        RoutedRequest routed = router.route();
-        
-        ActionResolver resolver = new HttpActionResolver(ctx, req, httpMethod, controllerDb, injector);
-
-        ActionInvoker invoker = new HttpActionInvoker(req, res, controllerDb, routed, injector);
-
-        RequestProcessor requestProcessor = new RequestProcessor(resolver, invoker, errorHandler);
-        
-        View view = requestProcessor.process(routed.getController(), routed.getAction());
-
-        logger.debug("processed request for " + requestProcessor.getControllerClassName() + "; rendering...");
+        View view;
         try {
+            
+            RequestRouter router = new HttpRequestRouter(req, controllerDb.getRouteMap());
+            RoutedRequest routed = router.route();
+            
+            ActionResolver resolver = new HttpActionResolver(ctx, req, httpMethod, controllerDb, injector);
+    
+            ActionInvoker invoker = new HttpActionInvoker(req, res, controllerDb, routed, injector);
+    
+            RequestProcessor requestProcessor = new RequestProcessor(resolver, invoker, errorHandler);
+            
+            view = requestProcessor.process(routed.getController(), routed.getAction());
+    
+            logger.debug("processed request for " + requestProcessor.getControllerClassName() + "; rendering...");
 
             view.render(req, res);
 
         } catch (Throwable e) {
 
-            logger.error("error rendering view: ", e);
+            logger.error("error processing request: ", e);
             view = errorHandler.handleError(e);
             if (view != null) {
                 /*

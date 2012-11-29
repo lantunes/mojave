@@ -18,6 +18,7 @@ package org.mojavemvc.core;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -42,12 +43,14 @@ import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.OPTIONSAction;
 import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.PUTAction;
+import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.SingletonController;
 import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.annotations.TRACEAction;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.exception.ConfigurationException;
+import org.mojavemvc.util.ParamPathHelper;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,6 +170,11 @@ public class MappedControllerDatabase implements ControllerDatabase {
      * -> [HttpMethod.GET - > ActionSignature]
      */
     private final Map<Class<?>, Map<HttpMethod, ActionSignature>> controllerClassToHttpMethodMap = new HashMap<Class<?>, Map<HttpMethod, ActionSignature>>();
+    
+    /*
+     * the route map to configure during initialization
+     */
+    private final RouteMap routeMap;
 
     /**
      * Construct a controller database based on the given Set of controller
@@ -174,13 +182,23 @@ public class MappedControllerDatabase implements ControllerDatabase {
      * 
      * @param controllerClasses
      */
-    public MappedControllerDatabase(Set<Class<?>> controllerClasses) {
+    public MappedControllerDatabase(Set<Class<?>> controllerClasses, RouteMap routeMap) {
 
+        this.routeMap = routeMap;
         init(controllerClasses);
     }
 
     /**
-     * Get the conroller Class associated with the given controller variable
+     * Get the RouteMap for the application.
+     * 
+     * @return the route map for the application
+     */
+    public RouteMap getRouteMap() {
+        return routeMap;
+    }
+    
+    /**
+     * Get the controller Class associated with the given controller variable
      * name.
      * 
      * @param controllerVariable
@@ -266,7 +284,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
     }
 
     /**
-     * Get an unmodifiable set of singleton conroller classes that are marked
+     * Get an unmodifiable set of singleton controller classes that are marked
      * for creation during the FrontController init().
      * 
      * @return the singleton controller class
@@ -499,8 +517,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
         }
         controllerClassesMap.put(controllerVariable, controllerClass);
         checkForInitController(controllerClass);
-        checkForDefaultController(controllerClass);
-        setActionMethodIndicesFor(controllerClass);
+        boolean isDefaultController = checkForDefaultController(controllerClass);
+        setActionMethodIndicesFor(controllerClass, controllerVariable, isDefaultController);
         setInterceptorsFor(controllerClass);
     }
 
@@ -518,19 +536,25 @@ public class MappedControllerDatabase implements ControllerDatabase {
         }
     }
 
-    private void checkForDefaultController(Class<?> controllerClass) {
+    /*
+     * return true if controller class is a default controller, false otherwise
+     */
+    private boolean checkForDefaultController(Class<?> controllerClass) {
 
         Annotation annot = controllerClass.getAnnotation(DefaultController.class);
         if (annot != null) {
             if (defaultControllerClass != null) {
-                throw new ConfigurationException("only one controller class can be " + "annotated with @"
+                throw new ConfigurationException("only one controller class can be annotated with @"
                         + DefaultController.class.getSimpleName());
             }
             defaultControllerClass = controllerClass;
+            return true;
         }
+        return false;
     }
 
-    private void setActionMethodIndicesFor(Class<?> controllerClass) {
+    private void setActionMethodIndicesFor(Class<?> controllerClass, String controllerVariable, 
+            boolean isDefaultController) {
 
         Map<String, ActionSignature> actionMap = new HashMap<String, ActionSignature>();
 
@@ -559,13 +583,13 @@ public class MappedControllerDatabase implements ControllerDatabase {
                      */
                     action = methods[i].getName();
                 }
-                addActionSignature(controllerClass, action, methods[i], actionMap, fastClass);
+                addActionSignature(action, methods[i], actionMap, fastClass, controllerVariable, isDefaultController);
                 setInterceptorsForAction(controllerClass, action, methods[i], actionInterceptorsMap);
                 continue;
             }
 
             if (addHttpMethodActionSignature(controllerClass, methods[i], fastClass, httpMethodActionMap,
-                    httpMethodActionInterceptorsMap)) {
+                    httpMethodActionInterceptorsMap, controllerVariable, isDefaultController)) {
                 continue;
             }
 
@@ -586,7 +610,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
             ann = methods[i].getAnnotation(DefaultAction.class);
             if (ann != null) {
                 addDefaultActionSignature(controllerClassToDefaultActionMap, DefaultAction.class, controllerClass,
-                        methods[i], fastClass);
+                        methods[i], fastClass, controllerVariable, isDefaultController);
                 setInterceptorsForDefaultAction(controllerClass, methods[i]);
                 continue;
             }
@@ -618,13 +642,15 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
     private boolean addHttpMethodActionSignature(Class<?> controllerClass, Method actionMethod, FastClass fastClass,
             Map<HttpMethod, ActionSignature> httpMethodActionMap,
-            Map<HttpMethod, List<Class<?>>> httpMethodActionInterceptorsMap) {
+            Map<HttpMethod, List<Class<?>>> httpMethodActionInterceptorsMap, 
+            String controllerVariable, boolean isDefaultController) {
 
         boolean annotationFound = false;
 
         if (actionMethod.isAnnotationPresent(GETAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.GET, actionMethod, controllerClass, fastClass, httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.GET, actionMethod, fastClass, 
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.GET, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -632,7 +658,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         if (actionMethod.isAnnotationPresent(POSTAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.POST, actionMethod, controllerClass, fastClass, httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.POST, actionMethod, fastClass, 
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.POST, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -640,7 +667,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         if (actionMethod.isAnnotationPresent(PUTAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.PUT, actionMethod, controllerClass, fastClass, httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.PUT, actionMethod, fastClass, 
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.PUT, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -648,8 +676,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         if (actionMethod.isAnnotationPresent(OPTIONSAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.OPTIONS, actionMethod, controllerClass, fastClass,
-                    httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.OPTIONS, actionMethod, fastClass,
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.OPTIONS, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -657,7 +685,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         if (actionMethod.isAnnotationPresent(HEADAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.HEAD, actionMethod, controllerClass, fastClass, httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.HEAD, actionMethod, fastClass, 
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.HEAD, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -665,8 +694,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         if (actionMethod.isAnnotationPresent(TRACEAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.TRACE, actionMethod, controllerClass, fastClass,
-                    httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.TRACE, actionMethod, fastClass,
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.TRACE, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -674,8 +703,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         if (actionMethod.isAnnotationPresent(DELETEAction.class)) {
 
-            addHttpMethodActionSignature(HttpMethod.DELETE, actionMethod, controllerClass, fastClass,
-                    httpMethodActionMap);
+            addHttpMethodActionSignature(HttpMethod.DELETE, actionMethod, fastClass,
+                    httpMethodActionMap, controllerVariable, isDefaultController);
             setInterceptorsForHttpMethodAction(controllerClass, HttpMethod.DELETE, actionMethod,
                     httpMethodActionInterceptorsMap);
             annotationFound = true;
@@ -684,16 +713,18 @@ public class MappedControllerDatabase implements ControllerDatabase {
         return annotationFound;
     }
 
-    private void addHttpMethodActionSignature(HttpMethod httpMethod, Method actionMethod, Class<?> controllerClass,
-            FastClass fastClass, Map<HttpMethod, ActionSignature> httpMethodActionMap) {
+    private void addHttpMethodActionSignature(HttpMethod httpMethod, Method actionMethod,
+            FastClass fastClass, Map<HttpMethod, ActionSignature> httpMethodActionMap, 
+            String controllerVariable, boolean isDefaultController) {
 
-        validateActionReturnType(actionMethod);
+        validateActionReturnType(actionMethod, fastClass.getJavaClass().getName());
 
         ActionSignature existingActionSignature = httpMethodActionMap.get(httpMethod);
         if (existingActionSignature != null) {
 
             throw new ConfigurationException("mulitple action methods for " + httpMethod + " found; "
-                    + "only one action method per HTTP method type is allowed in " + controllerClass.getName());
+                    + "only one action method per HTTP method type is allowed in " + 
+                    fastClass.getJavaClass().getName());
         }
 
         int fastIndex = fastClass.getIndex(actionMethod.getName(), actionMethod.getParameterTypes());
@@ -701,30 +732,79 @@ public class MappedControllerDatabase implements ControllerDatabase {
         ActionSignature sig = new HttpMethodActionSignature(httpMethod, fastIndex, actionMethod.getName(),
                 actionMethod.getParameterTypes(), actionMethod.getParameterAnnotations());
         httpMethodActionMap.put(httpMethod, sig);
+        
+        addRoute(actionMethod, fastClass.getJavaClass().getName(), controllerVariable, 
+                null, isDefaultController);
     }
 
-    private void addActionSignature(Class<?> clazz, String action, Method method,
-            Map<String, ActionSignature> actionMap, FastClass fastClass) {
+    private void addActionSignature(String action, Method method,
+            Map<String, ActionSignature> actionMap, FastClass fastClass, 
+            String controllerVariable, boolean isDefaultController) {
 
-        validateActionReturnType(method);
+        validateActionReturnType(method, fastClass.getJavaClass().getName());
 
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new BaseActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
                 method.getParameterAnnotations());
         actionMap.put(action, sig);
+        
+        addRoute(method, fastClass.getJavaClass().getName(), controllerVariable, action, isDefaultController);
     }
 
-    private void validateActionReturnType(Method actionMethod) {
+    private void validateActionReturnType(Method actionMethod, String className) {
 
         Class<?> returnType = actionMethod.getReturnType();
         if (!View.class.isAssignableFrom(returnType)) {
 
             throw new ConfigurationException("action " + actionMethod.getName() + " in controller "
-                    + actionMethod.getName() + " must return " + View.class.getName() + " or one of its subtypes");
+                    + className + " must return " + View.class.getName() + " or one of its subtypes");
+        }
+    }
+    
+    private void addRoute(Method method, String controllerClassName, 
+            String controllerVariable, String actionVariable, boolean isDefaultController) {
+        
+        String paramPath = getParamPathIfExists(method, controllerClassName);
+        
+        Route route = new Route(controllerVariable, actionVariable, paramPath);
+        logger.debug("adding route " + route);
+        routeMap.add(route);
+        if (isDefaultController) {
+            route = new Route(null, actionVariable, paramPath);
+            logger.debug("adding route " + route);
+            routeMap.add(route);
         }
     }
 
+    private String getParamPathIfExists(Method method, String controllerName) {
+        
+        String paramPath = null;
+        ParamPath paramPathAnn = method.getAnnotation(ParamPath.class);
+        if (paramPathAnn != null) {
+            paramPath = paramPathAnn.value();
+            validateParamPath(paramPath, method, controllerName);
+        }
+        return paramPath;
+    }
+    
+    private void validateParamPath(String paramPath, Method method, String controllerName) {
+        
+        if (paramPath == null || paramPath.trim().length() == 0) {
+            throw new ConfigurationException("Param path for method " + method.getName() + 
+                    " in controller " + controllerName + " is empty");
+        }
+        
+        String[] params = ParamPathHelper.getParamNamesFrom(paramPath);
+        String[] methodParams = ParamPathHelper.getParamNamesFrom(method);
+        Arrays.sort(params);
+        Arrays.sort(methodParams);
+        if (!Arrays.equals(params, methodParams)) {
+            throw new ConfigurationException("Param path " + paramPath + " for method " + method.getName() + 
+                    " in controller " + controllerName + " does not match the method params");
+        }
+    }
+    
     private void setInterceptorsFor(Class<?> controllerClass) {
 
         Annotation annot = controllerClass.getAnnotation(InterceptedBy.class);
@@ -886,7 +966,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
     }
 
     private void addDefaultActionSignature(Map<Class<?>, ActionSignature> map, Class<?> annotationClass,
-            Class<?> controllerClass, Method method, FastClass fastClass) {
+            Class<?> controllerClass, Method method, FastClass fastClass, 
+            String controllerVariable, boolean isDefaultController) {
 
         ActionSignature m = map.get(controllerClass);
         if (m != null) {
@@ -907,5 +988,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
                 method.getParameterAnnotations());
 
         map.put(controllerClass, sig);
+        
+        addRoute(method, controllerClass.getName(), controllerVariable, null, isDefaultController);
     }
 }

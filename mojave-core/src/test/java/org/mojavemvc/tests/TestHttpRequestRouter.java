@@ -18,98 +18,211 @@ package org.mojavemvc.tests;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mojavemvc.core.HttpRequestRouter;
+import org.mojavemvc.core.Route;
+import org.mojavemvc.core.RouteMap;
 import org.mojavemvc.core.RoutedRequest;
+import org.mojavemvc.exception.NoMatchingRouteException;
 
 /**
  * @author Luis Antunes
  */
 public class TestHttpRequestRouter {
 
+    private Map<String, Object> paramMap;
+    private RouteMap routeMap;
+    private HttpServletRequest req;
+    
+    @Before
+    public void beforeEachTest() {
+        
+        paramMap = new HashMap<String, Object>();
+        routeMap = mock(RouteMap.class);
+        req = mock(HttpServletRequest.class);
+    }
+    
     @Test
     public void handlesNullPath() {
         
-        HttpServletRequest req = mock(HttpServletRequest.class);
         when(req.getPathInfo()).thenReturn(null);
+        when(req.getParameterMap()).thenReturn(paramMap);
         
-        HttpRequestRouter router = new HttpRequestRouter(req);
-        
-        RoutedRequest routed = router.route();
+        RoutedRequest routed = newRouter().route();
         
         assertNull(routed.getController());
         assertNull(routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
     }
     
     @Test
     public void handlesEmptyPath() {
         
-        HttpServletRequest req = mock(HttpServletRequest.class);
         when(req.getPathInfo()).thenReturn("");
+        when(req.getParameterMap()).thenReturn(paramMap);
         
-        HttpRequestRouter router = new HttpRequestRouter(req);
-        
-        RoutedRequest routed = router.route();
+        RoutedRequest routed = newRouter().route();
         
         assertNull(routed.getController());
         assertNull(routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
     }
     
     @Test
     public void handlesRootPath() {
         
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getPathInfo()).thenReturn("/");
+        String pathInfo = "/";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route(null, null, null));
         
-        HttpRequestRouter router = new HttpRequestRouter(req);
-        
-        RoutedRequest routed = router.route();
+        RoutedRequest routed = newRouter().route();
         
         assertNull(routed.getController());
         assertNull(routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
     }
     
     @Test
     public void handlesControllerOnly() {
         
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getPathInfo()).thenReturn("/cntrl");
+        String pathInfo = "/cntrl";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route("cntrl", null, null));
         
-        HttpRequestRouter router = new HttpRequestRouter(req);
         
-        RoutedRequest routed = router.route();
+        RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertNull(routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
     }
     
     @Test
-    public void handlesControllerAndAction() {
+    public void handlesControllerAndAction_NoPathParams() {
         
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getPathInfo()).thenReturn("/cntrl/actn");
+        String pathInfo = "/cntrl/actn";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route("cntrl", "actn", null));
         
-        HttpRequestRouter router = new HttpRequestRouter(req);
-        
-        RoutedRequest routed = router.route();
+        RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
     }
     
     @Test
-    public void handlesControllerAndAction2() {
+    public void handlesRouteNotFound() {
         
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getPathInfo()).thenReturn("/cntrl/actn/unknown");
+        String pathInfo = "/cntrl/actn/unknown";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo)).thenReturn(null);
+        when(req.getParameterMap()).thenReturn(paramMap);
         
-        HttpRequestRouter router = new HttpRequestRouter(req);
+        try {
+            newRouter().route();
+            fail("should have thrown exception");
+        } catch (Exception e) {
+            assertTrue(e instanceof NoMatchingRouteException);
+        }
+    }
+    
+    @Test
+    public void handlesControllerAndAction_OnePathParam() {
         
-        RoutedRequest routed = router.route();
+        String pathInfo = "/cntrl/actn/123";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route("cntrl", "actn", ":id"));
+        when(req.getParameterMap()).thenReturn(paramMap);
+        
+        RoutedRequest routed = newRouter().route();
         
         assertEquals("cntrl", routed.getController());
         assertEquals("actn", routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
+        Object val = paramMap.get("id");
+        assertNotNull(val);
+        assertEquals("123", val);
+    }
+    
+    @Test
+    public void handlesControllerAndAction_TwoPathParams() {
+        
+        String pathInfo = "/cntrl/actn/123/tom";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route("cntrl", "actn", ":id/:name"));
+        when(req.getParameterMap()).thenReturn(paramMap);
+        
+        RoutedRequest routed = newRouter().route();
+        
+        assertEquals("cntrl", routed.getController());
+        assertEquals("actn", routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
+        Object val = paramMap.get("id");
+        assertNotNull(val);
+        assertEquals("123", val);
+        val = paramMap.get("name");
+        assertNotNull(val);
+        assertEquals("tom", val);
+    }
+    
+    @Test
+    public void handlesControllerAndAction_OnePathParam_AlreadyExists() {
+        
+        String pathInfo = "/cntrl/actn/123";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route("cntrl", "actn", ":id"));
+        paramMap.put("id", "456");
+        when(req.getParameterMap()).thenReturn(paramMap);
+        
+        RoutedRequest routed = newRouter().route();
+        
+        assertEquals("cntrl", routed.getController());
+        assertEquals("actn", routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
+        Object val = paramMap.get("id");
+        assertNotNull(val);
+        assertEquals("123", val);
+    }
+    
+    @Test
+    public void handlesControllerAndAction_OnePathParam_AnotherExists() {
+        
+        String pathInfo = "/cntrl/actn/123";
+        when(req.getPathInfo()).thenReturn(pathInfo);
+        when(routeMap.getRoute(pathInfo))
+            .thenReturn(new Route("cntrl", "actn", ":id"));
+        paramMap.put("name", "tom");
+        when(req.getParameterMap()).thenReturn(paramMap);
+        
+        RoutedRequest routed = newRouter().route();
+        
+        assertEquals("cntrl", routed.getController());
+        assertEquals("actn", routed.getAction());
+        assertEquals(paramMap, routed.getParameterMap());
+        Object val = paramMap.get("id");
+        assertNotNull(val);
+        assertEquals("123", val);
+        val = paramMap.get("name");
+        assertNotNull(val);
+        assertEquals("tom", val);
+    }
+    
+    /*----------------------*/
+    
+    private HttpRequestRouter newRouter() {
+        return new HttpRequestRouter(req, routeMap);
     }
 }

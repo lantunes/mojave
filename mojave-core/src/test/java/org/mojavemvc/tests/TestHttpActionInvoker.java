@@ -38,6 +38,7 @@ import org.mojavemvc.core.ActionSignature;
 import org.mojavemvc.core.ControllerDatabase;
 import org.mojavemvc.core.HttpActionInvoker;
 import org.mojavemvc.core.MappedControllerDatabase;
+import org.mojavemvc.core.RegexRouteMap;
 import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
 import org.mojavemvc.tests.controllers.InterceptedController1;
@@ -75,7 +76,7 @@ public class TestHttpActionInvoker {
 
     private Injector injector;
 
-    private Map<String, ?> parametersMap = new HashMap<String, Object>();
+    private Map<String, Object> parametersMap = new HashMap<String, Object>();
 
     @Before
     public void beforeEachTest() throws Exception {
@@ -83,19 +84,16 @@ public class TestHttpActionInvoker {
         sess = mock(HttpSession.class);
         req = mock(HttpServletRequest.class);
         when(req.getSession()).thenReturn(sess);
-        when(req.getParameterMap()).thenReturn(parametersMap);
         resp = mock(HttpServletResponse.class);
 
         injector = Guice.createInjector(new ServletResourceModule(), new SomeModule());
         ServletResourceModule.set(req, resp);
 
-//        Field f = FrontController.class.getDeclaredField("ACTION_VARIABLE");
-//        f.setAccessible(true);
-//        f.set(null, "actn");
-//        f = FrontController.class.getDeclaredField("CONTROLLER_VARIABLE");
-//        f.setAccessible(true);
-//        f.set(null, "cntrl");
-        routed = new RoutedRequest(null, null);
+        routed = new RoutedRequest(null, null, parametersMap);
+    }
+    
+    private ControllerDatabase newControllerDatabase(Set<Class<?>> controllerClasses) {
+        return new MappedControllerDatabase(controllerClasses, new RegexRouteMap());
     }
 
     @Test
@@ -106,7 +104,7 @@ public class TestHttpActionInvoker {
         SomeStatelessController cntrl = injector.getInstance(SomeStatelessController.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(SomeStatelessController.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -140,7 +138,7 @@ public class TestHttpActionInvoker {
         SomeStatelessController cntrl = injector.getInstance(SomeStatelessController.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(SomeStatelessController.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -178,7 +176,7 @@ public class TestHttpActionInvoker {
         InterceptedController1 cntrl = injector.getInstance(InterceptedController1.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController1.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -213,7 +211,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        routed = new RoutedRequest(null, action);
+        routed = new RoutedRequest(null, action, parametersMap);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController2.invocationList = invocationList;
@@ -222,7 +220,7 @@ public class TestHttpActionInvoker {
         InterceptedController2 cntrl = injector.getInstance(InterceptedController2.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController2.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -263,7 +261,7 @@ public class TestHttpActionInvoker {
         InterceptedController2 cntrl = injector.getInstance(InterceptedController2.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController2.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -305,7 +303,7 @@ public class TestHttpActionInvoker {
         InterceptedController3 cntrl = injector.getInstance(InterceptedController3.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController3.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -342,7 +340,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        routed = new RoutedRequest(null, action);
+        routed = new RoutedRequest(null, action, parametersMap);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController4.invocationList = invocationList;
@@ -352,7 +350,7 @@ public class TestHttpActionInvoker {
         InterceptedController4 cntrl = injector.getInstance(InterceptedController4.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController4.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -389,7 +387,7 @@ public class TestHttpActionInvoker {
         String methodName = "defaultAction";
         String action = "some-action";
 
-        routed = new RoutedRequest(null, action);
+        routed = new RoutedRequest(null, action, parametersMap);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController4.invocationList = invocationList;
@@ -399,7 +397,7 @@ public class TestHttpActionInvoker {
         InterceptedController4 cntrl = injector.getInstance(InterceptedController4.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController4.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -442,7 +440,7 @@ public class TestHttpActionInvoker {
         InterceptedController1 cntrl = injector.getInstance(InterceptedController1.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController1.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -484,7 +482,7 @@ public class TestHttpActionInvoker {
         InterceptedController3 cntrl = injector.getInstance(InterceptedController3.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController3.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -528,7 +526,7 @@ public class TestHttpActionInvoker {
         InterceptedController5 cntrl = injector.getInstance(InterceptedController5.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController5.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -565,7 +563,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        routed = new RoutedRequest(null, action);
+        routed = new RoutedRequest(null, action, parametersMap);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController5.invocationList = invocationList;
@@ -575,7 +573,7 @@ public class TestHttpActionInvoker {
         InterceptedController5 cntrl = injector.getInstance(InterceptedController5.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController5.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -618,7 +616,7 @@ public class TestHttpActionInvoker {
         InterceptedController6 cntrl = injector.getInstance(InterceptedController6.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController6.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -660,7 +658,7 @@ public class TestHttpActionInvoker {
         InterceptedController7 cntrl = injector.getInstance(InterceptedController7.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController7.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -702,7 +700,7 @@ public class TestHttpActionInvoker {
         InterceptedController8 cntrl = injector.getInstance(InterceptedController8.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController8.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -743,7 +741,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        routed = new RoutedRequest(null, action);
+        routed = new RoutedRequest(null, action, parametersMap);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController8.invocationList = invocationList;
@@ -755,7 +753,7 @@ public class TestHttpActionInvoker {
         InterceptedController8 cntrl = injector.getInstance(InterceptedController8.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController8.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -805,7 +803,7 @@ public class TestHttpActionInvoker {
         InterceptedController9 cntrl = injector.getInstance(InterceptedController9.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController9.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
@@ -848,7 +846,7 @@ public class TestHttpActionInvoker {
         String methodName = "someAction";
         String action = "some-action";
 
-        routed = new RoutedRequest(null, action);
+        routed = new RoutedRequest(null, action, parametersMap);
 
         List<String> invocationList = new ArrayList<String>();
         InterceptedController9.invocationList = invocationList;
@@ -860,7 +858,7 @@ public class TestHttpActionInvoker {
         InterceptedController9 cntrl = injector.getInstance(InterceptedController9.class);
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses);
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
 
         FastClass fastClass = FastClass.create(InterceptedController9.class);
         int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});

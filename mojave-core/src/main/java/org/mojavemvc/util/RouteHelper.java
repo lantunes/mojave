@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.core;
-
-import java.util.Map;
+package org.mojavemvc.util;
 
 /**
  * @author Luis Antunes
  */
-public class RoutedRequest {
+public class RouteHelper {
 
-    private final String controller;
-    private final String action;
-    private final Map<String, Object> parameterMap;
-
-    public RoutedRequest(String controller, String action, Map<String, Object> parameterMap) {
-        this.controller = controller;
-        this.action = action;
-        this.parameterMap = parameterMap;
-    }
-
-    public String getController() {
-        return controller;
-    }
-
-    public String getAction() {
-        return action;
-    }
+    public static final String PATH_ELEMENT_SEPARATOR = "/";
+    public static final String PARAM_PREFIX = ":";
+    public static final String CUSTOM_REGEX_START = "<";
+    public static final String CUSTOM_REGEX_END = ">";
     
-    public Map<String, Object> getParameterMap() {
-        return parameterMap;
+    public static String[] getPathElements(String path) {
+        if (path == null) throw new IllegalArgumentException("path cannot be null");
+        path = path.trim();
+        if (path.length() == 0) throw new IllegalArgumentException("path cannot be empty");
+        return path.substring(1).split(PATH_ELEMENT_SEPARATOR);
     }
 }

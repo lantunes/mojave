@@ -1236,6 +1236,12 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/httpmethod1/sayHello").producesErrorPage();
     }
+    
+    @Test
+    public void httpMethodGET4() throws Exception {
+
+        assertThatRequestFor("/httpmethod1/doGetAction").producesErrorPage();
+    }
 
     @Test
     public void httpMethodPOST() throws Exception {

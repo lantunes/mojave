@@ -28,7 +28,7 @@ public interface ControllerDatabase {
     public static final String KEY = ControllerDatabase.class.getName();
 
     /**
-     * Get the conroller Class associated with the given controller variable
+     * Get the controller Class associated with the given controller variable
      * name.
      * 
      * @param controllerVariable
@@ -92,7 +92,7 @@ public interface ControllerDatabase {
     ActionSignature getAfterConstructMethodFor(Class<?> controllerClass);
 
     /**
-     * Get an unmodifiable set of singleton conroller classes that are marked
+     * Get an unmodifiable set of singleton controller classes that are marked
      * for creation during the FrontController init().
      * 
      * @return the singleton controller class
@@ -202,4 +202,11 @@ public interface ControllerDatabase {
      *         if there is no Action for the given HttpMethod
      */
     ActionSignature getHttpMethodActionSignature(Class<?> controllerClass, HttpMethod httpMethod);
+    
+    /**
+     * Get the RouteMap for the application.
+     * 
+     * @return the route map for the application
+     */
+    RouteMap getRouteMap();
 }

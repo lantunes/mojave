@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.core;
-
-import java.util.Map;
+package org.mojavemvc.exception;
 
 /**
+ * 
  * @author Luis Antunes
+ *
  */
-public class RoutedRequest {
+public class NoMatchingRouteException extends RuntimeException {
 
-    private final String controller;
-    private final String action;
-    private final Map<String, Object> parameterMap;
+    private static final long serialVersionUID = 0;
 
-    public RoutedRequest(String controller, String action, Map<String, Object> parameterMap) {
-        this.controller = controller;
-        this.action = action;
-        this.parameterMap = parameterMap;
+    public NoMatchingRouteException() {
     }
 
-    public String getController() {
-        return controller;
-    }
+    public NoMatchingRouteException(String message) {
 
-    public String getAction() {
-        return action;
-    }
-    
-    public Map<String, Object> getParameterMap() {
-        return parameterMap;
+        super(message);
     }
 }

@@ -1594,4 +1594,28 @@ public class TestFrontController extends AbstractWebTest {
         .producesPage()
         .withH2Tag(withContent("Hello from John, 123"));
     }
+    
+    @Test
+    public void paramPathController_GET() throws Exception {
+        
+        assertThatGETRequestFor("/parampath-http/say/John")
+        .producesPage()
+        .withH2Tag(withContent("Hello from John, GET"));
+    }
+    
+    @Test
+    public void paramPathController_POST() throws Exception {
+        
+        assertThatPOSTRequestFor("/parampath-http/say/John")
+        .producesPage()
+        .withH2Tag(withContent("Hello from John, POST"));
+    }
+    
+    @Test
+    public void paramPathController_DELETE() throws Exception {
+        
+        assertThatDELETERequestFor("/parampath-http/say/John")
+        .producesPage()
+        .withH2Tag(withContent("Hello from John, DELETE"));
+    }
 }

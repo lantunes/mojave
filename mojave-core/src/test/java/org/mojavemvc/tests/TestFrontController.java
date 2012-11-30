@@ -1586,4 +1586,12 @@ public class TestFrontController extends AbstractWebTest {
         .producesPage()
         .withH2Tag(withContent("Hello from John, 123"));
     }
+    
+    @Test
+    public void paramPathController_Encoded() throws Exception {
+        
+        assertThatRequestFor("/parampath/encoded/a%2Bb/John/123")
+        .producesPage()
+        .withH2Tag(withContent("Hello from John, 123"));
+    }
 }

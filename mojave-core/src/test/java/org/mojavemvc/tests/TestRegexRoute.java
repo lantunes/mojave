@@ -87,4 +87,12 @@ public class TestRegexRoute {
         String actual = r.pattern().toString();
         assertEquals(expected, actual);
     }
+    
+    @Test
+    public void pattern_WithController_WithAction_WithRegexSymbols() {
+        RegexRoute r = new RegexRoute(new Route("cntrl", "actn", "a+b/:id<[0-9]+>/:name"));
+        String expected = "^/cntrl/actn/a\\+b/([0-9]+)/([^/]+)$";
+        String actual = r.pattern().toString();
+        assertEquals(expected, actual);
+    }
 }

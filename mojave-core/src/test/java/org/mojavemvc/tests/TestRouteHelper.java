@@ -54,4 +54,13 @@ public class TestRouteHelper {
         String[] actual = RouteHelper.getPathElements("/clients/:id<[0-9]+>");
         assertTrue(Arrays.equals(expected, actual));
     }
+    
+    @Test
+    public void escapeNonCustomRegex() {
+        String path = "/cntrl/[](){}*^?$.\\/a+b/:id<[^/]+>/:name<[a-z]+>";
+        String expected = 
+                "/cntrl/\\[\\]\\(\\)\\{\\}\\*\\^\\?\\$\\.\\\\/a\\+b/:id<[^/]+>/:name<[a-z]+>";
+        String actual = RouteHelper.escapeNonCustomRegex(path);
+        assertEquals(expected, actual);
+    }
 }

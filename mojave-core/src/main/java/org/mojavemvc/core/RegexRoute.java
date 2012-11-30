@@ -33,7 +33,8 @@ public class RegexRoute {
     }
     
     private Pattern compilePattern() {
-        String[] tokens = route.toString().substring(1).split(PATH_ELEMENT_SEPARATOR);
+        String paramPath = escapeNonCustomRegex(route.toString().substring(1));
+        String[] tokens = paramPath.split(PATH_ELEMENT_SEPARATOR);
         StringBuilder routeRegex = new StringBuilder("^").append(PATH_ELEMENT_SEPARATOR);
         for (int i = 0; i < tokens.length; i++) {
             if (i > 0) routeRegex.append(PATH_ELEMENT_SEPARATOR);

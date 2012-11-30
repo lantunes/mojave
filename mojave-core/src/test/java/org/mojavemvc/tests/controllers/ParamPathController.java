@@ -31,4 +31,12 @@ public class ParamPathController {
             .withAttribute("p1", name)
             .withAttribute("p2", id);        
     }
+    
+    @Action("encoded")
+    @ParamPath("a+b/:name/:id<[0-9]+>")
+    public View encodedAction(@Param("name") String name, @Param("id") int id) {
+        return new JSP("params2")
+            .withAttribute("p1", name)
+            .withAttribute("p2", id);        
+    }
 }

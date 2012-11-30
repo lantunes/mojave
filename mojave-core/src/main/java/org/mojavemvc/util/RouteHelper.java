@@ -15,6 +15,8 @@
  */
 package org.mojavemvc.util;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Luis Antunes
  */
@@ -24,6 +26,14 @@ public class RouteHelper {
     public static final String PARAM_PREFIX = ":";
     public static final String CUSTOM_REGEX_START = "<";
     public static final String CUSTOM_REGEX_END = ">";
+    /*
+     * From the Java API documentation for the Pattern class:
+     * 
+     * Instances of this (Pattern) class are immutable and are safe for use by 
+     * multiple concurrent threads. Instances of the Matcher class are not safe 
+     * for such use.
+     */
+    public static final Pattern CUSTOM_REGEX_PATTERN = Pattern.compile("<[^>]+>");
     
     public static String[] getPathElements(String path) {
         if (path == null) throw new IllegalArgumentException("path cannot be null");

@@ -33,15 +33,12 @@ public class ParamPathHelper {
     public static String[] getParamNamesFrom(String paramPath) {
         
         List<String> params = new ArrayList<String>();
+        paramPath = CUSTOM_REGEX_PATTERN.matcher(paramPath).replaceAll("");
         String[] tokens = paramPath.split(PATH_ELEMENT_SEPARATOR);
         for (int i = 0; i < tokens.length; i++) {
             String currentElement = tokens[i];
             if (currentElement.startsWith(PARAM_PREFIX)) {
                 currentElement = currentElement.substring(1);
-                if (currentElement.contains(CUSTOM_REGEX_START)) {
-                    currentElement = currentElement.substring(0, 
-                            currentElement.indexOf(CUSTOM_REGEX_START));
-                }
                 params.add(currentElement);
             }
         }

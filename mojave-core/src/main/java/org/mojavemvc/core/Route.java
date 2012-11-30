@@ -59,15 +59,12 @@ public class Route {
     
     private List<PathParameterElement> extractPathParamElements() {
         List<PathParameterElement> elements = new ArrayList<PathParameterElement>();
-        String[] pathElements = getPathElements(routeString);
+        String path = CUSTOM_REGEX_PATTERN.matcher(routeString).replaceAll("");
+        String[] pathElements = getPathElements(path);
         for (int i = 0; i < pathElements.length; i++) {
             String currentElement = pathElements[i];
             if (currentElement.startsWith(PARAM_PREFIX)) {
                 currentElement = currentElement.substring(1);
-                if (currentElement.contains(CUSTOM_REGEX_START)) {
-                    currentElement = currentElement.substring(0, 
-                            currentElement.indexOf(CUSTOM_REGEX_START));
-                }
                 elements.add(new PathParameterElement(currentElement, i));
             }
         }

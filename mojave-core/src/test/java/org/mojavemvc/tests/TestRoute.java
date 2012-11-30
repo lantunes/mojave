@@ -211,4 +211,17 @@ public class TestRoute {
         assertEquals("name", elem.name());
         assertEquals(3, elem.index());
     }
+    
+    @Test
+    public void pathParameterElements_OneExistsWithRegexWithSlashWithControllerAndAction() {
+        Route r = new Route("cntrl", "actn", ":id<[^/]+>/:name<[a-z]+>");
+        List<PathParameterElement> params = r.pathParameterElements();
+        assertEquals(2, params.size());
+        PathParameterElement elem = params.get(0);
+        assertEquals("id", elem.name());
+        assertEquals(2, elem.index());
+        elem = params.get(1);
+        assertEquals("name", elem.name());
+        assertEquals(3, elem.index());
+    }
 }

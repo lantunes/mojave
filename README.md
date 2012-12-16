@@ -10,9 +10,17 @@ It borrows ideas from Spring Web MVC and EJB 3.1, and incorporates Guice. It att
 * remove cross-cutting concerns from web application development by supporting AOP through the interceptor pattern
 * be as minimally intrusive a framework as possible; it tries to get out of your way by minimizing framework-related metadata and boilerplate code
 
+Mojave also:
+ 
+* supports JSP out-of-the-box; no additional work is required
+* supports building RESTful applications: controller actions can be bound to specific HTTP methods and URIs
+* is small and lightweight
+* has very high test coverage, making the framework easy to change
+
 Mojave MVC incorporates the Google Guice framework. All user components in the application can 
 be configured with injectable dependencies, through use of the standard @Inject annotation. 
-Injection is configured through user-supplied Guice Modules, using only idiomatic Java.
+Injection is configured through user-supplied Guice Modules, using only idiomatic Java. Mojave also works 
+out-of-the-box on Google App Engine and AWS Elastic Beanstalk.
 
 # Getting Started
 ===================

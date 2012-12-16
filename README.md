@@ -11,9 +11,9 @@ It borrows ideas from Spring Web MVC and EJB 3.1, and incorporates Guice. It att
 * be as minimally intrusive a framework as possible; it tries to get out of your way by minimizing framework-related metadata and boilerplate code
 
 Mojave also:
- 
-* supports JSP out-of-the-box; no additional work is required
+
 * supports building RESTful applications: controller actions can be bound to specific HTTP methods and URIs
+* supports JSP out-of-the-box
 * is small and lightweight
 * has very high test coverage, making the framework easy to change
 

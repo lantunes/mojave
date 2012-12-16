@@ -30,6 +30,7 @@ import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.tests.services.SomeService;
 import org.mojavemvc.views.JSP;
+import org.mojavemvc.views.PlainText;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -214,6 +215,11 @@ public class IndexController {
         return new JSP("param").withAttribute("var", var);
     }
 
+    @Action("plain-text")
+    public PlainText getText() {
+        return new PlainText("hello");
+    }
+    
     public String getParameter(String key) {
 
         return request.getParameter(key);

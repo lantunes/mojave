@@ -1618,4 +1618,10 @@ public class TestFrontController extends AbstractWebTest {
         .producesPage()
         .withH2Tag(withContent("Hello from John, DELETE"));
     }
+    
+    @Test
+    public void plainText() throws Exception {
+        
+        assertThatRequestFor("/index/plain-text").producesPage().withContent("hello");
+    }
 }

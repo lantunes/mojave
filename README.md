@@ -70,6 +70,7 @@ package helloworld.controllers;
  
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
+import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
@@ -78,6 +79,7 @@ import org.mojavemvc.views.View;
 public class HelloWorld {
  
   @Action
+  @ParamPath("to/:name")
   public View sayHello(@Param("name") String name) {
  
     return new JSP("hello").withAttribute("name", name);
@@ -97,7 +99,7 @@ Finally, create a JSP file, and add it to WEB-INF/jsp:
 
 Deploy your war file (assuming it's called app.war), and in a browser, go to:
 
-    http://localhost:8080/app/serv/HelloWorld/sayHello?name=John
+    http://localhost:8080/app/serv/HelloWorld/sayHello/to/John
     
 In a browser, you should see the following response:
 

@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  *     &#064;DefaultAction
  *     public View defaultAction() {
  * 
- *         return new View(&quot;test.jsp&quot;);
+ *         return new JSP(&quot;test&quot;);
  *     }
  * }
  * </pre>

@@ -41,4 +41,8 @@ public class Redirect implements View {
         response.sendRedirect(path);
     }
 
+    @Override
+    public String toString() {
+        return path;
+    }
 }

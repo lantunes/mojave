@@ -38,4 +38,9 @@ public class PlainText extends StreamView {
 
         return payload.getBytes();
     }
+    
+    @Override
+    public String toString() {
+        return payload;
+    }
 }

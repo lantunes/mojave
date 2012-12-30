@@ -3,13 +3,38 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mojavemvc</groupId>
     <artifactId>mojave</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <packaging>pom</packaging>
     <name>Mojave MVC Web Framework</name>
+    <description>An annotation-driven, POJO-based Java web MVC framework, supporting DI with Guice</description>
     <url>http://mojavemvc.org</url>
     <modules>
         <module>mojave-core</module>
     </modules>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:lantunes/mojave.git</connection>
+        <developerConnection>scm:git:git@github.com:lantunes/mojave.git</developerConnection>
+        <url>http://github.com/lantunes/mojave</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>lantunes</id>
+            <name>Luis Antunes</name>
+            <email>lantunes@gmail.com</email>
+        </developer>
+    </developers>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <build>
         <pluginManagement>
             <plugins>

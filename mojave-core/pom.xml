@@ -6,7 +6,7 @@
     <parent>
         <artifactId>mojave</artifactId>
         <groupId>org.mojavemvc</groupId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </parent>
     <artifactId>mojave-core</artifactId>
     <name>Mojave MVC Web Framework Core</name>
@@ -205,6 +205,25 @@
                                         </versionRange>
                                         <goals>
                                             <goal>check</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.maven.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            maven-enforcer-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.0.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

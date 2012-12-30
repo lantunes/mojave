@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.exception;
+package org.mojavemvc.tests;
 
-/**
- * @author Luis Antunes
- */
-public class DefaultErrorHandlerFactory implements ErrorHandlerFactory {
+import static org.junit.Assert.*;
 
-    public ErrorHandler createErrorHandler() {
+import org.junit.Test;
+import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
+import org.mojavemvc.exception.DefaultJSPErrorHandler;
+import org.mojavemvc.exception.ErrorHandler;
 
-        return new DefaultErrorHandler();
+public class TestDefaultJSPErrorHandlerFactory {
+
+    @Test
+    public void createErrorHandler() throws Exception {
+
+        DefaultJSPErrorHandlerFactory factory = new DefaultJSPErrorHandlerFactory();
+        ErrorHandler errorHandler = factory.createErrorHandler();
+
+        assertTrue(errorHandler instanceof DefaultJSPErrorHandler);
     }
 }

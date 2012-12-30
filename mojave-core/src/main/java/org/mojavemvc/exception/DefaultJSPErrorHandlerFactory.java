@@ -18,10 +18,10 @@ package org.mojavemvc.exception;
 /**
  * @author Luis Antunes
  */
-public class DefaultErrorHandlerFactory implements ErrorHandlerFactory {
+public class DefaultJSPErrorHandlerFactory implements ErrorHandlerFactory {
 
     public ErrorHandler createErrorHandler() {
 
-        return new DefaultErrorHandler();
+        return new DefaultJSPErrorHandler();
     }
 }

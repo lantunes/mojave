@@ -20,7 +20,7 @@ import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
 /**
- * The default {@link ErrorHandler} for the application. Simply returns a
+ * The default JSP {@link ErrorHandler} for the application. Simply returns a
  * {@link JSP} based on the 'jsp-error-file' init parameter (see
  * {@link org.mojavemvc.FrontController}).
  * 

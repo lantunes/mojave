@@ -26,6 +26,7 @@ import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
+import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -115,8 +116,8 @@ public class FrontControllerInitializer {
 
         } else {
 
-            jspErrorFile = "error.jsp";
-            logger.debug("no " + JSP_ERROR_FILE + " init-param specified; setting to " + jspErrorFile);
+            jspErrorFile = "";
+            logger.debug("no " + JSP_ERROR_FILE + " init-param specified; setting to \"\"");
         }
     }
 
@@ -134,7 +135,9 @@ public class FrontControllerInitializer {
 
         } else {
 
-            String defaultErrorHandlerFactory = DefaultErrorHandlerFactory.class.getName();
+            String defaultErrorHandlerFactory = (!isEmpty(jspErrorFile)) ? 
+                    DefaultJSPErrorHandlerFactory.class.getName() :
+                    DefaultErrorHandlerFactory.class.getName();
 
             logger.debug("no " + ERROR_HANDLER_FACTORY + " init-param specified; setting to "
                     + defaultErrorHandlerFactory);

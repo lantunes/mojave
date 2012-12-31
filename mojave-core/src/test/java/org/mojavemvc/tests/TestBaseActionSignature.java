@@ -44,7 +44,7 @@ public class TestBaseActionSignature {
     }
 
     @Test
-    public void withParameters1() {
+    public void withStringArrayParameters() {
 
         ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] { String.class, Integer.class,
                 Double.class, Date.class, Long.class }, new Annotation[][] { { createParam("p1") }, { createParam("p2") },
@@ -74,7 +74,7 @@ public class TestBaseActionSignature {
     }
 
     @Test
-    public void withParameters2() {
+    public void withObjectParameters() {
 
         ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] { String.class, Integer.class,
                 Double.class, Date.class, SomeUserDefinedType.class, Long.class }, new Annotation[][] { { createParam("p1") },

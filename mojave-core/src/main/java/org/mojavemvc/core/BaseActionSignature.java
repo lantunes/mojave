@@ -159,10 +159,6 @@ public class BaseActionSignature implements ActionSignature {
 
     private void populateArgsFromStringArray(Class<?> paramType, String[] paramValues, List<Object> args) {
 
-        if (!paramTypeIsSupported(paramType)) {
-            throw new UnsupportedOperationException("unsupported parameter type: " + paramType.getName());
-        }
-        
         if (paramType.equals(String.class)) {
             args.add(paramValues == null ? null : paramValues[0]);
         } else if (paramType.equals(String[].class)) {
@@ -267,30 +263,9 @@ public class BaseActionSignature implements ActionSignature {
             } else {
                 args.add(null);
             }
+        } else {
+            throw new UnsupportedOperationException("unsupported parameter type: " + paramType.getName());
         }
-    }
-    
-    private boolean paramTypeIsSupported(Class<?> paramType) {
-        return paramType.equals(String.class) ||
-                paramType.equals(String[].class) ||
-                paramType.equals(Integer.class) ||
-                paramType.equals(int.class) ||
-                paramType.equals(Integer[].class) ||
-                paramType.equals(int[].class) ||
-                paramType.equals(Double.class) ||
-                paramType.equals(double.class) ||
-                paramType.equals(Double[].class) ||
-                paramType.equals(double[].class) ||
-                paramType.equals(Date.class) ||
-                paramType.equals(Date[].class) ||
-                paramType.equals(Boolean.class) ||
-                paramType.equals(boolean.class) ||
-                paramType.equals(Boolean[].class) ||
-                paramType.equals(boolean[].class) ||
-                paramType.equals(Long.class) ||
-                paramType.equals(long.class) ||
-                paramType.equals(Long[].class) ||
-                paramType.equals(long[].class);
     }
 
     private void populateArgsForForms(Class<?> formType, Map<String, ?> parametersMap, List<PropertyDescriptor> params,
@@ -363,7 +338,7 @@ public class BaseActionSignature implements ActionSignature {
                 return false;
             }
         }
-        throw new IllegalArgumentException("boolean value not in correct " + "format('t','true','1';'f','false','0'): "
+        throw new IllegalArgumentException("boolean value not in correct format('t','true','1';'f','false','0'): "
                 + (val == null ? "null" : val));
     }
 }

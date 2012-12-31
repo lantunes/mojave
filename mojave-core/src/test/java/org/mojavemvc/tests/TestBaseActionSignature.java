@@ -47,35 +47,39 @@ public class TestBaseActionSignature {
     public void withParameters1() {
 
         ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] { String.class, Integer.class,
-                Double.class, Date.class }, new Annotation[][] { { createParam("p1") }, { createParam("p2") },
-                { createParam("p3") }, { createParam("p4") } });
+                Double.class, Date.class, Long.class }, new Annotation[][] { { createParam("p1") }, { createParam("p2") },
+                { createParam("p3") }, { createParam("p4") }, { createParam("p5") } });
 
         Map<String, String[]> parameterMap = new HashMap<String, String[]>();
         parameterMap.put("p1", new String[] { "hello" });
         parameterMap.put("p2", new String[] { "123" });
         parameterMap.put("p3", new String[] { "1.23" });
         parameterMap.put("p4", new String[] { "2011-03-01" });
+        parameterMap.put("p5", new String[] { "123456" });
 
         Class<?>[] paramTypes = sig.parameterTypes();
-        assertEquals(4, paramTypes.length);
+        assertEquals(5, paramTypes.length);
         assertEquals(String.class, paramTypes[0]);
         assertEquals(Integer.class, paramTypes[1]);
         assertEquals(Double.class, paramTypes[2]);
         assertEquals(Date.class, paramTypes[3]);
+        assertEquals(Long.class, paramTypes[4]);
         Object[] args = sig.getArgs(parameterMap);
-        assertEquals(4, args.length);
+        assertEquals(5, args.length);
         assertEquals("hello", args[0]);
         assertEquals(123, args[1]);
         assertEquals(1.23, args[2]);
         assertEquals(Date.valueOf("2011-03-01"), args[3]);
+        assertEquals(123456L, args[4]);
     }
 
     @Test
     public void withParameters2() {
 
         ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] { String.class, Integer.class,
-                Double.class, Date.class, SomeUserDefinedType.class }, new Annotation[][] { { createParam("p1") },
-                { createParam("p2") }, { createParam("p3") }, { createParam("p4") }, { createParam("p5") } });
+                Double.class, Date.class, SomeUserDefinedType.class, Long.class }, new Annotation[][] { { createParam("p1") },
+                { createParam("p2") }, { createParam("p3") }, { createParam("p4") }, { createParam("p5") }, 
+                { createParam("p6") } });
 
         SomeUserDefinedType userDefinedType = new SomeUserDefinedType();
 
@@ -85,21 +89,24 @@ public class TestBaseActionSignature {
         parameterMap.put("p3", 1.23);
         parameterMap.put("p4", Date.valueOf("2011-03-01"));
         parameterMap.put("p5", userDefinedType);
+        parameterMap.put("p6", 123456L);
 
         Class<?>[] paramTypes = sig.parameterTypes();
-        assertEquals(5, paramTypes.length);
+        assertEquals(6, paramTypes.length);
         assertEquals(String.class, paramTypes[0]);
         assertEquals(Integer.class, paramTypes[1]);
         assertEquals(Double.class, paramTypes[2]);
         assertEquals(Date.class, paramTypes[3]);
         assertEquals(SomeUserDefinedType.class, paramTypes[4]);
+        assertEquals(Long.class, paramTypes[5]);
         Object[] args = sig.getArgs(parameterMap);
-        assertEquals(5, args.length);
+        assertEquals(6, args.length);
         assertEquals("hello", args[0]);
         assertEquals(123, args[1]);
         assertEquals(1.23, args[2]);
         assertEquals(Date.valueOf("2011-03-01"), args[3]);
         assertEquals(userDefinedType, args[4]);
+        assertEquals(123456L, args[5]);
     }
 
     @SuppressWarnings("serial")

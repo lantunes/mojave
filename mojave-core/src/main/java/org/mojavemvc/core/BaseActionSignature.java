@@ -148,6 +148,8 @@ public class BaseActionSignature implements ActionSignature {
             args.add(paramValue == null ? 0 : paramValue);
         } else if (paramType.equals(Double.class) || paramType.equals(double.class)) {
             args.add(paramValue == null ? 0 : paramValue);
+        } else if (paramType.equals(Long.class) || paramType.equals(long.class)) {
+            args.add(paramValue == null ? 0 : paramValue);
         } else if (paramType.equals(Boolean.class) || paramType.equals(boolean.class)) {
             args.add(paramValue == null ? false : paramValue);
         } else {
@@ -157,6 +159,10 @@ public class BaseActionSignature implements ActionSignature {
 
     private void populateArgsFromStringArray(Class<?> paramType, String[] paramValues, List<Object> args) {
 
+        if (!paramTypeIsSupported(paramType)) {
+            throw new UnsupportedOperationException("unsupported parameter type: " + paramType.getName());
+        }
+        
         if (paramType.equals(String.class)) {
             args.add(paramValues == null ? null : paramValues[0]);
         } else if (paramType.equals(String[].class)) {
@@ -180,6 +186,28 @@ public class BaseActionSignature implements ActionSignature {
                     ints[k] = Integer.parseInt(paramValues[k]);
                 }
                 args.add(ints);
+            } else {
+                args.add(null);
+            }
+        } else if (paramType.equals(Long.class) || paramType.equals(long.class)) {
+            args.add(paramValues == null ? 0 : Long.parseLong(paramValues[0]));
+        } else if (paramType.equals(Long[].class)) {
+            if (paramValues != null) {
+                Long[] longs = new Long[paramValues.length];
+                for (int k = 0; k < paramValues.length; k++) {
+                    longs[k] = Long.parseLong(paramValues[k]);
+                }
+                args.add(longs);
+            } else {
+                args.add(null);
+            }
+        } else if (paramType.equals(long[].class)) {
+            if (paramValues != null) {
+                long[] longs = new long[paramValues.length];
+                for (int k = 0; k < paramValues.length; k++) {
+                    longs[k] = Long.parseLong(paramValues[k]);
+                }
+                args.add(longs);
             } else {
                 args.add(null);
             }
@@ -240,6 +268,29 @@ public class BaseActionSignature implements ActionSignature {
                 args.add(null);
             }
         }
+    }
+    
+    private boolean paramTypeIsSupported(Class<?> paramType) {
+        return paramType.equals(String.class) ||
+                paramType.equals(String[].class) ||
+                paramType.equals(Integer.class) ||
+                paramType.equals(int.class) ||
+                paramType.equals(Integer[].class) ||
+                paramType.equals(int[].class) ||
+                paramType.equals(Double.class) ||
+                paramType.equals(double.class) ||
+                paramType.equals(Double[].class) ||
+                paramType.equals(double[].class) ||
+                paramType.equals(Date.class) ||
+                paramType.equals(Date[].class) ||
+                paramType.equals(Boolean.class) ||
+                paramType.equals(boolean.class) ||
+                paramType.equals(Boolean[].class) ||
+                paramType.equals(boolean[].class) ||
+                paramType.equals(Long.class) ||
+                paramType.equals(long.class) ||
+                paramType.equals(Long[].class) ||
+                paramType.equals(long[].class);
     }
 
     private void populateArgsForForms(Class<?> formType, Map<String, ?> parametersMap, List<PropertyDescriptor> params,

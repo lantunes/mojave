@@ -21,9 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Luis Antunes
  */
-public class Status {
+public class Response {
 
-    public static class OK extends AbstractStatus<OK> {
+    public static class OK extends AbstractResponse<OK> {
 
         public OK() {
             super(HttpServletResponse.SC_OK);
@@ -35,7 +35,7 @@ public class Status {
         }
     }
     
-    public static class Accepted extends AbstractStatus<Accepted> {
+    public static class Accepted extends AbstractResponse<Accepted> {
 
         public Accepted() {
             super(HttpServletResponse.SC_ACCEPTED);
@@ -47,7 +47,7 @@ public class Status {
         }
     }
     
-    public static class Created extends AbstractStatus<Created> {
+    public static class Created extends AbstractResponse<Created> {
 
         public Created() {
             super(HttpServletResponse.SC_CREATED);
@@ -59,7 +59,7 @@ public class Status {
         }
     }
     
-    public static class Found extends AbstractStatus<Found> {
+    public static class Found extends AbstractResponse<Found> {
 
         public Found() {
             super(HttpServletResponse.SC_FOUND);
@@ -72,7 +72,7 @@ public class Status {
     }
     
     public static class MovedPermanently extends 
-        AbstractStatus<MovedPermanently> {
+        AbstractResponse<MovedPermanently> {
 
         public MovedPermanently() {
             super(HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -84,7 +84,7 @@ public class Status {
         }
     }
     
-    public static class NoContent extends AbstractStatus<NoContent> {
+    public static class NoContent extends AbstractResponse<NoContent> {
 
         public NoContent() {
             super(HttpServletResponse.SC_NO_CONTENT);
@@ -96,7 +96,7 @@ public class Status {
         }
     }
     
-    public static class NotModified extends AbstractStatus<NotModified> {
+    public static class NotModified extends AbstractResponse<NotModified> {
 
         public NotModified() {
             super(HttpServletResponse.SC_NOT_MODIFIED);
@@ -109,7 +109,7 @@ public class Status {
     }
     
     public static class PartialContent extends 
-        AbstractStatus<PartialContent> {
+        AbstractResponse<PartialContent> {
 
         public PartialContent() {
             super(HttpServletResponse.SC_PARTIAL_CONTENT);
@@ -121,7 +121,7 @@ public class Status {
         }
     }
     
-    public static class ResetContent extends AbstractStatus<ResetContent> {
+    public static class ResetContent extends AbstractResponse<ResetContent> {
 
         public ResetContent() {
             super(HttpServletResponse.SC_RESET_CONTENT);
@@ -133,7 +133,7 @@ public class Status {
         }
     }
     
-    public static class SeeOther extends AbstractStatus<SeeOther> {
+    public static class SeeOther extends AbstractResponse<SeeOther> {
 
         public SeeOther() {
             super(HttpServletResponse.SC_SEE_OTHER);
@@ -145,7 +145,7 @@ public class Status {
         }
     }
     
-    public static class UseProxy extends AbstractStatus<UseProxy> {
+    public static class UseProxy extends AbstractResponse<UseProxy> {
 
         public UseProxy() {
             super(HttpServletResponse.SC_USE_PROXY);
@@ -158,7 +158,7 @@ public class Status {
     }
     
     public static class TemporaryRedirect extends 
-        AbstractStatus<TemporaryRedirect> {
+        AbstractResponse<TemporaryRedirect> {
 
         public TemporaryRedirect() {
             super(HttpServletResponse.SC_TEMPORARY_REDIRECT);
@@ -170,7 +170,7 @@ public class Status {
         }
     }
     
-    public static class BadRequest extends AbstractStatus<BadRequest> {
+    public static class BadRequest extends AbstractResponse<BadRequest> {
 
         public BadRequest() {
             super(HttpServletResponse.SC_BAD_REQUEST);
@@ -182,7 +182,7 @@ public class Status {
         }
     }
     
-    public static class Unauthorized extends AbstractStatus<Unauthorized> {
+    public static class Unauthorized extends AbstractResponse<Unauthorized> {
 
         public Unauthorized() {
             super(HttpServletResponse.SC_UNAUTHORIZED);
@@ -194,7 +194,7 @@ public class Status {
         }
     }
     
-    public static class PaymentRequired extends AbstractStatus<PaymentRequired> {
+    public static class PaymentRequired extends AbstractResponse<PaymentRequired> {
 
         public PaymentRequired() {
             super(HttpServletResponse.SC_PAYMENT_REQUIRED);
@@ -206,7 +206,7 @@ public class Status {
         }
     }
     
-    public static class Forbidden extends AbstractStatus<Forbidden> {
+    public static class Forbidden extends AbstractResponse<Forbidden> {
 
         public Forbidden() {
             super(HttpServletResponse.SC_FORBIDDEN);
@@ -218,7 +218,7 @@ public class Status {
         }
     }
     
-    public static class NotFound extends AbstractStatus<NotFound> {
+    public static class NotFound extends AbstractResponse<NotFound> {
 
         public NotFound() {
             super(HttpServletResponse.SC_NOT_FOUND);
@@ -230,7 +230,7 @@ public class Status {
         }
     }
     
-    public static class MethodNotAllowed extends AbstractStatus<MethodNotAllowed> {
+    public static class MethodNotAllowed extends AbstractResponse<MethodNotAllowed> {
 
         public MethodNotAllowed() {
             super(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -242,7 +242,7 @@ public class Status {
         }
     }
     
-    public static class NotAcceptable extends AbstractStatus<NotAcceptable> {
+    public static class NotAcceptable extends AbstractResponse<NotAcceptable> {
 
         public NotAcceptable() {
             super(HttpServletResponse.SC_NOT_ACCEPTABLE);
@@ -255,7 +255,7 @@ public class Status {
     }
     
     public static class ProxyAuthenticationRequired extends 
-        AbstractStatus<ProxyAuthenticationRequired> {
+        AbstractResponse<ProxyAuthenticationRequired> {
 
         public ProxyAuthenticationRequired() {
             super(HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED);
@@ -267,7 +267,7 @@ public class Status {
         }
     }
     
-    public static class RequestTimeout extends AbstractStatus<RequestTimeout> {
+    public static class RequestTimeout extends AbstractResponse<RequestTimeout> {
 
         public RequestTimeout() {
             super(HttpServletResponse.SC_REQUEST_TIMEOUT);
@@ -279,7 +279,7 @@ public class Status {
         }
     }
     
-    public static class Conflict extends AbstractStatus<Conflict> {
+    public static class Conflict extends AbstractResponse<Conflict> {
 
         public Conflict() {
             super(HttpServletResponse.SC_CONFLICT);
@@ -291,7 +291,7 @@ public class Status {
         }
     }
     
-    public static class Gone extends AbstractStatus<Gone> {
+    public static class Gone extends AbstractResponse<Gone> {
 
         public Gone() {
             super(HttpServletResponse.SC_GONE);
@@ -303,7 +303,7 @@ public class Status {
         }
     }
     
-    public static class LengthRequired extends AbstractStatus<LengthRequired> {
+    public static class LengthRequired extends AbstractResponse<LengthRequired> {
 
         public LengthRequired() {
             super(HttpServletResponse.SC_LENGTH_REQUIRED);
@@ -316,7 +316,7 @@ public class Status {
     }
     
     public static class PreconditionFailed extends 
-        AbstractStatus<PreconditionFailed> {
+        AbstractResponse<PreconditionFailed> {
 
         public PreconditionFailed() {
             super(HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -329,7 +329,7 @@ public class Status {
     }
     
     public static class RequestEntityTooLarge extends 
-        AbstractStatus<RequestEntityTooLarge> {
+        AbstractResponse<RequestEntityTooLarge> {
 
         public RequestEntityTooLarge() {
             super(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
@@ -342,7 +342,7 @@ public class Status {
     }
     
     public static class RequestURITooLong extends 
-        AbstractStatus<RequestURITooLong> {
+        AbstractResponse<RequestURITooLong> {
 
         public RequestURITooLong() {
             super(HttpServletResponse.SC_REQUEST_URI_TOO_LONG);
@@ -355,7 +355,7 @@ public class Status {
     }
     
     public static class UnsupportedMediaType extends 
-        AbstractStatus<UnsupportedMediaType> {
+        AbstractResponse<UnsupportedMediaType> {
 
         public UnsupportedMediaType() {
             super(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
@@ -368,7 +368,7 @@ public class Status {
     }
     
     public static class RequestedRangeNotSatisfiable extends 
-        AbstractStatus<RequestedRangeNotSatisfiable> {
+        AbstractResponse<RequestedRangeNotSatisfiable> {
 
         public RequestedRangeNotSatisfiable() {
             super(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -381,7 +381,7 @@ public class Status {
     }
     
     public static class ExpectationFailed extends 
-        AbstractStatus<ExpectationFailed> {
+        AbstractResponse<ExpectationFailed> {
 
         public ExpectationFailed() {
             super(HttpServletResponse.SC_EXPECTATION_FAILED);
@@ -394,7 +394,7 @@ public class Status {
     }
     
     public static class InternalServerError extends 
-        AbstractStatus<InternalServerError> {
+        AbstractResponse<InternalServerError> {
 
         public InternalServerError() {
             super(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -406,7 +406,7 @@ public class Status {
         }
     }
     
-    public static class NotImplemented extends AbstractStatus<NotImplemented> {
+    public static class NotImplemented extends AbstractResponse<NotImplemented> {
 
         public NotImplemented() {
             super(HttpServletResponse.SC_NOT_IMPLEMENTED);
@@ -418,7 +418,7 @@ public class Status {
         }
     }
     
-    public static class BadGateway extends AbstractStatus<BadGateway> {
+    public static class BadGateway extends AbstractResponse<BadGateway> {
 
         public BadGateway() {
             super(HttpServletResponse.SC_BAD_GATEWAY);
@@ -431,7 +431,7 @@ public class Status {
     }
     
     public static class ServiceUnavailable extends 
-        AbstractStatus<ServiceUnavailable> {
+        AbstractResponse<ServiceUnavailable> {
 
         public ServiceUnavailable() {
             super(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -443,7 +443,7 @@ public class Status {
         }
     }
     
-    public static class GatewayTimeout extends AbstractStatus<GatewayTimeout> {
+    public static class GatewayTimeout extends AbstractResponse<GatewayTimeout> {
 
         public GatewayTimeout() {
             super(HttpServletResponse.SC_GATEWAY_TIMEOUT);
@@ -456,7 +456,7 @@ public class Status {
     }
     
     public static class HTTPVersionNotSupported extends 
-        AbstractStatus<HTTPVersionNotSupported> {
+        AbstractResponse<HTTPVersionNotSupported> {
 
         public HTTPVersionNotSupported() {
             super(HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED);

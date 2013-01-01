@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Luis Antunes
  */
-public abstract class AbstractStatus<T extends AbstractStatus<T>> extends StreamView {
+public abstract class AbstractResponse<T extends AbstractResponse<T>> extends StreamView {
 
     private static final String RFC822_DATE = "EEE, dd MMM yyyy HH:mm:ss z";
     private static final String RFC1123_DATE = "EEE, dd MMM yyyy HH:mm:ss zzz";
@@ -42,7 +42,7 @@ public abstract class AbstractStatus<T extends AbstractStatus<T>> extends Stream
     protected byte[] content;
     private final Map<String, String> headers = new HashMap<String, String>();
     
-    public AbstractStatus(int status) {
+    public AbstractResponse(int status) {
         this.status = status;
     }
     

@@ -31,7 +31,7 @@ import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.tests.services.SomeService;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.PlainText;
-import org.mojavemvc.views.Status;
+import org.mojavemvc.views.Response;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -223,7 +223,7 @@ public class IndexController {
     
     @Action("status-ok")
     public View statusOK() {
-        return new Status.OK()
+        return new Response.OK()
             .withContent("it's ok")
             .withContentType("text/plain")
             .withLanguage("English");

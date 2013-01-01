@@ -49,10 +49,16 @@ public abstract class StreamView implements View {
     @Override
     public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        response.setContentType(getContentType());
+        String contentType = getContentType();
+        if (contentType != null && contentType.trim().length() != 0) {
+            response.setContentType(contentType);
+        }
+        
         byte[] buf = getPayload();
-        response.setContentLength(buf.length);
-        ServletOutputStream servletOut = response.getOutputStream();
-        servletOut.write(buf);
+        if (buf != null) {
+            response.setContentLength(buf.length);
+            ServletOutputStream servletOut = response.getOutputStream();
+            servletOut.write(buf);
+        }
     }
 }

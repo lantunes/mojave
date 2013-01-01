@@ -1624,4 +1624,14 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/index/plain-text").producesPage().withContent("hello");
     }
+    
+    @Test
+    public void statusOK() throws Exception {
+        
+        assertThatRequestFor("/index/status-ok").producesResponse()
+            .withStatus(200)
+            .withContent("it's ok")
+            .withContentType("text/plain")
+            .withHeader("Content-Language", "English");
+    }
 }

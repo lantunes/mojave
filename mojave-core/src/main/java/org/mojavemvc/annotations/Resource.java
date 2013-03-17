@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.core;
+package org.mojavemvc.annotations;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * <p>
+ * This annotation is used to flag an &#064;Action method parameter 
+ * as a resource provided from the request.
+ * <p/>
  * 
  * @author Luis Antunes
  */
-public interface ActionSignature {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Resource {
 
-    String methodName();
-
-    Class<?>[] parameterTypes();
-
-    int fastIndex();
-
-    List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action);
-
-    Object[] getArgs(Map<String, ?> parametersMap, InputStream servletInputStream);
 }

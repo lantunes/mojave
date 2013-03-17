@@ -95,7 +95,7 @@ public class HttpActionInvoker implements ActionInvoker {
 
         View view = null;
 
-        Object[] args = actionSignature.getArgs(parameterMap);
+        Object[] args = actionSignature.getArgs(parameterMap, request.getInputStream());
 
         List<Object> classInterceptors = createInterceptors(controllerDb.getInterceptorsFor(actionControllerClass));
 

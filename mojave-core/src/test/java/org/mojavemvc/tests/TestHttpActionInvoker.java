@@ -84,6 +84,7 @@ public class TestHttpActionInvoker {
         sess = mock(HttpSession.class);
         req = mock(HttpServletRequest.class);
         when(req.getSession()).thenReturn(sess);
+        when(req.getInputStream()).thenReturn(null);
         resp = mock(HttpServletResponse.class);
 
         injector = Guice.createInjector(new ServletResourceModule(), new SomeModule());
@@ -112,7 +113,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -146,7 +147,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -184,7 +185,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), "some-action"));
 
@@ -228,7 +229,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
@@ -269,7 +270,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -311,7 +312,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), "some-action"));
 
@@ -358,7 +359,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
@@ -405,7 +406,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -448,7 +449,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -490,7 +491,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -534,7 +535,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -581,7 +582,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
@@ -624,7 +625,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -666,7 +667,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
@@ -708,7 +709,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -761,7 +762,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 
@@ -811,7 +812,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
                 db.getInterceptorsForDefaultAction(cntrl.getClass()));
 
@@ -866,7 +867,7 @@ public class TestHttpActionInvoker {
         when(sig.fastIndex()).thenReturn(fastIndex);
         when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
         when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap)).thenReturn(new Object[] {});
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
         when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
                 db.getInterceptorsForAction(cntrl.getClass(), action));
 

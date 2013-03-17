@@ -1634,4 +1634,20 @@ public class TestFrontController extends AbstractWebTest {
             .withContentType("text/plain")
             .withHeader("Content-Language", "English");
     }
+    
+    @Test
+    public void inputStreamUsedAsParamByItself() throws Exception {
+        
+        assertThatRequestFor("/stream-param/inputStreamAlone")
+        .producesPage()
+        .withH2Tag(withContent("ServletInputStream"));
+    }
+    
+    @Test
+    public void inputStreamUsedWithOtherParam() throws Exception {
+        
+        assertThatRequestFor("/stream-param/inputStreamWithParam?p1=other")
+        .producesPage()
+        .withH2Tag(withContent("other-ServletInputStream"));
+    }
 }

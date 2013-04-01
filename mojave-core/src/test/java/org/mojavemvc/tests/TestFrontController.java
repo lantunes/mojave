@@ -1650,4 +1650,12 @@ public class TestFrontController extends AbstractWebTest {
         .producesPage()
         .withH2Tag(withContent("other-ServletInputStream"));
     }
+    
+    @Test
+    public void controllerInheritance() throws Exception {
+        
+        assertThatRequestFor("/inheritance/test")
+        .producesPage()
+        .withH2Tag(withContent("Hello from inherited"));
+    }
 }

@@ -139,28 +139,45 @@ public class TestMappedControllerDatabase {
     @Test
     public void testConstructWithInheritance() {
 
-        // TODO add support for controller inheritance
-        // Set<Class<?>> controllerClasses = new HashSet<Class<?>>( );
-        // controllerClasses.add( TestChildClass.class );
-        // ControllerDatabase db = new MappedControllerDatabase(
-        // controllerClasses );
-        //
-        // assertEquals( TestChildClass.class, db.getControllerClass("child"));
-        // assertEquals( TestChildClass.class, db.getDefaultControllerClass( ));
-        //
-        // ActionSignature sig =
-        // db.getActionMethodSignature(TestChildClass.class, "test");
-        // assertEquals( "testAction", sig.getMethodName() );
-        //
-        // Method defaultActionMethod = db.getDefaultActionMethodFor(
-        // TestChildClass.class );
-        // assertNotNull( defaultActionMethod );
-        // assertEquals( "defaultAction", defaultActionMethod.getName( ) );
-        //
-        // Method beforeActionMethod = db.getBeforeActionMethodFor(
-        // TestChildClass.class );
-        // assertNotNull( beforeActionMethod );
-        // assertEquals( "doSomethingBefore", beforeActionMethod.getName( ) );
+        Set<Class<?>> controllerClasses = new HashSet<Class<?>>( );
+        controllerClasses.add( TestChildClass.class );
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+        
+        assertEquals( TestChildClass.class, db.getControllerClass("child"));
+        assertEquals( TestChildClass.class, db.getDefaultControllerClass( ));
+        
+        ActionSignature sig = db.getActionMethodSignature(TestChildClass.class, "test");
+        assertEquals( "testAction", sig.methodName() );
+        
+        ActionSignature defaultActionMethod = db.getDefaultActionMethodFor(TestChildClass.class);
+        assertNotNull( defaultActionMethod );
+        assertEquals( "defaultAction", defaultActionMethod.methodName( ) );
+        
+        ActionSignature beforeActionMethod = db.getBeforeActionMethodFor(TestChildClass.class);
+        assertNotNull( beforeActionMethod );
+        assertEquals( "doSomethingBefore", beforeActionMethod.methodName( ) );
+    }
+    
+    @Test
+    public void testInterceptorInheritance() {
+    
+        Set<Class<?>> controllerClasses = new HashSet<Class<?>>( );
+        controllerClasses.add( TestInterceptorController4.class );
+        FakeRouteMap rm = new FakeRouteMap();
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        
+        List<Class<?>> interceptors = db.getInterceptorsFor(TestInterceptorController4.class);
+
+        assertNotNull(interceptors);
+        assertEquals(1, interceptors.size());
+        assertEquals(ConcreteInterceptor.class, interceptors.get(0));
+
+        ActionSignature beforeActionMethod = db.getBeforeActionMethodForInterceptor(ConcreteInterceptor.class);
+        assertNotNull(beforeActionMethod);
+        assertEquals("before", beforeActionMethod.methodName());
+        
+        assertEquals(1, rm.size());
+        assertTrue(rm.contains(new Route("interceptor4", "someAction", null)));
     }
 
     @Test
@@ -1573,6 +1590,16 @@ public class TestMappedControllerDatabase {
             return null;
         }
     }
+    
+    @StatelessController("interceptor4")
+    @InterceptedBy({ ConcreteInterceptor.class })
+    private static class TestInterceptorController4 {
+
+        @Action("someAction")
+        public View someAction() {
+            return null;
+        }
+    }
 
     @StatelessController("method-interceptor1")
     private static class TestMethodInterceptorController1 {
@@ -1658,6 +1685,18 @@ public class TestMappedControllerDatabase {
         public View defaultAction() {
             return null;
         }
+    }
+    
+    private static abstract class AbstractInterceptor {
+        
+        @BeforeAction
+        public View before() {
+            return null;
+        }
+    }
+    
+    private static class ConcreteInterceptor extends AbstractInterceptor {
+        
     }
 
     private static class Interceptor1 {

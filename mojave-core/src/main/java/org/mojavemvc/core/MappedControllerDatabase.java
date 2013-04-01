@@ -566,7 +566,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
         Map<HttpMethod, List<Class<?>>> httpMethodActionInterceptorsMap = new EnumMap<HttpMethod, List<Class<?>>>(
                 HttpMethod.class);
 
-        Method[] methods = controllerClass.getDeclaredMethods();
+        Method[] methods = getAllMethodsIn(controllerClass);
+        
         FastClass fastClass = FastClass.create(controllerClass);
         classToFastClassMap.put(controllerClass, fastClass);
 
@@ -638,6 +639,18 @@ public class MappedControllerDatabase implements ControllerDatabase {
         controllerClassToActionInterceptorsMap.put(controllerClass, actionInterceptorsMap);
         controllerClassToHttpMethodMap.put(controllerClass, httpMethodActionMap);
         controllerClassToHttpMethodActionInterceptorsMap.put(controllerClass, httpMethodActionInterceptorsMap);
+    }
+    
+    private Method[] getAllMethodsIn(Class<?> clazz) {
+        
+        List<Method> methodsList = new ArrayList<Method>();
+        methodsList.addAll(Arrays.asList(clazz.getDeclaredMethods()));        
+        Class<?> superClass = clazz.getSuperclass();        
+        while (superClass != Object.class) {
+            methodsList.addAll(Arrays.asList(superClass.getDeclaredMethods()));
+            superClass = superClass.getSuperclass();
+        }
+        return methodsList.toArray(new Method[methodsList.size()]);
     }
 
     private boolean addHttpMethodActionSignature(Class<?> controllerClass, Method actionMethod, FastClass fastClass,
@@ -889,7 +902,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
         if (!interceptorClassToAfterActionMap.containsKey(interceptorClass)
                 && !interceptorClassToBeforeActionMap.containsKey(interceptorClass)) {
 
-            Method[] methods = interceptorClass.getDeclaredMethods();
+            Method[] methods = getAllMethodsIn(interceptorClass);
             FastClass fastClass = FastClass.create(interceptorClass);
             classToFastClassMap.put(interceptorClass, fastClass);
 

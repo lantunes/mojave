@@ -1658,4 +1658,14 @@ public class TestFrontController extends AbstractWebTest {
         .producesPage()
         .withH2Tag(withContent("Hello from inherited"));
     }
+    
+    @Test
+    public void inputStreamReturningController() throws Exception {
+        
+        assertThatRequestFor("/inputstream/plaintext")
+        .producesResponse()
+        .withContentType("text/plain")
+        .withHeader("Content-Length", String.valueOf("Hello".getBytes().length))
+        .withContent("Hello");
+    }
 }

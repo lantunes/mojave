@@ -15,16 +15,27 @@
  */
 package org.mojavemvc.tests.controllers;
 
+import java.io.ByteArrayInputStream;
+
+import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.views.InputStreamView;
 
 /**
  * 
  * @author Luis Antunes
  */
-@StatelessController("inheritance")
-public class InheritingController extends AbstractController {
+@StatelessController("inputstream")
+public class InputStreamController {
 
-    public String getVal() {
-        return "inherited";
+    @Action("plaintext")
+    public InputStreamView getPlainText() {
+        
+        String content = "Hello";
+        ByteArrayInputStream in = new ByteArrayInputStream(content.getBytes());
+        
+        InputStreamView view = new InputStreamView(in, "text/plain");
+        view.setContentLength(content.getBytes().length);
+        return view;
     }
 }

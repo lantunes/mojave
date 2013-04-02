@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * An instance of this class obtains the servlet's OutputStream, and writes the
  * payload to that stream. It sets the content type and content length before
- * writing the content to the stream.
+ * writing the content to the stream. This class does not use a buffer when 
+ * writing to the OutputStream. This class is suitable for smaller entities.
  * 
  * @author Luis Antunes
  */

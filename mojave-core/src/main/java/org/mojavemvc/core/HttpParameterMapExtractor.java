@@ -79,6 +79,14 @@ public class HttpParameterMapExtractor implements ParameterMapExtractor {
         } catch (Exception e) {
             throw new RuntimeException("error getting parameters from multipart request: ", e);
         }
+        
+        /* 
+         * there may be parameters that are not part of the request body, 
+         * such as from a query string; NOTE: if these share the same name as
+         * a form parameter, the form parameter will be overwritten 
+         */
+        paramMap.putAll(req.getParameterMap());
+        
         return paramMap;
     }
     

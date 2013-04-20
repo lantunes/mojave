@@ -465,7 +465,8 @@ public class TestFrontController extends AbstractWebTest {
             .withElement("file-contenttype", withContent("text/plain"))
             .withElement("file-inmemory", withContent("true"))
             .withElement("file-username", withContent("John"))
-            .withElement("file-content", withContent("Uploaded File"));
+            .withElement("file-content", withContent("Uploaded File"))
+            .withElement("query-param", withContent("someVal"));
     }
 
     @Test

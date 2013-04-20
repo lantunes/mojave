@@ -96,7 +96,8 @@ public class FormController {
     }
     
     @Action("upload")
-    public View upload(@Param("file") UploadedFile file, @Param("userName") String userName) {
+    public View upload(@Param("file") UploadedFile file, @Param("userName") String userName,
+            @Param("p1") String p1) {
         
         String content = "null";
         InputStream in = null;
@@ -132,7 +133,8 @@ public class FormController {
             .withAttribute("file-contenttype", file.getContentType())
             .withAttribute("file-inmemory", file.isInMemory())
             .withAttribute("file-username", userName)
-            .withAttribute("file-content", content);
+            .withAttribute("file-content", content)
+            .withAttribute("query-param", p1);
     }
 
     @DefaultAction

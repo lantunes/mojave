@@ -21,5 +21,6 @@
         <p id="file-contenttype"><%=request.getAttribute("file-contenttype") %></p>
         <p id="file-username"><%=request.getAttribute("file-username") %></p>
         <p id="file-content"><%=request.getAttribute("file-content") %></p>
+        <p id="query-param"><%=request.getAttribute("query-param") %></p>
     </body>
 </html>

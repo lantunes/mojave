@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 <body>
-    <form name="test-form" action="/mvc/serv/form-controller/upload" method="post" enctype="multipart/form-data">
+    <form name="test-form" action="/mvc/serv/form-controller/upload?p1=someVal" method="post" enctype="multipart/form-data">
         <input id="file" type="file" name="file" /><br />
         <input id="userName" name="userName" type="text" /><br />
         <input id="submit" value="submit" type="submit" />

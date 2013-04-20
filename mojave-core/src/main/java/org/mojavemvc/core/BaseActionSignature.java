@@ -31,6 +31,7 @@ import org.mojavemvc.annotations.Model;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.Resource;
 import org.mojavemvc.forms.Submittable;
+import org.mojavemvc.forms.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +54,16 @@ public class BaseActionSignature implements ActionSignature {
     /*
      * Given the following signature:
      * 
-     * someSignature( @Param("p1") String p1, @Model SomeModel Model, @Param("p2")
-     * Date p2 )
+     * someSignature(@Param("p1") String p1, @Model SomeModel Model, 
+     *  @Param("p2") Date p2, @Resource InputStream in, @Param("p3") UploadedFile file)
      * 
      * this array will look like:
      * 
      * ["p1"][String.class]
      * [SomeForm.class][List<PropertyDescriptor>-beanProperties]
-     * ["p1"][Date.class]
+     * ["p2"][Date.class]
      * [InputStream.class][InputStream.class]
+     * ["p3"][UploadedFile.class]
      */
     private final Object[][] paramTypeMap;
 
@@ -256,6 +258,8 @@ public class BaseActionSignature implements ActionSignature {
                 return new BooleanArrayParameter();
             } else if (paramType.equals(boolean[].class)) {
                 return new PrimitiveBooleanArrayParameter();
+            } else if (paramType.equals(UploadedFile.class)) {
+                return new UploadedFileParameter();
             } else {
                 return new UnknownParameter(paramType);
             }
@@ -430,6 +434,13 @@ public class BaseActionSignature implements ActionSignature {
             boolean[] vals = new boolean[paramValues.length];
             for (int k = 0; k < paramValues.length; vals[k] = getBooleanValue(paramValues[k++]));
             return vals;
+        }
+    }
+    
+    private static class UploadedFileParameter extends Parameter {
+        @Override
+        protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
+            throw new UnsupportedOperationException("unsupported operation for an uploaded file parameter");
         }
     }
     

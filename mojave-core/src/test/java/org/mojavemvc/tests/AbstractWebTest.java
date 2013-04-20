@@ -15,7 +15,9 @@
  */
 package org.mojavemvc.tests;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -156,6 +159,10 @@ public abstract class AbstractWebTest {
     
     protected CheckBoxInput withCheckBox(String name) {
         return new CheckBoxInput(name);
+    }
+    
+    protected FileInput withFileNameFor(String inputName) {
+        return new FileInput(inputName);
     }
     
     protected ElementAttribute withAttribute(String name) {
@@ -347,6 +354,16 @@ public abstract class AbstractWebTest {
         }
     }
     
+    protected class FileInput extends FormInput {
+        public FileInput(String inputName) {
+            super(inputName);
+        }
+        
+        public FileInputValue setTo(String value) {
+            return new FileInputValue(inputName, value);
+        }
+    }
+    
     protected abstract class FormInputValue {
 
         protected final String inputName;
@@ -387,6 +404,20 @@ public abstract class AbstractWebTest {
         
         public void handleInput(HtmlInput input) {
             ((HtmlCheckBoxInput)input).setChecked(checked);
+        }
+    }
+    
+    protected class FileInputValue extends FormInputValue {
+        
+        private final String fileName;
+        
+        public FileInputValue(String inputName, String fileName) {
+            super(inputName);
+            this.fileName = fileName;
+        }
+        
+        public void handleInput(HtmlInput input) {
+            ((HtmlFileInput)input).setValueAttribute(fileName);
         }
     }
     

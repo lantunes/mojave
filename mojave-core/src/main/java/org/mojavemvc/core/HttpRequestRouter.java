@@ -15,13 +15,11 @@
  */
 package org.mojavemvc.core;
 
-import static org.mojavemvc.util.RouteHelper.*;
+import static org.mojavemvc.util.RouteHelper.PATH_ELEMENT_SEPARATOR;
+import static org.mojavemvc.util.RouteHelper.getPathElements;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.mojavemvc.core.Route.PathParameterElement;
 import org.mojavemvc.exception.NoMatchingRouteException;
@@ -31,28 +29,23 @@ import org.mojavemvc.exception.NoMatchingRouteException;
  */
 public class HttpRequestRouter implements RequestRouter {
 
-    private final HttpServletRequest req;
+    private final ParameterMapExtractor paramExtractor;
+    private final String path;
     private final RouteMap routeMap;
     
-    public HttpRequestRouter(HttpServletRequest req, RouteMap routeMap) {
-        this.req = req;
+    public HttpRequestRouter(String path, 
+            ParameterMapExtractor paramExtractor, RouteMap routeMap) {
+        this.paramExtractor = paramExtractor;
+        this.path = path;
         this.routeMap = routeMap;
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public RoutedRequest route() {
         
         String controller = null;
         String action = null;
-        String path = req.getPathInfo();
-        /*
-         * the map from the request may be unmodifiable,
-         * so create a new map with the contents of the
-         * request map
-         */
-        Map<String, Object> paramMap = (Map<String, Object>) req.getParameterMap();
-        paramMap = new HashMap<String, Object>(paramMap);
+        Map<String, Object> paramMap = paramExtractor.extract();
         
         if (path != null && path.startsWith(PATH_ELEMENT_SEPARATOR)) {
             

@@ -15,7 +15,8 @@
  */
 package org.mojavemvc.tests;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -449,6 +450,22 @@ public class TestFrontController extends AbstractWebTest {
             .afterSubmittingForm("test-form")
             .producesPage()
             .withFlagElement(withContent("false"));
+    }
+    
+    @Test
+    public void formControllerWithFileUpload() throws Exception {
+        
+        assertThatRequestFor("/form-controller/form5")
+            .afterSubmittingForm("test-form",
+                    withFileNameFor("file").setTo("src/test/resources/upload-test.txt"),
+                    withValueFor("userName").setTo("John"))
+            .producesPage()
+            .withElement("file-name", withContent("upload-test.txt"))
+            .withElement("file-size", withContent("13"))
+            .withElement("file-contenttype", withContent("text/plain"))
+            .withElement("file-inmemory", withContent("true"))
+            .withElement("file-username", withContent("John"))
+            .withElement("file-content", withContent("Uploaded File"));
     }
 
     @Test

@@ -32,6 +32,7 @@ import org.mojavemvc.core.GuiceInitializer;
 import org.mojavemvc.core.HttpActionInvoker;
 import org.mojavemvc.core.HttpActionResolver;
 import org.mojavemvc.core.HttpMethod;
+import org.mojavemvc.core.HttpParameterMapExtractor;
 import org.mojavemvc.core.HttpRequestRouter;
 import org.mojavemvc.core.RequestProcessor;
 import org.mojavemvc.core.RequestRouter;
@@ -212,7 +213,9 @@ public final class FrontController extends HttpServlet {
         View view;
         try {
             
-            RequestRouter router = new HttpRequestRouter(req, controllerDb.getRouteMap());
+            RequestRouter router = new HttpRequestRouter(req.getPathInfo(), 
+                    new HttpParameterMapExtractor(req), controllerDb.getRouteMap());
+            
             RoutedRequest routed = router.route();
             
             ActionResolver resolver = new HttpActionResolver(ctx, req, httpMethod, controllerDb, injector);

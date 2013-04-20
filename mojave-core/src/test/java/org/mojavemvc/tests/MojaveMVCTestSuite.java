@@ -39,6 +39,7 @@ import org.junit.runners.Suite;
     TestRegexRouteMap.class,
     TestRegexRoute.class,
     TestRoute.class,
+    TestHttpParameterMapExtracter.class,
     TestFrontController.class,
     TestMultiClient.class
 })

@@ -29,7 +29,7 @@ import org.mojavemvc.forms.UploadedFile;
  */
 public class SignatureParameters {
     
-    private static Map<Class<?>, Parameter> PARAMETER_TYPE_MAP;
+    private static final Map<Class<?>, Parameter> PARAMETER_TYPE_MAP;
     
     static {
         Map<Class<?>, Parameter> map = new HashMap<Class<?>, Parameter>();

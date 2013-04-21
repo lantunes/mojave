@@ -30,7 +30,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mojavemvc.core.HttpRequestRouter;
-import org.mojavemvc.core.ParameterMapExtractor;
+import org.mojavemvc.core.ParameterMapSource;
 import org.mojavemvc.core.Route;
 import org.mojavemvc.core.RouteMap;
 import org.mojavemvc.core.RoutedRequest;
@@ -42,7 +42,7 @@ import org.mojavemvc.exception.NoMatchingRouteException;
 public class TestHttpRequestRouter {
 
     private Map<String, Object> paramMap;
-    private ParameterMapExtractor extractor;
+    private ParameterMapSource paramMapSource;
     private RouteMap routeMap;
     
     @Before
@@ -50,8 +50,8 @@ public class TestHttpRequestRouter {
         
         paramMap = new HashMap<String, Object>();
         routeMap = mock(RouteMap.class);
-        extractor = mock(ParameterMapExtractor.class);        
-        when(extractor.extract()).thenReturn(paramMap);
+        paramMapSource = mock(ParameterMapSource.class);        
+        when(paramMapSource.getParameterMap()).thenReturn(paramMap);
     }
     
     @Test
@@ -210,6 +210,6 @@ public class TestHttpRequestRouter {
     /*----------------------*/
     
     private HttpRequestRouter newRouter(String pathInfo) {
-        return new HttpRequestRouter(pathInfo, extractor, routeMap);
+        return new HttpRequestRouter(pathInfo, paramMapSource, routeMap);
     }
 }

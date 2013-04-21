@@ -29,13 +29,13 @@ import org.mojavemvc.exception.NoMatchingRouteException;
  */
 public class HttpRequestRouter implements RequestRouter {
 
-    private final ParameterMapExtractor paramExtractor;
+    private final ParameterMapSource paramMapSource;
     private final String path;
     private final RouteMap routeMap;
     
     public HttpRequestRouter(String path, 
-            ParameterMapExtractor paramExtractor, RouteMap routeMap) {
-        this.paramExtractor = paramExtractor;
+            ParameterMapSource paramMapSource, RouteMap routeMap) {
+        this.paramMapSource = paramMapSource;
         this.path = path;
         this.routeMap = routeMap;
     }
@@ -45,7 +45,7 @@ public class HttpRequestRouter implements RequestRouter {
         
         String controller = null;
         String action = null;
-        Map<String, Object> paramMap = paramExtractor.extract();
+        Map<String, Object> paramMap = paramMapSource.getParameterMap();
         
         if (path != null && path.startsWith(PATH_ELEMENT_SEPARATOR)) {
             

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * @author Luis Antunes
  */
-public interface ParameterMapExtractor {
+public interface ParameterMapSource {
 
-    public Map<String, Object> extract();
+    public Map<String, Object> getParameterMap();
 }

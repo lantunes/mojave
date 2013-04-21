@@ -32,16 +32,16 @@ import org.mojavemvc.forms.UploadedFile;
 /**
  * @author Luis Antunes
  */
-public class HttpParameterMapExtractor implements ParameterMapExtractor {
+public class HttpParameterMapSource implements ParameterMapSource {
     
     private final HttpServletRequest req;
     
-    public HttpParameterMapExtractor(HttpServletRequest req) {
+    public HttpParameterMapSource(HttpServletRequest req) {
         this.req = req;
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, Object> extract() {
+    public Map<String, Object> getParameterMap() {
         
         Map<String, Object> paramMap = null;
         boolean isMultipart = ServletFileUpload.isMultipartContent(req);

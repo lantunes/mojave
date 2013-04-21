@@ -26,12 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mojavemvc.core.HttpParameterMapExtractor;
+import org.mojavemvc.core.HttpParameterMapSource;
 
 /**
  * @author Luis Antunes
  */
-public class TestHttpParameterMapExtracter {
+public class TestHttpParameterMapSource {
 
     private HttpServletRequest req;
     
@@ -49,7 +49,7 @@ public class TestHttpParameterMapExtracter {
         paramMap.put("name", new String[]{"John"});
         when(req.getParameterMap()).thenReturn(paramMap);
         
-        Map<String, Object> extracted = newExtractor().extract();
+        Map<String, Object> extracted = newParamMapSource().getParameterMap();
         
         assertEquals(paramMap, extracted);
     }
@@ -63,7 +63,7 @@ public class TestHttpParameterMapExtracter {
     
     /*----------------------*/
     
-    private HttpParameterMapExtractor newExtractor() {
-        return new HttpParameterMapExtractor(req);
+    private HttpParameterMapSource newParamMapSource() {
+        return new HttpParameterMapSource(req);
     }
 }

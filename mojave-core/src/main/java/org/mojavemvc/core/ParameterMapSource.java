@@ -22,5 +22,5 @@ import java.util.Map;
  */
 public interface ParameterMapSource {
 
-    public Map<String, Object> getParameterMap();
+    Map<String, Object> getParameterMap();
 }

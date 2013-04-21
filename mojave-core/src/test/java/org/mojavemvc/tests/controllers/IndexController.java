@@ -15,6 +15,7 @@
  */
 package org.mojavemvc.tests.controllers;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -153,6 +154,12 @@ public class IndexController {
 
         return new JSP("params").withAttribute("p1", p1);
     }
+    
+    @Action("param-annotation-bigdecimal")
+    public View paramAnnotationTestBigDecimal(@Param("p1") BigDecimal p1) {
+
+        return new JSP("params").withAttribute("p1", p1);
+    }
 
     @Action("param-annotation-date")
     public View paramAnnotationTest5(@Param("p1") Date p1) {
@@ -190,6 +197,13 @@ public class IndexController {
 
     @Action("param-annotation-doubles")
     public View paramAnnotationTest10(@Param("p1") double[] p1) {
+
+        return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
+                .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);
+    }
+    
+    @Action("param-annotation-bigdecimals")
+    public View paramAnnotationTestBigDecimals(@Param("p1") BigDecimal[] p1) {
 
         return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
                 .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);

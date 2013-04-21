@@ -22,6 +22,7 @@ import java.beans.PropertyDescriptor;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,6 +259,10 @@ public class BaseActionSignature implements ActionSignature {
                 return new BooleanArrayParameter();
             } else if (paramType.equals(boolean[].class)) {
                 return new PrimitiveBooleanArrayParameter();
+            } else if (paramType.equals(BigDecimal.class)) {
+                return new BigDecimalParameter();
+            } else if (paramType.equals(BigDecimal[].class)) {
+                return new BigDecimalArrayParameter();
             } else if (paramType.equals(UploadedFile.class)) {
                 return new UploadedFileParameter();
             } else {
@@ -441,6 +446,26 @@ public class BaseActionSignature implements ActionSignature {
         @Override
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             throw new UnsupportedOperationException("unsupported operation for an uploaded file parameter");
+        }
+    }
+    
+    private static class BigDecimalParameter extends Parameter {
+        
+        protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
+            args.add(paramValues == null ? BigDecimal.ZERO : new BigDecimal(paramValues[0]));
+        }
+        
+        protected void populateArgsFromObject(Object paramValue, List<Object> args) {
+            args.add(paramValue == null ? BigDecimal.ZERO : paramValue);
+        }
+    }
+    
+    private static class BigDecimalArrayParameter extends ArrayParameter {
+        
+        protected Object convertParamValues(String[] paramValues) {
+            BigDecimal[] vals = new BigDecimal[paramValues.length];
+            for (int k = 0; k < paramValues.length; vals[k] = new BigDecimal(paramValues[k++]));
+            return vals;
         }
     }
     

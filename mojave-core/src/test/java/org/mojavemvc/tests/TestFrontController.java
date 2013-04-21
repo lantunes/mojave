@@ -323,7 +323,31 @@ public class TestFrontController extends AbstractWebTest {
             .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from false"));
     }
+    
+    @Test
+    public void indexControllerParamAnnotationTest7() throws Exception {
 
+        assertThatRequestFor("/index/param-annotation-bigdecimal?p1=123.456")
+            .producesPage()
+            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
+            .withH2Tag(withContent("Hello from 123.456"));
+    }
+
+    @Test
+    public void indexControllerParamAnnotationTest7_WithNull() throws Exception {
+
+        assertThatRequestFor("/index/param-annotation-bigdecimal")
+            .producesPage()
+            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
+            .withH2Tag(withContent("Hello from 0"));
+    }
+
+    @Test
+    public void indexControllerParamAnnotationTest7_WithError() throws Exception {
+
+        assertThatRequestFor("/index/param-annotation-bigdecimal?p1=hello").producesErrorPage();
+    }
+    
     @Test
     public void indexControllerParamAnnotationTestIntCollection() throws Exception {
 
@@ -346,6 +370,15 @@ public class TestFrontController extends AbstractWebTest {
     public void indexControllerParamAnnotationTestDoubleCollection() throws Exception {
 
         assertThatRequestFor("/index/param-annotation-doubles?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
+            .producesPage()
+            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
+            .withH2Tag(withContent("Hello from 1.1, 2.2, 3.3, 4.4"));
+    }
+    
+    @Test
+    public void indexControllerParamAnnotationTestBigDecimalCollection() throws Exception {
+
+        assertThatRequestFor("/index/param-annotation-bigdecimals?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
             .producesPage()
             .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
             .withH2Tag(withContent("Hello from 1.1, 2.2, 3.3, 4.4"));

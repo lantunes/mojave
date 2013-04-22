@@ -19,8 +19,8 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:git@github.com:lantunes/mojave.git</connection>
-        <developerConnection>scm:git:git@github.com:lantunes/mojave.git</developerConnection>
+        <connection>scm:git:ssh://github.com/lantunes/mojave.git</connection>
+        <developerConnection>scm:git:https://lantunes@github.com/lantunes/mojave.git</developerConnection>
         <url>http://github.com/lantunes/mojave</url>
     </scm>
     <developers>

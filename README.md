@@ -29,6 +29,16 @@ Download the Mojave jar, which includes all dependencies:
 
 http://mojavemvc.org/downloads
 
+Or, add the following dependency to your pom.xml:
+
+```xml
+<dependency>
+  <groupId>org.mojavemvc</groupId>
+  <artifactId>mojave-core</artifactId>
+  <version>1.0.6</version>
+</dependency>
+```
+
 Create a Java web application project, and add the downloaded jar to the WEB-INF/lib folder. Also,
 add the following web.xml:
 

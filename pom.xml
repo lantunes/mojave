@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mojavemvc</groupId>
     <artifactId>mojave</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Mojave MVC Web Framework</name>
     <description>An annotation-driven, POJO-based Java web MVC framework, supporting DI with Guice</description>

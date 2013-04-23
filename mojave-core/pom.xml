@@ -4,7 +4,7 @@
     <parent>
         <artifactId>mojave</artifactId>
         <groupId>org.mojavemvc</groupId>
-        <version>1.0.7-SNAPSHOT</version>
+        <version>1.0.6-SNAPSHOT</version>
     </parent>
     <artifactId>mojave-core</artifactId>
     <name>Mojave MVC Web Framework Core</name>

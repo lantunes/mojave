@@ -15,16 +15,33 @@
  */
 package org.mojavemvc.views;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * @author Luis Antunes
  */
 public class JSON extends StreamView {
 
+    /*
+     * ObjectMapper is thread-safe
+     */
+    private static final ObjectMapper mapper = new ObjectMapper();
+    
     private String payload;
 
     public JSON(String payload) {
 
         this.payload = payload;
+    }
+    
+    public JSON(Object pojo) {
+        
+        try {
+            payload = mapper.writeValueAsString(pojo);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("could not construct JSON View", e);
+        }
     }
 
     @Override

@@ -40,6 +40,8 @@ import org.junit.runners.Suite;
     TestRegexRoute.class,
     TestRoute.class,
     TestHttpParameterMapSource.class,
+    TestJSON.class,
+    TestXML.class,
     TestFrontController.class,
     TestMultiClient.class
 })

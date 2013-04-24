@@ -25,6 +25,12 @@ import java.util.regex.Pattern;
 public class RegexRoute {
 
     private final Route route;
+    /*
+     * From the Java API documentation for the Pattern class:
+     * Instances of this (Pattern) class are immutable and are safe for use by 
+     * multiple concurrent threads. Instances of the Matcher class are not 
+     * safe for such use.
+     */
     private final Pattern pattern;
     
     public RegexRoute(Route route) {

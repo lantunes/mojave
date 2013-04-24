@@ -44,9 +44,8 @@ public class HttpParameterMapSource implements ParameterMapSource {
     public Map<String, Object> getParameterMap() {
         
         Map<String, Object> paramMap = null;
-        boolean isMultipart = ServletFileUpload.isMultipartContent(req);
         
-        if (isMultipart) {
+        if (isMultipartContent(req)) {
             
             paramMap = getMapFromMultipartRequest(req);
             
@@ -60,6 +59,18 @@ public class HttpParameterMapSource implements ParameterMapSource {
         }
         
         return paramMap;
+    }
+    
+    private boolean isMultipartContent(HttpServletRequest req) {
+        
+        if (!"post".equals(req.getMethod().toLowerCase())) {
+            return false;
+        }
+        String contentType = req.getContentType();
+        if (contentType == null) {
+            return false;
+        }
+        return contentType.toLowerCase().startsWith("multipart/");
     }
     
     @SuppressWarnings("unchecked")

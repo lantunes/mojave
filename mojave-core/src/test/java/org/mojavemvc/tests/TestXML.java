@@ -30,4 +30,28 @@ public class TestXML {
         XML xml = new XML("");
         assertEquals("application/xml", xml.getContentType());
     }
+    
+    @Test
+    public void toStringAfterObjectConstructorReturnsXML() {
+        XML xml = new XML(new SimplePojo("test"));
+        assertEquals("<SimplePojo><val>test</val></SimplePojo>", xml.toString());
+    }
+    
+    /*------------------------------------*/
+    
+    public static class SimplePojo {
+        private String val;
+        
+        public SimplePojo(String val) {
+            this.val = val;
+        }
+        
+        public String getVal() {
+            return val;
+        }
+        
+        public void setVal(String val) {
+            this.val = val;
+        }
+    }
 }

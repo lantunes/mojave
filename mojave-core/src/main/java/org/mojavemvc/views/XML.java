@@ -15,17 +15,34 @@
  */
 package org.mojavemvc.views;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 /**
  * @author Luis Antunes
  */
 public class XML extends StreamView {
 
+    /*
+     * XmlMapper is thread-safe
+     */
+    private static final XmlMapper mapper = new XmlMapper();
+    
     private String payload;
 
     public XML(String payload) {
 
         this.payload = payload;
     }
+    
+    public XML(Object pojo) {
+        
+        try {
+            payload = mapper.writeValueAsString(pojo);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("could not construct XML View", e);
+        }
+    }   
 
     @Override
     public String getContentType() {

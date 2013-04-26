@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.annotations;
+package org.mojavemvc.marshalling;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.InputStream;
+
+import org.mojavemvc.views.View;
 
 /**
- * <p>
- * This annotation is used to flag an &#064;Action method parameter 
- * as the contents obtained from the body of the request as plain
- * text. This annotation can only be used with a String parameter
- * type.
- * <p/>
- * 
  * @author Luis Antunes
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface PlainText {
+public class DefaultEntityMarshaller implements EntityMarshaller {
 
+    @Override
+    public View marshall(Object entity) {
+        return (View)entity;
+    }
+
+    @Override
+    public <T> T unmarshall(InputStream in, Class<T> type) {
+        return null;
+    }
+
+    @Override
+    public String[] contentTypesHandled() {
+        return null;
+    }
 }

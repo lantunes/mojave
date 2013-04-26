@@ -20,16 +20,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * <p>
- * This annotation is used to flag an &#064;Action method parameter 
- * as an XML object obtained from the body of the request.
- * <p/>
+/** 
+ * Specifies the content type expected from the request
+ * for an &#064;Action method. Only one occurrence is allowed 
+ * on a signature. This annotation is not allowed on an
+ * &#064;Action method if there is no {@link Entity} parameter
+ * annotation in the &#064;Action method signature. 
  * 
  * @author Luis Antunes
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface XML {
-
+@Target(ElementType.METHOD)
+public @interface Expects {
+    String value();
 }

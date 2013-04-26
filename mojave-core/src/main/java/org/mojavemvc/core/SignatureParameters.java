@@ -65,7 +65,7 @@ public class SignatureParameters {
         PARAMETER_TYPE_MAP = Collections.unmodifiableMap(map);
     }
 
-    public static Parameter getParameterFromType(Class<?> paramType) {
+    static Parameter getParameterFromType(Class<?> paramType) {
         
         Parameter parameter = PARAMETER_TYPE_MAP.get(paramType);
         return parameter != null ? parameter : new UnknownParameter(paramType);
@@ -74,7 +74,7 @@ public class SignatureParameters {
     /*
      * an instance of this class must be stateless to permit safe concurrent access
      */
-    public static abstract class Parameter {
+    static abstract class Parameter {
 
         public void populateArgs(List<Object> args, Object paramValue) {
             if (paramValue instanceof String[]) {
@@ -91,7 +91,7 @@ public class SignatureParameters {
         }
     }
     
-    public static abstract class ArrayParameter extends Parameter {
+    static abstract class ArrayParameter extends Parameter {
         
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             if (paramValues != null) {
@@ -108,7 +108,7 @@ public class SignatureParameters {
     /*
      * NOTE: a new instance must be created for each request
      */
-    public static class UnknownParameter extends Parameter {
+    static class UnknownParameter extends Parameter {
         
         private final Class<?> paramType;
         
@@ -121,20 +121,20 @@ public class SignatureParameters {
         }
     }
     
-    public static class StringParameter extends Parameter {
+    static class StringParameter extends Parameter {
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? null : paramValues[0]);
         }
     }
     
-    public static class StringArrayParameter extends ArrayParameter {
+    static class StringArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             return paramValues;
         }
     }
     
-    public static class IntegerParameter extends Parameter {
+    static class IntegerParameter extends Parameter {
         
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? 0 : Integer.parseInt(paramValues[0]));
@@ -145,7 +145,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class IntegerArrayParameter extends ArrayParameter {
+    static class IntegerArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             Integer[] vals = new Integer[paramValues.length];
@@ -154,7 +154,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class PrimitiveIntegerArrayParameter extends ArrayParameter {
+    static class PrimitiveIntegerArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             int[] vals = new int[paramValues.length];
@@ -163,7 +163,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class LongParameter extends Parameter {
+    static class LongParameter extends Parameter {
         
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? 0 : Long.parseLong(paramValues[0]));
@@ -174,7 +174,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class LongArrayParameter extends ArrayParameter {
+    static class LongArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             Long[] vals = new Long[paramValues.length];
@@ -183,7 +183,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class PrimitiveLongArrayParameter extends ArrayParameter {
+    static class PrimitiveLongArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             long[] vals = new long[paramValues.length];
@@ -192,7 +192,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class DoubleParameter extends Parameter {
+    static class DoubleParameter extends Parameter {
         
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? 0 : Double.parseDouble(paramValues[0]));
@@ -203,7 +203,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class DoubleArrayParameter extends ArrayParameter {
+    static class DoubleArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             Double[] vals = new Double[paramValues.length];
@@ -212,7 +212,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class PrimitiveDoubleArrayParameter extends ArrayParameter {
+    static class PrimitiveDoubleArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             double[] vals = new double[paramValues.length];
@@ -221,13 +221,13 @@ public class SignatureParameters {
         }
     }
     
-    public static class DateParameter extends Parameter {
+    static class DateParameter extends Parameter {
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? null : Date.valueOf(paramValues[0]));
         }
     }
     
-    public static class DateArrayParameter extends ArrayParameter {
+    static class DateArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             Date[] vals = new Date[paramValues.length];
@@ -236,7 +236,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class BooleanParameter extends Parameter {
+    static class BooleanParameter extends Parameter {
         
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? false : getBooleanValue(paramValues[0]));
@@ -247,7 +247,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class BooleanArrayParameter extends ArrayParameter {
+    static class BooleanArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             Boolean[] vals = new Boolean[paramValues.length];
@@ -256,7 +256,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class PrimitiveBooleanArrayParameter extends ArrayParameter {
+    static class PrimitiveBooleanArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             boolean[] vals = new boolean[paramValues.length];
@@ -265,14 +265,14 @@ public class SignatureParameters {
         }
     }
     
-    public static class UploadedFileParameter extends Parameter {
+    static class UploadedFileParameter extends Parameter {
         @Override
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             throw new UnsupportedOperationException("unsupported operation for an uploaded file parameter");
         }
     }
     
-    public static class BigDecimalParameter extends Parameter {
+    static class BigDecimalParameter extends Parameter {
         
         protected void populateArgsFromStringArray(String[] paramValues, List<Object> args) {
             args.add(paramValues == null ? BigDecimal.ZERO : new BigDecimal(paramValues[0]));
@@ -283,7 +283,7 @@ public class SignatureParameters {
         }
     }
     
-    public static class BigDecimalArrayParameter extends ArrayParameter {
+    static class BigDecimalArrayParameter extends ArrayParameter {
         
         protected Object convertParamValues(String[] paramValues) {
             BigDecimal[] vals = new BigDecimal[paramValues.length];

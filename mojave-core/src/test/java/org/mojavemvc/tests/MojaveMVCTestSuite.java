@@ -42,6 +42,7 @@ import org.junit.runners.Suite;
     TestHttpParameterMapSource.class,
     TestJSON.class,
     TestXML.class,
+    TestEntityMarshallers.class,
     TestFrontController.class,
     TestMultiClient.class
 })

@@ -20,16 +20,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * <p>
- * This annotation is used to flag an &#064;Action method parameter 
- * as a JSON object obtained from the body of the request.
- * <p/>
+/** 
+ * Specifies the content type returned in the response
+ * for an &#064;Action method. Only one occurrence is allowed 
+ * on a signature. This annotation is not allowed on an
+ * &#064;Action method if it returns a View. 
  * 
  * @author Luis Antunes
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface JSON {
-
+@Target(ElementType.METHOD)
+public @interface Returns {
+    String value();
 }

@@ -26,6 +26,10 @@ public class PlainText extends StreamView {
 
         this.payload = payload;
     }
+    
+    public PlainText(Object entity) {
+        this.payload = entity.toString();
+    }
 
     @Override
     public String getContentType() {

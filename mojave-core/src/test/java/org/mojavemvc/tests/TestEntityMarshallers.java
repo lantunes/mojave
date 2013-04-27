@@ -25,9 +25,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.mojavemvc.marshalling.DefaultEntityMarshaller;
 import org.mojavemvc.marshalling.JSONEntityMarshaller;
+import org.mojavemvc.marshalling.PlainTextEntityMarshaller;
 import org.mojavemvc.marshalling.XMLEntityMarshaller;
 import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.JSON;
+import org.mojavemvc.views.PlainText;
 import org.mojavemvc.views.View;
 import org.mojavemvc.views.XML;
 
@@ -118,6 +120,47 @@ public class TestEntityMarshallers {
         assertEquals("test", entity.getVal());
     }
     
+    @Test
+    public void plainTextEntityMarshallerSupportsPlainTextContentType() {
+        
+        PlainTextEntityMarshaller m = new PlainTextEntityMarshaller();
+        String[] contentTypes = m.contentTypesHandled();
+        assertEquals(1, contentTypes.length);        
+        assertEquals("text/plain", contentTypes[0]);
+    }
+    
+    @Test
+    public void plainTextEntityMarshallerReturnsView() {
+        
+        PlainTextEntityMarshaller m = new PlainTextEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        View v = m.marshall(entity);
+        assertTrue(v instanceof PlainText);
+        assertEquals(new PlainText(entity).toString(), ((PlainText)v).toString());
+    }
+    
+    @Test
+    public void plainTextEntityMarshallerUnmarshallsString() {
+        
+        PlainTextEntityMarshaller m = new PlainTextEntityMarshaller();
+        String text = "test";
+        ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
+        String entity = m.unmarshall(in, String.class);
+        assertNotNull(entity);
+        assertEquals("test", entity);
+    }
+    
+    @Test
+    public void plainTextEntityMarshallerUnmarshallsSimplePojo() {
+        
+        PlainTextEntityMarshaller m = new PlainTextEntityMarshaller();
+        String text = "test";
+        ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
+        SimplePojo entity = m.unmarshall(in, SimplePojo.class);
+        assertNotNull(entity);
+        assertEquals("test", entity.getVal());
+    }
+    
     /*------------------------------------*/
     
     public static class SimplePojo {
@@ -135,6 +178,11 @@ public class TestEntityMarshallers {
         
         public void setVal(String val) {
             this.val = val;
+        }
+        
+        @Override
+        public String toString() {
+            return val;
         }
     }
 }

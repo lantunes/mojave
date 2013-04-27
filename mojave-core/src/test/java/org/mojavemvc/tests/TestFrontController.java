@@ -15,8 +15,7 @@
  */
 package org.mojavemvc.tests;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1719,4 +1718,69 @@ public class TestFrontController extends AbstractWebTest {
         .withHeader("Content-Length", String.valueOf("Hello".getBytes().length))
         .withContent("Hello");
     }
+    
+    ///////////////////////
+    
+    @Test
+    public void marshallingExpectsPlainTextString() throws Exception {
+
+        assertThatRequestFor("/marshalling/expects/plaintext/string", 
+                withBody("marshallingController"), 
+                withContentType("text/plain"))
+            .producesPage()
+            .withH2Tag(withContent("Hello from marshallingController"));
+    }
+    
+    @Test
+    public void marshallingExpectsPlainTextPojo() throws Exception {
+
+        assertThatRequestFor("/marshalling/expects/plaintext/pojo", 
+                withBody("marshallingController"), 
+                withContentType("text/plain"))
+            .producesPage()
+            .withH2Tag(withContent("Hello from marshallingController"));
+    }
+    
+    @Test
+    public void marshallingExpectsJSON() throws Exception {
+
+        assertThatRequestFor("/marshalling/expects/json", 
+                withBody("{\"val\":\"marshallingController\"}"), 
+                withContentType("application/json"))
+            .producesPage()
+            .withH2Tag(withContent("Hello from marshallingController"));
+    }
+    
+    @Test
+    public void marshallingExpectsXML() throws Exception {
+
+        assertThatRequestFor("/marshalling/expects/xml", 
+                withBody("<SimplePojo><val>marshallingController</val></SimplePojo>"), 
+                withContentType("application/xml"))
+            .producesPage()
+            .withH2Tag(withContent("Hello from marshallingController"));
+    }
+    
+    @Test
+    public void marshallingExpectsCSV() throws Exception {
+
+        /* NOTE: tests custom entity marshaller loading */
+        assertThatRequestFor("/marshalling/expects/csv", 
+                withBody("marshalling,controller"), 
+                withContentType("text/csv"))
+            .producesPage()
+            .withH2Tag(withContent("Hello from marshalling,controller"));
+    }
+
+    /* TODO - once bug is fixed so that a @ParamPath can be specified with 
+     * unrelated @Param arg
+    @Test
+    public void marshallingExpectesPlainTextPojoWithParams() throws Exception {
+
+        assertThatRequestFor("/marshalling/expects/plaintext/pojo/with/params?p1=param1")
+            .producesPage()
+            .withH2Tag(withContent("Hello from param1, param2"));
+    }
+    */
+    
 }

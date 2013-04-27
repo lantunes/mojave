@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.mojavemvc.annotations.Entity;
 import org.mojavemvc.annotations.Model;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.Resource;
 import org.mojavemvc.core.SignatureParameters.Parameter;
 import org.mojavemvc.forms.Submittable;
+import org.mojavemvc.marshalling.EntityMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,7 @@ public class BaseActionSignature implements ActionSignature {
      * ["p2"][Date.class]
      * [InputStream.class][InputStream.class]
      * ["p3"][UploadedFile.class]
+     * [Entity.class][SomePojo.class]
      */
     private final Object[][] paramTypeMap;
 
@@ -76,13 +79,21 @@ public class BaseActionSignature implements ActionSignature {
      * the cglib method index
      */
     private final int fastIndex;
+    
+    private final EntityMarshaller paramMarshaller;
 
     public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
             Annotation[][] paramAnnotations) {
+        this(fastIndex, methodName, paramTypes, paramAnnotations, null);
+    }
+    
+    public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
+            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller) {
 
         this.fastIndex = fastIndex;
         this.methodName = methodName;
         this.paramTypeMap = new Object[paramTypes.length][2];
+        this.paramMarshaller = paramMarshaller;
 
         int i = 0;
         for (Annotation[] annotationsForParam : paramAnnotations) {
@@ -93,7 +104,9 @@ public class BaseActionSignature implements ActionSignature {
                     paramTypeMap[i] = new Object[] { paramTypes[i], getFormTypes(paramTypes[i]) };
                 } else if (annotation instanceof Resource) {
                     paramTypeMap[i] = new Object[] { paramTypes[i], paramTypes[i] };
-                }                
+                } else if (annotation instanceof Entity) {
+                    paramTypeMap[i] = new Object[] { Entity.class, paramTypes[i] };
+                }
                 i++;
             }
         }
@@ -147,6 +160,13 @@ public class BaseActionSignature implements ActionSignature {
                     throw new RuntimeException("an InputStream is a requested parameter but none has been provided");
                 }
                 args.add(servletInputStream);
+                
+            } else if (key.equals(Entity.class)) {
+                
+                if (paramMarshaller == null) {
+                    throw new RuntimeException("a parameter entity needs to be unmarshalled but no param marshaller exists");
+                }
+                args.add(paramMarshaller.unmarshall(servletInputStream, (Class<?>)value));
             }
         }
 

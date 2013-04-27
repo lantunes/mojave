@@ -15,6 +15,10 @@
  */
 package org.mojavemvc.core;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -28,6 +32,10 @@ import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
 import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
+import org.mojavemvc.marshalling.EntityMarshaller;
+import org.mojavemvc.marshalling.JSONEntityMarshaller;
+import org.mojavemvc.marshalling.PlainTextEntityMarshaller;
+import org.mojavemvc.marshalling.XMLEntityMarshaller;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +56,14 @@ public class FrontControllerInitializer {
     private static final String JSP_ERROR_FILE = "jsp-error-file";
     private static final String GUICE_MODULES = "guice-modules";
     private static final String ERROR_HANDLER_FACTORY = "error-handler-factory";
+    private static final String ENTITY_MARSHALLERS = "entity-marshallers";
 
     private String controllerClassNamespace;
     private String jspPath;
     private String jspErrorFile;
     private String guiceModulesNamespace;
     private String errorHandlerFactory;
+    private String entityMarshallersNamespace;
 
     private final ServletConfig servletConfig;
     private final ControllerContext context;
@@ -80,6 +90,7 @@ public class FrontControllerInitializer {
         readJSPErrorFile();
         readGuiceModulesNamespace();
         readErrorHandlerFactory();
+        readEntityMarshallersNamespace();
     }
 
     private void readControllerClassNamespace() {
@@ -145,6 +156,11 @@ public class FrontControllerInitializer {
             errorHandlerFactory = defaultErrorHandlerFactory;
         }
     }
+    
+    private void readEntityMarshallersNamespace() {
+        
+        entityMarshallersNamespace = servletConfig.getInitParameter(ENTITY_MARSHALLERS);
+    }
 
     private void createGuiceInjector() {
 
@@ -169,8 +185,10 @@ public class FrontControllerInitializer {
         try {
 
             Set<Class<?>> controllerClasses = scanControllerClasses();
+            Map<String, EntityMarshaller> entityMarshallers = scanEntityMarshallers();
             ControllerDatabase controllerDatabase = 
-                    new MappedControllerDatabase(controllerClasses, new RegexRouteMap());
+                    new MappedControllerDatabase(controllerClasses, new RegexRouteMap(), 
+                            entityMarshallers);
             context.setAttribute(ControllerDatabase.KEY, controllerDatabase);
 
         } catch (Throwable e) {
@@ -186,13 +204,59 @@ public class FrontControllerInitializer {
         controllerClasses.addAll(reflections.getTypesAnnotatedWith(SingletonController.class));
         return controllerClasses;
     }
+    
+    private Map<String, EntityMarshaller> scanEntityMarshallers() {
+        
+        Map<String, EntityMarshaller> marshallerMap = new HashMap<String, EntityMarshaller>();
+        
+        /* place the framework marshallers in the map first so that they 
+         * can be overridden by user's marshallers */
+        addToEntityMarshallerMap(new PlainTextEntityMarshaller(), marshallerMap);
+        addToEntityMarshallerMap(new JSONEntityMarshaller(), marshallerMap);
+        addToEntityMarshallerMap(new XMLEntityMarshaller(), marshallerMap);
+        
+        if (!isEmpty(entityMarshallersNamespace)) {
+            Reflections reflections = new Reflections(entityMarshallersNamespace);
+            Set<Class<? extends EntityMarshaller>> customMarshallers = 
+                    reflections.getSubTypesOf(EntityMarshaller.class);
+            for (Class<? extends EntityMarshaller> customMarshaller : customMarshallers) {
+                addToEntityMarshallerMap(customMarshaller, marshallerMap);
+            }
+        }
+        
+        return marshallerMap;
+    }
 
+    private void addToEntityMarshallerMap(EntityMarshaller marshaller, 
+            Map<String, EntityMarshaller> marshallerMap) {
+        
+        for (String contentType : marshaller.contentTypesHandled()) {
+            marshallerMap.put(contentType, marshaller);
+        }
+    }
+    
+    private void addToEntityMarshallerMap(Class<? extends EntityMarshaller> customMarshaller, 
+            Map<String, EntityMarshaller> marshallerMap) {
+        
+        EntityMarshaller marshaller = null;
+        try {
+            Constructor<? extends EntityMarshaller> constructor = customMarshaller.getConstructor();
+            marshaller = constructor.newInstance();
+        } catch (Exception e) {
+            logger.error("error contructing entity marshaller " + customMarshaller.getName(), e);
+        }
+        if (marshaller != null) {
+            addToEntityMarshallerMap(marshaller, marshallerMap);
+        }
+    }
+    
     private Set<Class<? extends AbstractModule>> scanModuleClasses() {
 
-        Reflections reflections = new Reflections(guiceModulesNamespace);
-        Set<Class<? extends AbstractModule>> moduleClasses = reflections.getSubTypesOf(AbstractModule.class);
-
-        return moduleClasses;
+        if (!isEmpty(guiceModulesNamespace)) {
+            Reflections reflections = new Reflections(guiceModulesNamespace);
+            return reflections.getSubTypesOf(AbstractModule.class);
+        }
+        return new HashSet<Class<? extends AbstractModule>>();
     }
 
     private String processContextPath(String path) {

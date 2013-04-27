@@ -41,6 +41,7 @@ import org.mojavemvc.core.MappedControllerDatabase;
 import org.mojavemvc.core.RegexRouteMap;
 import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
+import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.tests.controllers.InterceptedController1;
 import org.mojavemvc.tests.controllers.InterceptedController2;
 import org.mojavemvc.tests.controllers.InterceptedController3;
@@ -94,7 +95,8 @@ public class TestHttpActionInvoker {
     }
     
     private ControllerDatabase newControllerDatabase(Set<Class<?>> controllerClasses) {
-        return new MappedControllerDatabase(controllerClasses, new RegexRouteMap());
+        return new MappedControllerDatabase(controllerClasses, new RegexRouteMap(), 
+                new HashMap<String, EntityMarshaller>());
     }
 
     @Test

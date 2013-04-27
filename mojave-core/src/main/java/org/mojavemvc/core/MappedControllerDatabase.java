@@ -36,6 +36,8 @@ import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.DELETEAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.DefaultController;
+import org.mojavemvc.annotations.Entity;
+import org.mojavemvc.annotations.Expects;
 import org.mojavemvc.annotations.GETAction;
 import org.mojavemvc.annotations.HEADAction;
 import org.mojavemvc.annotations.Init;
@@ -50,6 +52,8 @@ import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.annotations.TRACEAction;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.exception.ConfigurationException;
+import org.mojavemvc.marshalling.DefaultEntityMarshaller;
+import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.util.ParamPathHelper;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
@@ -176,15 +180,24 @@ public class MappedControllerDatabase implements ControllerDatabase {
      */
     private final RouteMap routeMap;
 
+    /*
+     * the map of global entity marshallers
+     * key: content type
+     * val: marhsaller instance
+     */
+    private final Map<String, EntityMarshaller> entityMarshallerMap;
+    
     /**
      * Construct a controller database based on the given Set of controller
      * Classes.
      * 
      * @param controllerClasses
      */
-    public MappedControllerDatabase(Set<Class<?>> controllerClasses, RouteMap routeMap) {
+    public MappedControllerDatabase(Set<Class<?>> controllerClasses, RouteMap routeMap, 
+            Map<String, EntityMarshaller> entityMarshallerMap) {
 
         this.routeMap = routeMap;
+        this.entityMarshallerMap = entityMarshallerMap;
         init(controllerClasses);
     }
 
@@ -739,11 +752,14 @@ public class MappedControllerDatabase implements ControllerDatabase {
                     + "only one action method per HTTP method type is allowed in " + 
                     fastClass.getJavaClass().getName());
         }
+        
+        EntityMarshaller paramMarshaller = getParamEntityMarshaller(actionMethod, 
+                fastClass.getJavaClass().getName());
 
         int fastIndex = fastClass.getIndex(actionMethod.getName(), actionMethod.getParameterTypes());
 
         ActionSignature sig = new HttpMethodActionSignature(httpMethod, fastIndex, actionMethod.getName(),
-                actionMethod.getParameterTypes(), actionMethod.getParameterAnnotations());
+                actionMethod.getParameterTypes(), actionMethod.getParameterAnnotations(), paramMarshaller);
         httpMethodActionMap.put(httpMethod, sig);
         
         addRoute(actionMethod, fastClass.getJavaClass().getName(), controllerVariable, 
@@ -755,14 +771,54 @@ public class MappedControllerDatabase implements ControllerDatabase {
             String controllerVariable, boolean isDefaultController) {
 
         validateActionReturnType(method, fastClass.getJavaClass().getName());
+        
+        EntityMarshaller paramMarshaller = getParamEntityMarshaller(method, fastClass.getJavaClass().getName());
 
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new BaseActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                method.getParameterAnnotations());
+                method.getParameterAnnotations(), paramMarshaller);
         actionMap.put(action, sig);
         
         addRoute(method, fastClass.getJavaClass().getName(), controllerVariable, action, isDefaultController);
+    }
+
+    private EntityMarshaller getParamEntityMarshaller(Method method, String className) {
+        
+        EntityMarshaller paramMarshaller = new DefaultEntityMarshaller();
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        List<Entity> entityAnnotations = new ArrayList<Entity>();
+        for (Annotation[] annotationsForParam : paramAnnotations) {
+            for (Annotation annotation : annotationsForParam) {
+                if (annotation instanceof Entity) {
+                    entityAnnotations.add((Entity)annotation);
+                }
+            }
+        }
+        if (!entityAnnotations.isEmpty()) {
+            
+            if (entityAnnotations.size() > 1) {
+                throw new ConfigurationException("action " + method.getName() + " in controller "
+                        + className + " has more than one " + Entity.class.getName() + " annotation");
+            }
+            
+            Expects expectsAnn = method.getAnnotation(Expects.class);
+            if (expectsAnn == null) {
+                throw new ConfigurationException("action " + method.getName() + " in controller "
+                        + className + " has an " + Entity.class.getName() + " annotation, but no "
+                        + Expects.class.getName() + " exists");
+            }
+            String contentType = expectsAnn.value();
+            EntityMarshaller marshaller = entityMarshallerMap.get(contentType);
+            if (marshaller != null) {
+                paramMarshaller = marshaller;
+            } else {
+                logger.error("could not find parameter entity marshaller for content type " 
+                        + contentType + " for action " + method.getName() + " in controller "
+                        + className);
+            }
+        }
+        return paramMarshaller;
     }
 
     private void validateActionReturnType(Method actionMethod, String className) {

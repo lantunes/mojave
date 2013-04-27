@@ -17,6 +17,7 @@ package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,7 @@ import org.mojavemvc.core.MappedControllerDatabase;
 import org.mojavemvc.core.Route;
 import org.mojavemvc.core.RouteMap;
 import org.mojavemvc.exception.ConfigurationException;
+import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 import org.mojavemvc.views.XML;
@@ -71,7 +73,8 @@ public class TestMappedControllerDatabase {
         controllerClasses.add(TestController.class);
         controllerClasses.add(TestStartupController.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestController.class);
         assertNotNull(fc);
@@ -141,7 +144,8 @@ public class TestMappedControllerDatabase {
 
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>( );
         controllerClasses.add( TestChildClass.class );
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                new HashMap<String, EntityMarshaller>());
         
         assertEquals( TestChildClass.class, db.getControllerClass("child"));
         assertEquals( TestChildClass.class, db.getDefaultControllerClass( ));
@@ -164,7 +168,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>( );
         controllerClasses.add( TestInterceptorController4.class );
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
         
         List<Class<?>> interceptors = db.getInterceptorsFor(TestInterceptorController4.class);
 
@@ -186,7 +191,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidInterceptorController1.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -201,7 +207,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidInterceptorController2.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -216,7 +223,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidInterceptorController3.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -231,7 +239,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidInterceptorController4.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -246,7 +255,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidInterceptorController5.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -261,7 +271,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestInterceptorController1.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestInterceptorController1.class);
         assertNotNull(fc);
@@ -294,7 +305,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestInterceptorController2.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestInterceptorController2.class);
         assertNotNull(fc);
@@ -340,7 +352,8 @@ public class TestMappedControllerDatabase {
         controllerClasses.add(TestInterceptorController1.class);
         controllerClasses.add(TestInterceptorController2.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestInterceptorController1.class);
         assertNotNull(fc);
@@ -395,7 +408,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInterceptorController3.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -410,7 +424,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestMethodInterceptorController1.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestMethodInterceptorController1.class);
         assertNotNull(fc);
@@ -450,7 +465,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestMethodInterceptorController2.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestMethodInterceptorController2.class);
         assertNotNull(fc);
@@ -495,7 +511,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestMethodInterceptorController3.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -510,7 +527,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestMethodInterceptorController4.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestMethodInterceptorController4.class);
         assertNotNull(fc);
@@ -562,7 +580,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestMethodInterceptorController5.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestMethodInterceptorController5.class);
         assertNotNull(fc);
@@ -620,7 +639,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestMethodInterceptorController6.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestMethodInterceptorController6.class);
         assertNotNull(fc);
@@ -695,7 +715,8 @@ public class TestMappedControllerDatabase {
         controllerClasses.add(TestMethodInterceptorController5.class);
         controllerClasses.add(TestMethodInterceptorController6.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         FastClass fc = db.getFastClass(TestInterceptorController1.class);
         assertNotNull(fc);
@@ -855,7 +876,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidActionController1.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -870,7 +892,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidActionController2.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -885,7 +908,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidActionController3.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -900,7 +924,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidActionController4.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -915,7 +940,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestValidActionController1.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
         } catch (Exception e) {
             fail("should not have thrown exception");
         }
@@ -927,7 +953,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestValidActionController2.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
         } catch (Exception e) {
             fail("should not have thrown exception");
         }
@@ -939,7 +966,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidController1.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -954,7 +982,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidController2.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -969,7 +998,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidController3.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -984,7 +1014,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidController4.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -999,7 +1030,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestHttpMethodController.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         assertEquals(TestHttpMethodController.class, db.getControllerClass("TestHttpMethodController"));
 
@@ -1048,7 +1080,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestHttpMethodController2.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         assertEquals(TestHttpMethodController2.class, db.getControllerClass("TestHttpMethodController2"));
 
@@ -1083,7 +1116,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestHttpMethodController3.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
 
         assertEquals(TestHttpMethodController3.class, db.getControllerClass("TestHttpMethodController3"));
 
@@ -1131,7 +1165,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestInvalidHttpMethodController.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -1146,7 +1181,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestParamPathController1.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
         
         assertEquals(TestParamPathController1.class, db.getControllerClass("TestParamPathController1"));
         assertEquals(1, rm.size());
@@ -1159,7 +1195,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestParamPathController2.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
         
         assertEquals(TestParamPathController2.class, db.getControllerClass("TestParamPathController2"));
         assertEquals(1, rm.size());
@@ -1172,7 +1209,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestParamPathController3.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
         
         assertEquals(TestParamPathController3.class, db.getControllerClass("TestParamPathController3"));
         assertEquals(1, rm.size());
@@ -1185,7 +1223,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestParamPathController4.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
         
         assertEquals(TestParamPathController4.class, db.getControllerClass("TestParamPathController4"));
         assertEquals(1, rm.size());
@@ -1198,7 +1237,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestParamPathController_Invalid1.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -1213,7 +1253,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestParamPathController_Invalid2.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -1228,7 +1269,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestParamPathController_Invalid3.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -1243,7 +1285,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestParamPathController_Invalid4.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -1258,7 +1301,8 @@ public class TestMappedControllerDatabase {
         try {
             Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
             controllerClasses.add(TestParamPathController_Invalid5.class);
-            new MappedControllerDatabase(controllerClasses, new FakeRouteMap());
+            new MappedControllerDatabase(controllerClasses, new FakeRouteMap(), 
+                    new HashMap<String, EntityMarshaller>());
             fail("should have thrown exception");
         } catch (Exception e) {
             if (!(e instanceof ConfigurationException)) {
@@ -1273,7 +1317,8 @@ public class TestMappedControllerDatabase {
         Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
         controllerClasses.add(TestParamPathAndHttpMethodController.class);
         FakeRouteMap rm = new FakeRouteMap();
-        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm);
+        ControllerDatabase db = new MappedControllerDatabase(controllerClasses, rm, 
+                new HashMap<String, EntityMarshaller>());
         
         assertEquals(TestParamPathAndHttpMethodController.class, db.getControllerClass("param-and-http"));
         assertEquals(2, rm.size());

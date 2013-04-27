@@ -18,6 +18,8 @@ package org.mojavemvc.core;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import org.mojavemvc.marshalling.EntityMarshaller;
+
 /**
  * 
  * @author Luis Antunes
@@ -30,6 +32,13 @@ public class HttpMethodActionSignature extends BaseActionSignature {
             Annotation[][] paramAnnotations) {
 
         super(fastIndex, methodName, paramTypes, paramAnnotations);
+        this.httpMethod = httpMethod;
+    }
+    
+    public HttpMethodActionSignature(HttpMethod httpMethod, int fastIndex, String methodName, Class<?>[] paramTypes,
+            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller) {
+
+        super(fastIndex, methodName, paramTypes, paramAnnotations, paramMarshaller);
         this.httpMethod = httpMethod;
     }
 

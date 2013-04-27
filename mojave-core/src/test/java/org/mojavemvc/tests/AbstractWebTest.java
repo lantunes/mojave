@@ -15,9 +15,7 @@
  */
 package org.mojavemvc.tests;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -110,6 +108,11 @@ public abstract class AbstractWebTest {
         return new RequestAssertion(path);
     }
     
+    protected RequestAssertion assertThatRequestFor(String path, RequestBody body,
+            RequestContentType contentType) throws Exception {
+        return new RequestAssertion(body, contentType, path);
+    }
+    
     protected RequestAssertion assertThatPOSTRequestFor(String path, 
             RequestParameter...params) throws Exception {
         
@@ -169,6 +172,14 @@ public abstract class AbstractWebTest {
         return new ElementAttribute(name);
     }
     
+    protected RequestBody withBody(String body) {
+        return new RequestBody(body);
+    }
+    
+    protected RequestContentType withContentType(String contentType) {
+        return new RequestContentType(contentType);
+    }
+    
     protected void newWebClient() {
         client = new WebClient();
     }
@@ -188,6 +199,32 @@ public abstract class AbstractWebTest {
         
         public String getValue() {
             return value;
+        }
+    }
+    
+    protected class RequestBody {
+        
+        private final String body;
+        
+        public RequestBody(String body) {
+            this.body = body;
+        }
+        
+        public String getBody() {
+            return body;
+        }
+    }
+    
+    protected class RequestContentType {
+        
+        private final String contentType;
+        
+        public RequestContentType(String contentType) {
+            this.contentType = contentType;
+        }
+        
+        public String getContentType() {
+            return contentType;
         }
     }
     
@@ -222,12 +259,26 @@ public abstract class AbstractWebTest {
                 RequestParameter...params) throws Exception {
             
             WebRequest wr = new WebRequest(new URL(toUrl(path)), method);
+            setRequestParameters(wr, params);
+            page = client.getPage(wr);
+        }
+        
+        public RequestAssertion(RequestBody content, RequestContentType contentType, 
+                String path) throws Exception {
+            
+            WebRequest wr = new WebRequest(new URL(toUrl(path)));
+            wr.setHttpMethod(HttpMethod.POST);
+            wr.setRequestBody(content.getBody());
+            wr.setAdditionalHeader("Content-Type", contentType.getContentType());
+            page = client.getPage(wr);
+        }
+        
+        private void setRequestParameters(WebRequest wr, RequestParameter... params) {
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
             for (RequestParameter pair : params) {
                 pairs.add(new NameValuePair(pair.getName(), pair.getValue()));
             }
             wr.setRequestParameters(pairs);
-            page = client.getPage(wr);
         }
         
         public PageAssertion producesPage() {

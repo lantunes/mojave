@@ -63,7 +63,7 @@ public class BaseActionSignature implements ActionSignature {
      * ["p1"][String.class]
      * [SomeForm.class][List<PropertyDescriptor>-beanProperties]
      * ["p2"][Date.class]
-     * [InputStream.class][InputStream.class]
+     * [Resource.class][InputStream.class]
      * ["p3"][UploadedFile.class]
      * [Entity.class][SomePojo.class]
      */
@@ -103,7 +103,7 @@ public class BaseActionSignature implements ActionSignature {
                 } else if (annotation instanceof Model) {
                     paramTypeMap[i] = new Object[] { paramTypes[i], getFormTypes(paramTypes[i]) };
                 } else if (annotation instanceof Resource) {
-                    paramTypeMap[i] = new Object[] { paramTypes[i], paramTypes[i] };
+                    paramTypeMap[i] = new Object[] { Resource.class, paramTypes[i] };
                 } else if (annotation instanceof Entity) {
                     paramTypeMap[i] = new Object[] { Entity.class, paramTypes[i] };
                 }
@@ -154,7 +154,7 @@ public class BaseActionSignature implements ActionSignature {
 
                 populateArgsForForms((Class<?>) key, parametersMap, (List<PropertyDescriptor>) value, args);
                 
-            } else if (key instanceof Class && value.equals(InputStream.class)) {
+            } else if (key.equals(Resource.class)) {
                 
                 if (servletInputStream == null) {
                     throw new RuntimeException("an InputStream is a requested parameter but none has been provided");

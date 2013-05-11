@@ -36,9 +36,9 @@ public class HttpMethodActionSignature extends BaseActionSignature {
     }
     
     public HttpMethodActionSignature(HttpMethod httpMethod, int fastIndex, String methodName, Class<?>[] paramTypes,
-            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller) {
+            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller, EntityMarshaller viewMarshaller) {
 
-        super(fastIndex, methodName, paramTypes, paramAnnotations, paramMarshaller);
+        super(fastIndex, methodName, paramTypes, paramAnnotations, paramMarshaller, viewMarshaller);
         this.httpMethod = httpMethod;
     }
 

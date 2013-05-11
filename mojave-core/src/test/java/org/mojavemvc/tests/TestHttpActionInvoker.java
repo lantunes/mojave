@@ -16,8 +16,10 @@
 package org.mojavemvc.tests;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +35,8 @@ import net.sf.cglib.reflect.FastClass;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.mojavemvc.core.ActionInvoker;
 import org.mojavemvc.core.ActionSignature;
 import org.mojavemvc.core.ControllerDatabase;
@@ -58,6 +62,7 @@ import org.mojavemvc.tests.interceptors.Interceptor1c;
 import org.mojavemvc.tests.interceptors.Interceptor1d;
 import org.mojavemvc.tests.modules.SomeModule;
 import org.mojavemvc.views.JSP;
+import org.mojavemvc.views.View;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -69,7 +74,7 @@ public class TestHttpActionInvoker {
 
     private HttpServletRequest req;
 
-    private HttpServletResponse resp;
+    private HttpServletResponse res;
 
     private HttpSession sess;
     
@@ -86,85 +91,54 @@ public class TestHttpActionInvoker {
         req = mock(HttpServletRequest.class);
         when(req.getSession()).thenReturn(sess);
         when(req.getInputStream()).thenReturn(null);
-        resp = mock(HttpServletResponse.class);
+        res = mock(HttpServletResponse.class);
 
         injector = Guice.createInjector(new ServletResourceModule(), new SomeModule());
-        ServletResourceModule.set(req, resp);
+        ServletResourceModule.set(req, res);
 
         routed = new RoutedRequest(null, null, parametersMap);
     }
     
-    private ControllerDatabase newControllerDatabase(Set<Class<?>> controllerClasses) {
-        return new MappedControllerDatabase(controllerClasses, new RegexRouteMap(), 
-                new HashMap<String, EntityMarshaller>());
-    }
-
     @Test
     public void testInvokeAction() throws Exception {
 
         String methodName = "doSomething";
 
-        SomeStatelessController cntrl = injector.getInstance(SomeStatelessController.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<SomeStatelessController> setup = 
+                setUp(SomeStatelessController.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(SomeStatelessController.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("test", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertEquals(1, cntrl.beforeInvokeCount);
-        assertEquals(1, cntrl.afterInvokeCount);
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertEquals(1, setup.controller.beforeInvokeCount);
+        assertEquals(1, setup.controller.afterInvokeCount);
     }
-
+    
     @Test
     public void testInvokeDefaultAction() throws Exception {
 
         String methodName = "defaultAction";
 
-        SomeStatelessController cntrl = injector.getInstance(SomeStatelessController.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<SomeStatelessController> setup = 
+                setUp(SomeStatelessController.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(SomeStatelessController.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("default", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertEquals(1, cntrl.beforeInvokeCount);
-        assertEquals(1, cntrl.afterInvokeCount);
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertEquals(1, setup.controller.beforeInvokeCount);
+        assertEquals(1, setup.controller.afterInvokeCount);
     }
 
     @Test
@@ -176,32 +150,19 @@ public class TestHttpActionInvoker {
         InterceptedController1.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        InterceptedController1 cntrl = injector.getInstance(InterceptedController1.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController1> setup = 
+                setUp(InterceptedController1.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController1.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), "some-action"));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("someAction", invocationList.get(1));
@@ -220,32 +181,19 @@ public class TestHttpActionInvoker {
         InterceptedController2.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        InterceptedController2 cntrl = injector.getInstance(InterceptedController2.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController2> setup = 
+                setUp(InterceptedController2.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController2.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), action));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("someAction", invocationList.get(1));
@@ -261,32 +209,19 @@ public class TestHttpActionInvoker {
         InterceptedController2.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        InterceptedController2 cntrl = injector.getInstance(InterceptedController2.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController2> setup = 
+                setUp(InterceptedController2.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController2.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("defaultAction", invocationList.get(1));
@@ -303,32 +238,19 @@ public class TestHttpActionInvoker {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        InterceptedController3 cntrl = injector.getInstance(InterceptedController3.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController3> setup = 
+                setUp(InterceptedController3.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController3.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), "some-action"));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -350,32 +272,19 @@ public class TestHttpActionInvoker {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        InterceptedController4 cntrl = injector.getInstance(InterceptedController4.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController4> setup = 
+                setUp(InterceptedController4.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController4.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), action));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -397,32 +306,19 @@ public class TestHttpActionInvoker {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        InterceptedController4 cntrl = injector.getInstance(InterceptedController4.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController4> setup = 
+                setUp(InterceptedController4.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController4.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -440,32 +336,19 @@ public class TestHttpActionInvoker {
         InterceptedController1.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        InterceptedController1 cntrl = injector.getInstance(InterceptedController1.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController1> setup = 
+                setUp(InterceptedController1.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController1.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("defaultAction", invocationList.get(1));
@@ -482,32 +365,19 @@ public class TestHttpActionInvoker {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        InterceptedController3 cntrl = injector.getInstance(InterceptedController3.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController3> setup = 
+                setUp(InterceptedController3.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController3.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -526,32 +396,19 @@ public class TestHttpActionInvoker {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        InterceptedController5 cntrl = injector.getInstance(InterceptedController5.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController5> setup = 
+                setUp(InterceptedController5.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController5.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -573,32 +430,19 @@ public class TestHttpActionInvoker {
         Interceptor1.invocationList = invocationList;
         Interceptor1b.invocationList = invocationList;
 
-        InterceptedController5 cntrl = injector.getInstance(InterceptedController5.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController5> setup = 
+                setUp(InterceptedController5.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController5.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), action));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -616,32 +460,19 @@ public class TestHttpActionInvoker {
         InterceptedController6.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        InterceptedController6 cntrl = injector.getInstance(InterceptedController6.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController6> setup = 
+                setUp(InterceptedController6.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController6.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(1, invocationList.size());
         assertEquals("defaultAction", invocationList.get(0));
     }
@@ -658,32 +489,19 @@ public class TestHttpActionInvoker {
         InterceptedController7.invocationList = invocationList;
         Interceptor1.invocationList = invocationList;
 
-        InterceptedController7 cntrl = injector.getInstance(InterceptedController7.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController7> setup = 
+                setUp(InterceptedController7.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController7.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), action));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(1, invocationList.size());
         assertEquals("someAction", invocationList.get(0));
     }
@@ -700,32 +518,19 @@ public class TestHttpActionInvoker {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        InterceptedController8 cntrl = injector.getInstance(InterceptedController8.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController8> setup = 
+                setUp(InterceptedController8.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController8.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(9, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -753,32 +558,19 @@ public class TestHttpActionInvoker {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        InterceptedController8 cntrl = injector.getInstance(InterceptedController8.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController8> setup = 
+                setUp(InterceptedController8.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController8.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), action));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(9, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -803,32 +595,19 @@ public class TestHttpActionInvoker {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        InterceptedController9 cntrl = injector.getInstance(InterceptedController9.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController9> setup = 
+                setUp(InterceptedController9.class, methodName);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController9.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
-                db.getInterceptorsForDefaultAction(cntrl.getClass()));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("defaultAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(11, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -858,32 +637,19 @@ public class TestHttpActionInvoker {
         Interceptor1c.invocationList = invocationList;
         Interceptor1d.invocationList = invocationList;
 
-        InterceptedController9 cntrl = injector.getInstance(InterceptedController9.class);
-        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
-        controllerClasses.add(cntrl.getClass());
-        ControllerDatabase db = newControllerDatabase(controllerClasses);
+        SetUp<InterceptedController9> setup = 
+                setUp(InterceptedController9.class, methodName, action);
+        ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        FastClass fastClass = FastClass.create(InterceptedController9.class);
-        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
-        ActionSignature sig = mock(ActionSignature.class);
-        when(sig.fastIndex()).thenReturn(fastIndex);
-        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
-        when(sig.methodName()).thenReturn(methodName);
-        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
-        when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
-                db.getInterceptorsForAction(cntrl.getClass(), action));
-
-        ActionInvoker invoker = new HttpActionInvoker(req, resp, db, routed, injector);
-
-        JSP view = (JSP) invoker.invokeAction(cntrl, sig);
+        JSP view = (JSP) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String var = (String) view.getAttribute("var");
         assertEquals("someAction", var);
-        assertEquals(req, cntrl.getRequest());
-        assertEquals(resp, cntrl.getResponse());
-        assertEquals(sess, cntrl.getSession());
-        assertNotNull(cntrl.getSomeService());
+        assertEquals(req, setup.controller.getRequest());
+        assertEquals(res, setup.controller.getResponse());
+        assertEquals(sess, setup.controller.getSession());
+        assertNotNull(setup.controller.getSomeService());
         assertEquals(11, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
         assertEquals("interceptor1b-beforeAction:req:resp:sess:someService", invocationList.get(1));
@@ -896,5 +662,59 @@ public class TestHttpActionInvoker {
         assertEquals("interceptor1d-afterAction:req:resp:sess:someService:ok", invocationList.get(8));
         assertEquals("interceptor1-afterAction:req:resp:sess:someService:ok", invocationList.get(9));
         assertEquals("interceptor1b-afterAction:req:resp:sess:someService:ok", invocationList.get(10));
+    }
+    
+    /*----------------------------------*/
+    
+    private <T> SetUp<T> setUp(Class<T> clazz, String methodName) throws IOException {
+        return setUp(clazz, methodName, null);
+    }
+    
+    private <T> SetUp<T> setUp(Class<T> clazz, String methodName, String action) throws IOException {
+        
+        T cntrl = injector.getInstance(clazz);
+        Set<Class<?>> controllerClasses = new HashSet<Class<?>>();
+        controllerClasses.add(cntrl.getClass());
+        ControllerDatabase db = newControllerDatabase(controllerClasses);
+
+        FastClass fastClass = FastClass.create(clazz);
+        int fastIndex = fastClass.getIndex(methodName, new Class<?>[] {});
+        ActionSignature sig = mock(ActionSignature.class);
+        when(sig.fastIndex()).thenReturn(fastIndex);
+        when(sig.parameterTypes()).thenReturn(new Class<?>[] {});
+        when(sig.methodName()).thenReturn(methodName);
+        when(sig.getArgs(parametersMap, req.getInputStream())).thenReturn(new Object[] {});
+        
+        if (action == null) {
+            when(sig.getInterceptorClasses(db, cntrl.getClass(), "")).thenReturn(
+                    db.getInterceptorsForDefaultAction(cntrl.getClass()));
+        } else {
+            when(sig.getInterceptorClasses(db, cntrl.getClass(), action)).thenReturn(
+                    db.getInterceptorsForAction(cntrl.getClass(), action));
+        }
+        
+        when(sig.marshall(anyObject())).thenAnswer(new Answer<View>() {
+            @Override
+            public View answer(InvocationOnMock invocation) throws Throwable {
+                return (View)invocation.getArguments()[0];
+            }
+        });
+        
+        SetUp<T> result = new SetUp<T>();
+        result.controller = cntrl;
+        result.db = db;
+        result.signature = sig;
+        return result;
+    }
+    
+    private ControllerDatabase newControllerDatabase(Set<Class<?>> controllerClasses) {
+        return new MappedControllerDatabase(controllerClasses, new RegexRouteMap(), 
+                new HashMap<String, EntityMarshaller>());
+    }
+    
+    private static class SetUp<T> {
+        public T controller;
+        public ControllerDatabase db;
+        public ActionSignature signature;
     }
 }

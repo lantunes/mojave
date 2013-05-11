@@ -1719,8 +1719,6 @@ public class TestFrontController extends AbstractWebTest {
         .withContent("Hello");
     }
     
-    ///////////////////////
-    
     @Test
     public void marshallingExpectsPlainTextString() throws Exception {
 
@@ -1772,6 +1770,65 @@ public class TestFrontController extends AbstractWebTest {
             .withH2Tag(withContent("Hello from marshalling,controller"));
     }
 
+    @Test
+    public void marshallingReturnsPlainTextString() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/plaintext/string")
+            .producesResponse()
+            .withContentType("text/plain")
+            .withContent("marshalledStringText");
+    }
+    
+    @Test
+    public void marshallingReturnsPlainTextPojo() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/plaintext/pojo")
+            .producesResponse()
+            .withContentType("text/plain")
+            .withContent("marshalledStringPojo");
+    }
+    
+    @Test
+    public void marshallingReturnsJSON() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/json")
+            .producesResponse()
+            .withContentType("application/json")
+            .withContent("{\"val\":\"marshalledJSON\"}");
+    }
+    
+    @Test
+    public void marshallingReturnsXML() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/xml")
+            .producesResponse()
+            .withContentType("application/xml")
+            .withContent("<SimplePojo><val>marshalledXML</val></SimplePojo>");
+    }
+    
+    @Test
+    public void marshallingExpectsJSONReturnsCSV() throws Exception {
+
+        /* NOTE: tests custom entity marshaller loading */
+        assertThatRequestFor("/marshalling/returns/csv/expects/json", 
+                withBody("{\"val\":\"someJSON\"}"), 
+                withContentType("application/json"))
+            .producesResponse()
+            .withContentType("text/csv")
+            .withContent("marshalledCSV,someJSON");
+    }
+    
+    @Test
+    public void marshallingDefaultExpectsJSONReturnsCSV() throws Exception {
+
+        assertThatRequestFor("/marshalling", 
+                withBody("{\"val\":\"someJSON\"}"), 
+                withContentType("application/json"))
+            .producesResponse()
+            .withContentType("text/csv")
+            .withContent("marshalled-default,someJSON");
+    }
+    
     /* TODO - once bug is fixed so that a @ParamPath can be specified with 
      * unrelated @Param arg
     @Test
@@ -1783,4 +1840,11 @@ public class TestFrontController extends AbstractWebTest {
     }
     */
     
+    @Test
+    public void include() throws Exception {
+        
+        assertThatRequestFor("/index/include")
+        .producesPage()
+        .withH1Tag(withContent("Included"));
+    }
 }

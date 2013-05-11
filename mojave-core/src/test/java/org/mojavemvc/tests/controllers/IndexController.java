@@ -15,10 +15,14 @@
  */
 package org.mojavemvc.tests.controllers;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.mojavemvc.FrontController;
 import org.mojavemvc.annotations.Action;
@@ -241,6 +245,21 @@ public class IndexController {
             .withContent("it's ok")
             .withContentType("text/plain")
             .withLanguage("English");
+    }
+    
+    @Action("include")
+    public View include() {
+        return new View() {
+            @Override
+            public void render(HttpServletRequest request, 
+                    HttpServletResponse response) throws ServletException,
+                    IOException {
+                
+                RequestDispatcher dispatcher = 
+                        request.getRequestDispatcher(FrontController.getJSPPath() + "include.jsp");
+                dispatcher.include(request, response);
+            }
+        };
     }
     
     public String getParameter(String key) {

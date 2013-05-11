@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.mojavemvc.views.View;
+
 /**
  * 
  * @author Luis Antunes
@@ -34,4 +36,6 @@ public interface ActionSignature {
     List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action);
 
     Object[] getArgs(Map<String, ?> parametersMap, InputStream servletInputStream);
+    
+    View marshall(Object entity);
 }

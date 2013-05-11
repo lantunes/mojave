@@ -46,6 +46,7 @@ import org.mojavemvc.annotations.OPTIONSAction;
 import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.PUTAction;
 import org.mojavemvc.annotations.ParamPath;
+import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.SingletonController;
 import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.annotations.StatelessController;
@@ -755,11 +756,14 @@ public class MappedControllerDatabase implements ControllerDatabase {
         
         EntityMarshaller paramMarshaller = getParamEntityMarshaller(actionMethod, 
                 fastClass.getJavaClass().getName());
+        EntityMarshaller viewMarshaller = getViewEntityMarshaller(actionMethod, 
+                fastClass.getJavaClass().getName());
 
         int fastIndex = fastClass.getIndex(actionMethod.getName(), actionMethod.getParameterTypes());
 
         ActionSignature sig = new HttpMethodActionSignature(httpMethod, fastIndex, actionMethod.getName(),
-                actionMethod.getParameterTypes(), actionMethod.getParameterAnnotations(), paramMarshaller);
+                actionMethod.getParameterTypes(), actionMethod.getParameterAnnotations(), 
+                paramMarshaller, viewMarshaller);
         httpMethodActionMap.put(httpMethod, sig);
         
         addRoute(actionMethod, fastClass.getJavaClass().getName(), controllerVariable, 
@@ -773,11 +777,12 @@ public class MappedControllerDatabase implements ControllerDatabase {
         validateActionReturnType(method, fastClass.getJavaClass().getName());
         
         EntityMarshaller paramMarshaller = getParamEntityMarshaller(method, fastClass.getJavaClass().getName());
+        EntityMarshaller viewMarshaller = getViewEntityMarshaller(method, fastClass.getJavaClass().getName());
 
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new BaseActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                method.getParameterAnnotations(), paramMarshaller);
+                method.getParameterAnnotations(), paramMarshaller, viewMarshaller);
         actionMap.put(action, sig);
         
         addRoute(method, fastClass.getJavaClass().getName(), controllerVariable, action, isDefaultController);
@@ -820,14 +825,49 @@ public class MappedControllerDatabase implements ControllerDatabase {
         }
         return paramMarshaller;
     }
+    
+    private EntityMarshaller getViewEntityMarshaller(Method method, String className) {
+        
+        EntityMarshaller viewMarshaller = new DefaultEntityMarshaller();
+        
+        Returns returnsAnnotation = method.getAnnotation(Returns.class);
+        if (returnsAnnotation != null) {
+            String contentType = returnsAnnotation.value();
+            EntityMarshaller marshaller = entityMarshallerMap.get(contentType);
+            if (marshaller != null) {
+                viewMarshaller = marshaller;
+            } else {
+                logger.error("could not find view entity marshaller for content type " 
+                        + contentType + " for action " + method.getName() + " in controller "
+                        + className);
+            }
+        }
+        
+        return viewMarshaller;
+    }
 
     private void validateActionReturnType(Method actionMethod, String className) {
 
         Class<?> returnType = actionMethod.getReturnType();
-        if (!View.class.isAssignableFrom(returnType)) {
+        if (returnType.equals(Void.TYPE)) {
 
             throw new ConfigurationException("action " + actionMethod.getName() + " in controller "
-                    + className + " must return " + View.class.getName() + " or one of its subtypes");
+                    + className + " must return " + View.class.getName() + " or one of its subtypes, " +
+                            "or an object to be marshalled, but not void");
+            
+        } else if (!View.class.isAssignableFrom(returnType) && 
+                actionMethod.getAnnotation(Returns.class) == null) {
+            
+            throw new ConfigurationException("action " + actionMethod.getName() + " in controller "
+                    + className + " does not return a " + View.class.getName() + " or one of its subtypes " +
+                            "and does not specify a @" + Returns.class.getName() + " annotation");
+            
+        } else if (View.class.isAssignableFrom(returnType) && 
+                actionMethod.getAnnotation(Returns.class) != null) {
+            
+            throw new ConfigurationException("action " + actionMethod.getName() + " in controller "
+                    + className + " returns a " + View.class.getName() + " or one of its subtypes " +
+                            "and specifies a @" + Returns.class.getName() + " annotation");
         }
     }
     
@@ -993,17 +1033,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
     private void addBeforeOrAfterActionSignature(Map<Class<?>, ActionSignature> map, Class<?> annotationClass,
             Class<?> clazz, Method method, FastClass fastClass) {
 
-        ActionSignature m = map.get(clazz);
-        if (m != null) {
-            throw new ConfigurationException("there can be only one @" + annotationClass.getSimpleName()
-                    + " method in " + clazz.getName());
-        }
-        if (method.getParameterTypes().length > 0) {
-            if (method.getParameterTypes().length != 1 || !(method.getParameterTypes()[0].equals(RequestContext.class))) {
-                throw new ConfigurationException("a @" + annotationClass.getSimpleName()
-                        + " method cannot take arguments in " + clazz.getName());
-            }
-        }
+        validateActionOccursOnlyOnce(map, annotationClass, clazz);
+        validateMethodAcceptsOnlyInterceptorArgs(annotationClass, clazz, method);
 
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
@@ -1013,18 +1044,24 @@ public class MappedControllerDatabase implements ControllerDatabase {
         map.put(clazz, sig);
     }
 
+    private void validateMethodAcceptsOnlyInterceptorArgs(Class<?> annotationClass, 
+            Class<?> clazz, Method method) {
+        
+        if (method.getParameterTypes().length > 0) {
+            if (method.getParameterTypes().length != 1 || 
+                    !(method.getParameterTypes()[0].equals(RequestContext.class))) {
+                
+                throw new ConfigurationException("a @" + annotationClass.getSimpleName()
+                        + " method cannot take arguments in " + clazz.getName());
+            }
+        }
+    }
+
     private void addAfterContructSignature(Map<Class<?>, ActionSignature> map, Class<?> annotationClass,
             Class<?> controllerClass, Method method, FastClass fastClass) {
 
-        ActionSignature m = map.get(controllerClass);
-        if (m != null) {
-            throw new ConfigurationException("there can be only one @" + annotationClass.getSimpleName()
-                    + " method in " + controllerClass.getName());
-        }
-        if (method.getParameterTypes().length > 0) {
-            throw new ConfigurationException("a @" + annotationClass.getSimpleName()
-                    + " method cannot take arguments in " + controllerClass.getName());
-        }
+        validateActionOccursOnlyOnce(map, annotationClass, controllerClass);
+        validateMethodDoesNotAcceptArguments(annotationClass, controllerClass, method);
 
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
@@ -1034,27 +1071,39 @@ public class MappedControllerDatabase implements ControllerDatabase {
         map.put(controllerClass, sig);
     }
 
-    private void addDefaultActionSignature(Map<Class<?>, ActionSignature> map, Class<?> annotationClass,
-            Class<?> controllerClass, Method method, FastClass fastClass, 
-            String controllerVariable, boolean isDefaultController) {
+    private void validateMethodDoesNotAcceptArguments(Class<?> annotationClass, 
+            Class<?> controllerClass, Method method) {
+        
+        if (method.getParameterTypes().length > 0) {
+            throw new ConfigurationException("a @" + annotationClass.getSimpleName()
+                    + " method cannot take arguments in " + controllerClass.getName());
+        }
+    }
 
+    private void validateActionOccursOnlyOnce(Map<Class<?>, ActionSignature> map, Class<?> annotationClass,
+            Class<?> controllerClass) {
+        
         ActionSignature m = map.get(controllerClass);
         if (m != null) {
             throw new ConfigurationException("there can be only one @" + annotationClass.getSimpleName()
                     + " method in " + controllerClass.getName());
         }
+    }
+    
+    private void addDefaultActionSignature(Map<Class<?>, ActionSignature> map, Class<?> annotationClass,
+            Class<?> controllerClass, Method method, FastClass fastClass, 
+            String controllerVariable, boolean isDefaultController) {
 
-        Class<?> returnType = method.getReturnType();
-        if (!View.class.isAssignableFrom(returnType)) {
-
-            throw new ConfigurationException("action " + method.getName() + " in controller "
-                    + controllerClass.getName() + " must return " + View.class.getName() + " or one of its subtypes");
-        }
+        validateActionOccursOnlyOnce(map, annotationClass, controllerClass);
+        validateActionReturnType(method, controllerClass.getName());
+        
+        EntityMarshaller paramMarshaller = getParamEntityMarshaller(method, controllerClass.getName());
+        EntityMarshaller viewMarshaller = getViewEntityMarshaller(method, controllerClass.getName());
 
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new DefaultActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                method.getParameterAnnotations());
+                method.getParameterAnnotations(), paramMarshaller, viewMarshaller);
 
         map.put(controllerClass, sig);
         

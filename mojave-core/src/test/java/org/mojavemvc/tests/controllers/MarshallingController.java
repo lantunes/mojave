@@ -16,8 +16,10 @@
 package org.mojavemvc.tests.controllers;
 
 import org.mojavemvc.annotations.Action;
+import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Entity;
 import org.mojavemvc.annotations.Expects;
+import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
@@ -28,27 +30,34 @@ import org.mojavemvc.views.View;
 @StatelessController("marshalling")
 public class MarshallingController {
 
+    @DefaultAction
+    @Returns("text/csv")
+    @Expects("application/json")
+    public CSVPojo defaultReturnXMLExpectJSON(@Entity SimplePojo pojo) {
+        return new CSVPojo(new String[]{"marshalled-default", pojo.getVal()});
+    }
+    
     @Action("expects/plaintext/string")
     @Expects("text/plain")
-    public View handlePlainTextWithString(@Entity String name) {
+    public View expectPlainTextWithString(@Entity String name) {
         return new JSP("param").withAttribute("var", name);
     }
     
     @Action("expects/plaintext/pojo")
     @Expects("text/plain")
-    public View handlePlainTextWithPojo(@Entity SimplePojo pojo) {
+    public View expectPlainTextWithPojo(@Entity SimplePojo pojo) {
         return new JSP("param").withAttribute("var", pojo.getVal());
     }
     
     @Action("expects/json")
     @Expects("application/json")
-    public View handleJSON(@Entity SimplePojo pojo) {
+    public View expectJSON(@Entity SimplePojo pojo) {
         return new JSP("param").withAttribute("var", pojo.getVal());
     }
     
     @Action("expects/xml")
     @Expects("application/xml")
-    public View handleXML(@Entity SimplePojo pojo) {
+    public View expectXML(@Entity SimplePojo pojo) {
         return new JSP("param").withAttribute("var", pojo.getVal());
     }
     
@@ -57,7 +66,7 @@ public class MarshallingController {
      */
     @Action("expects/csv")
     @Expects("text/csv")
-    public View handleCSV(@Entity CSVPojo pojo) {
+    public View expectCSV(@Entity CSVPojo pojo) {
         
         String[] vals = pojo.getVals();
         StringBuilder sb = new StringBuilder();
@@ -69,12 +78,43 @@ public class MarshallingController {
         return new JSP("param").withAttribute("var", sb.toString());
     }
     
+    @Action("returns/plaintext/string")
+    @Returns("text/plain")
+    public String returnPlainTextString() {
+        return "marshalledStringText";
+    }
+    
+    @Action("returns/plaintext/pojo")
+    @Returns("text/plain")
+    public SimplePojo returnPlainTextPojo() {
+        return new SimplePojo("marshalledStringPojo");
+    }
+    
+    @Action("returns/json")
+    @Returns("application/json")
+    public SimplePojo returnJSON() {
+        return new SimplePojo("marshalledJSON");
+    }
+    
+    @Action("returns/xml")
+    @Returns("application/xml")
+    public SimplePojo returnXML() {
+        return new SimplePojo("marshalledXML");
+    }
+    
+    @Action("returns/csv/expects/json")
+    @Returns("text/csv")
+    @Expects("application/json")
+    public CSVPojo returnXMLExpectJSON(@Entity SimplePojo pojo) {
+        return new CSVPojo(new String[]{"marshalledCSV", pojo.getVal()});
+    }
+    
     /* TODO - once bug is fixed so that a @ParamPath can be specified with 
      * unrelated @Param arg
     @Action("expects")
     @ParamPath("plaintext/pojo/with/params")
     @Expects("text/plain")
-    public View handlePlainTextWithPojoWithParams(@Entity SimplePojo pojo, 
+    public View expectPlainTextWithPojoWithParams(@Entity SimplePojo pojo, 
             @Param("p1") String p1) {
         return new JSP("params2")
             .withAttribute("p1", p1)
@@ -117,6 +157,16 @@ public class MarshallingController {
         
         public String[] getVals() {
             return vals;
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < vals.length; i++) {
+                sb.append(vals[i]);
+                if (i + 1 < vals.length) sb.append(",");
+            }
+            return sb.toString();
         }
     }
 }

@@ -18,6 +18,8 @@ package org.mojavemvc.core;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import org.mojavemvc.marshalling.EntityMarshaller;
+
 /**
  * 
  * @author Luis Antunes
@@ -25,9 +27,9 @@ import java.util.List;
 public class DefaultActionSignature extends BaseActionSignature {
 
     public DefaultActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes,
-            Annotation[][] paramAnnotations) {
+            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller, EntityMarshaller viewMarshaller) {
 
-        super(fastIndex, methodName, paramTypes, paramAnnotations);
+        super(fastIndex, methodName, paramTypes, paramAnnotations, paramMarshaller, viewMarshaller);
     }
 
     @Override

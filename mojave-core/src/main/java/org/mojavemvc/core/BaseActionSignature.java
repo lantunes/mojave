@@ -32,7 +32,9 @@ import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.Resource;
 import org.mojavemvc.core.SignatureParameters.Parameter;
 import org.mojavemvc.forms.Submittable;
+import org.mojavemvc.marshalling.DefaultEntityMarshaller;
 import org.mojavemvc.marshalling.EntityMarshaller;
+import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,19 +83,23 @@ public class BaseActionSignature implements ActionSignature {
     private final int fastIndex;
     
     private final EntityMarshaller paramMarshaller;
+    
+    private final EntityMarshaller viewMarshaller;
 
     public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
             Annotation[][] paramAnnotations) {
-        this(fastIndex, methodName, paramTypes, paramAnnotations, null);
+        this(fastIndex, methodName, paramTypes, paramAnnotations, null, new DefaultEntityMarshaller());
     }
     
     public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
-            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller) {
+            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller, 
+            EntityMarshaller viewMarshaller) {
 
         this.fastIndex = fastIndex;
         this.methodName = methodName;
         this.paramTypeMap = new Object[paramTypes.length][2];
         this.paramMarshaller = paramMarshaller;
+        this.viewMarshaller = viewMarshaller;
 
         int i = 0;
         for (Annotation[] annotationsForParam : paramAnnotations) {
@@ -132,6 +138,10 @@ public class BaseActionSignature implements ActionSignature {
     public List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action) {
 
         return controllerDb.getInterceptorsForAction(controllerClass, action);
+    }
+    
+    public View marshall(Object entity) {
+        return viewMarshaller.marshall(entity);
     }
     
     @SuppressWarnings("unchecked")

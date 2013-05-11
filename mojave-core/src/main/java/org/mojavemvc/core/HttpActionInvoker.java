@@ -127,7 +127,8 @@ public class HttpActionInvoker implements ActionInvoker {
         }
 
         FastClass actionFastClass = controllerDb.getFastClass(actionControllerClass);
-        view = (View) actionFastClass.invoke(actionSignature.fastIndex(), actionController, args);
+        Object entity = actionFastClass.invoke(actionSignature.fastIndex(), actionController, args);
+        view = actionSignature.marshall(entity);
         logger.debug("invoked " + actionSignature.methodName() + " for " + actionControllerClass.getName());
 
         View afterActionView = invokeAfterActionIfRequired(actionController,

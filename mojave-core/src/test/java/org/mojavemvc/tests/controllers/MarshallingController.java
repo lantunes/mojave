@@ -19,6 +19,8 @@ import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Entity;
 import org.mojavemvc.annotations.Expects;
+import org.mojavemvc.annotations.Param;
+import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.views.JSP;
@@ -109,8 +111,6 @@ public class MarshallingController {
         return new CSVPojo(new String[]{"marshalledCSV", pojo.getVal()});
     }
     
-    /* TODO - once bug is fixed so that a @ParamPath can be specified with 
-     * unrelated @Param arg
     @Action("expects")
     @ParamPath("plaintext/pojo/with/params")
     @Expects("text/plain")
@@ -120,7 +120,6 @@ public class MarshallingController {
             .withAttribute("p1", p1)
             .withAttribute("p2", pojo.getVal());
     }
-    */
     
     /*------------------------------------*/
     

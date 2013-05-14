@@ -906,11 +906,14 @@ public class MappedControllerDatabase implements ControllerDatabase {
         
         String[] params = ParamPathHelper.getParamNamesFrom(paramPath);
         String[] methodParams = ParamPathHelper.getParamNamesFrom(method);
-        Arrays.sort(params);
-        Arrays.sort(methodParams);
-        if (!Arrays.equals(params, methodParams)) {
-            throw new ConfigurationException("Param path " + paramPath + " for method " + method.getName() + 
-                    " in controller " + controllerName + " does not match the method params");
+
+        if (params.length > 0) {
+            Set<String> paramsSet = new HashSet<String>(Arrays.asList(params));
+            Set<String> methodParamsSet = new HashSet<String>(Arrays.asList(methodParams));
+            if (!methodParamsSet.containsAll(paramsSet)) {
+                throw new ConfigurationException("Param path " + paramPath + " for method " + method.getName() + 
+                        " in controller " + controllerName + " contains params not found in the method params");
+            }
         }
     }
     

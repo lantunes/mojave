@@ -1829,16 +1829,15 @@ public class TestFrontController extends AbstractWebTest {
             .withContent("marshalled-default,someJSON");
     }
     
-    /* TODO - once bug is fixed so that a @ParamPath can be specified with 
-     * unrelated @Param arg
     @Test
     public void marshallingExpectesPlainTextPojoWithParams() throws Exception {
 
-        assertThatRequestFor("/marshalling/expects/plaintext/pojo/with/params?p1=param1")
+        assertThatRequestFor("/marshalling/expects/plaintext/pojo/with/params?p1=param1", 
+                withBody("param2"), 
+                withContentType("text/plain"))
             .producesPage()
             .withH2Tag(withContent("Hello from param1, param2"));
     }
-    */
     
     @Test
     public void include() throws Exception {

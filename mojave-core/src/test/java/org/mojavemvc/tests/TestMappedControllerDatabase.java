@@ -1379,7 +1379,7 @@ public class TestMappedControllerDatabase {
         
         @Action
         @ParamPath(":name")
-        public View getAction(@Param("name") String name, 
+        public View getAction(@Param("p1") String p1, 
                 @Param("location") String location) {
             return null;
         }

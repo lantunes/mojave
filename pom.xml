@@ -10,6 +10,7 @@
     <url>http://mojavemvc.org</url>
     <modules>
         <module>mojave-core</module>
+        <module>mojave-freemarker</module>
     </modules>
     <licenses>
         <license>

@@ -55,7 +55,7 @@ public class JSPInitializer implements Initializer {
             logger.debug("no " + JSP_PATH + " init-param specified; setting to \"\"");
         }
         
-        collector.addProperty(JSP.JSP_PATH_PROPERTY, jspPath);
+        collector.addProperty(JSP.PATH_PROPERTY, jspPath);
     }
     
     private String processContextPath(String path) {

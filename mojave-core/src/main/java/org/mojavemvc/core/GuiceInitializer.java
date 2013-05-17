@@ -19,6 +19,7 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
+import org.mojavemvc.initialization.AppProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,13 @@ public class GuiceInitializer {
     public static final String KEY = Injector.class.getName();
 
     private final Set<Class<? extends AbstractModule>> moduleClasses;
+    private final AppProperties appProperties;
 
-    public GuiceInitializer(Set<Class<? extends AbstractModule>> moduleClasses) {
+    public GuiceInitializer(Set<Class<? extends AbstractModule>> moduleClasses, 
+            AppProperties appProperties) {
 
         this.moduleClasses = moduleClasses;
+        this.appProperties = appProperties;
     }
 
     public Injector initializeInjector() throws Exception {
@@ -56,7 +60,7 @@ public class GuiceInitializer {
         Module[] modules = new Module[moduleClasses.size() + 1];
 
         logger.debug("adding " + ServletResourceModule.class.getName() + " ...");
-        modules[0] = new ServletResourceModule();
+        modules[0] = new ServletResourceModule(appProperties);
 
         int i = 1;
         for (Class<?> moduleClass : moduleClasses) {

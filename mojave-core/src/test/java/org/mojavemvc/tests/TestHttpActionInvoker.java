@@ -45,6 +45,7 @@ import org.mojavemvc.core.MappedControllerDatabase;
 import org.mojavemvc.core.RegexRouteMap;
 import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.tests.controllers.InterceptedController1;
 import org.mojavemvc.tests.controllers.InterceptedController2;
@@ -83,6 +84,8 @@ public class TestHttpActionInvoker {
     private Injector injector;
 
     private Map<String, Object> parametersMap = new HashMap<String, Object>();
+    
+    private AppProperties appProperties;
 
     @Before
     public void beforeEachTest() throws Exception {
@@ -92,8 +95,10 @@ public class TestHttpActionInvoker {
         when(req.getSession()).thenReturn(sess);
         when(req.getInputStream()).thenReturn(null);
         res = mock(HttpServletResponse.class);
+        appProperties = mock(AppProperties.class);
 
-        injector = Guice.createInjector(new ServletResourceModule(), new SomeModule());
+        injector = Guice.createInjector(
+                new ServletResourceModule(appProperties), new SomeModule());
         ServletResourceModule.set(req, res);
 
         routed = new RoutedRequest(null, null, parametersMap);

@@ -244,7 +244,7 @@ public class IndexController {
                     AppProperties properties) throws ServletException,
                     IOException {
                 
-                String jspPath = properties.getProperty(JSP.JSP_PATH_PROPERTY);
+                String jspPath = properties.getProperty(JSP.PATH_PROPERTY);
                 RequestDispatcher dispatcher = 
                         request.getRequestDispatcher(jspPath + "include.jsp");
                 dispatcher.include(request, response);

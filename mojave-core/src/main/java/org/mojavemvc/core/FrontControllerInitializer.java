@@ -157,7 +157,8 @@ public class FrontControllerInitializer {
         try {
 
             Set<Class<? extends AbstractModule>> moduleClasses = scanModuleClasses();
-            GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses);
+            AppProperties appProps = (AppProperties)context.getAttribute(AppProperties.KEY);
+            GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, appProps);
             Injector injector = guiceInitializer.initializeInjector();
             context.setAttribute(GuiceInitializer.KEY, injector);
 

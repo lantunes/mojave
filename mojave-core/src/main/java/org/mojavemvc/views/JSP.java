@@ -41,7 +41,7 @@ import org.mojavemvc.initialization.AppProperties;
  */
 public class JSP implements View {
     
-    public static final String JSP_PATH_PROPERTY = "mojavemvc-internal-jsp-path";
+    public static final String PATH_PROPERTY = "mojavemvc-internal-jsp-path";
 
     private static final String DOT_JSP = ".jsp";
     
@@ -208,7 +208,7 @@ public class JSP implements View {
             }
         }
 
-        String jspPath = properties.getProperty(JSP_PATH_PROPERTY);
+        String jspPath = properties.getProperty(PATH_PROPERTY);
         RequestDispatcher dispatcher = request.getRequestDispatcher(jspPath + jsp);
         dispatcher.forward(request, response);
     }

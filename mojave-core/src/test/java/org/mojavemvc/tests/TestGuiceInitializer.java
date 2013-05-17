@@ -17,6 +17,7 @@ package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.junit.Test;
+import org.mojavemvc.core.DefaultAppProperties;
 import org.mojavemvc.core.GuiceInitializer;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.tests.controllers.IInjectableController;
 import org.mojavemvc.tests.modules.SomeModule;
 import org.mojavemvc.tests.services.SomeService;
@@ -39,61 +42,52 @@ import com.google.inject.Key;
 /**
  * @author Luis Antunes
  */
+@SuppressWarnings("unchecked")
 public class TestGuiceInitializer {
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testInitializeInjector() throws Exception {
+    public void injectorHasBasicBindings() throws Exception {
 
-        Set<Class<? extends AbstractModule>> moduleClasses = new HashSet<Class<? extends AbstractModule>>();
-        GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses);
-        Injector injector = guiceInitializer.initializeInjector();
+        Injector injector = initializeInjector();
 
         Map<Key<?>, Binding<?>> bindings = injector.getAllBindings();
 
-        Key<HttpServletRequest> reqBindingKey = Key.get(HttpServletRequest.class);
-        Binding<HttpServletRequest> reqBinding = (Binding<HttpServletRequest>) bindings.get(reqBindingKey);
-        assertNotNull(reqBinding);
-
-        Key<HttpServletResponse> respBindingKey = Key.get(HttpServletResponse.class);
-        Binding<HttpServletResponse> respBinding = (Binding<HttpServletResponse>) bindings.get(respBindingKey);
-        assertNotNull(respBinding);
-
-        Key<HttpSession> sessBindingKey = Key.get(HttpSession.class);
-        Binding<HttpSession> sessBinding = (Binding<HttpSession>) bindings.get(sessBindingKey);
-        assertNotNull(sessBinding);
+        assertNotNull((Binding<HttpServletRequest>) bindings.get(Key.get(HttpServletRequest.class)));
+        assertNotNull((Binding<HttpServletResponse>) bindings.get(Key.get(HttpServletResponse.class)));
+        assertNotNull((Binding<HttpSession>) bindings.get(Key.get(HttpSession.class)));
+        assertNotNull((Binding<AppProperties>) bindings.get(Key.get(AppProperties.class)));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testInitializeInjector2() throws Exception {
+    public void injectorHasBasicAndCustomBindings() throws Exception {
 
-        Set<Class<? extends AbstractModule>> moduleClasses = new HashSet<Class<? extends AbstractModule>>();
-        moduleClasses.add(SomeModule.class);
-        GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses);
-        Injector injector = guiceInitializer.initializeInjector();
+        Injector injector = initializeInjector(SomeModule.class);
 
         Map<Key<?>, Binding<?>> bindings = injector.getAllBindings();
 
-        Key<HttpServletRequest> reqBindingKey = Key.get(HttpServletRequest.class);
-        Binding<HttpServletRequest> reqBinding = (Binding<HttpServletRequest>) bindings.get(reqBindingKey);
-        assertNotNull(reqBinding);
-
-        Key<HttpServletResponse> respBindingKey = Key.get(HttpServletResponse.class);
-        Binding<HttpServletResponse> respBinding = (Binding<HttpServletResponse>) bindings.get(respBindingKey);
-        assertNotNull(respBinding);
-
-        Key<HttpSession> sessBindingKey = Key.get(HttpSession.class);
-        Binding<HttpSession> sessBinding = (Binding<HttpSession>) bindings.get(sessBindingKey);
-        assertNotNull(sessBinding);
-
-        Key<SomeService> someServiceBindingKey = Key.get(SomeService.class);
-        Binding<SomeService> someServiceBinding = (Binding<SomeService>) bindings.get(someServiceBindingKey);
-        assertNotNull(someServiceBinding);
-
-        Key<IInjectableController> controllerBindingKey = Key.get(IInjectableController.class);
-        Binding<IInjectableController> controllerBinding = (Binding<IInjectableController>) bindings
-                .get(controllerBindingKey);
-        assertNotNull(controllerBinding);
+        assertNotNull((Binding<HttpServletRequest>) bindings.get(Key.get(HttpServletRequest.class)));
+        assertNotNull((Binding<HttpServletResponse>) bindings.get(Key.get(HttpServletResponse.class)));
+        assertNotNull((Binding<HttpSession>) bindings.get(Key.get(HttpSession.class)));
+        assertNotNull((Binding<AppProperties>) bindings.get(Key.get(AppProperties.class)));
+        assertNotNull((Binding<SomeService>) bindings.get(Key.get(SomeService.class)));
+        assertNotNull((Binding<IInjectableController>) bindings.get(Key.get(IInjectableController.class)));
+    }
+    
+    /*---------------------------------------------*/
+    
+    private Injector initializeInjector(Class<? extends AbstractModule>...modules) throws Exception {
+        
+        Set<Class<? extends AbstractModule>> moduleClasses = new HashSet<Class<? extends AbstractModule>>();
+        for (Class<? extends AbstractModule> module : modules) {
+            moduleClasses.add(module);
+        }
+        GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, newAppProperties());
+        Injector injector = guiceInitializer.initializeInjector();
+        return injector;
+    }
+    
+    private AppProperties newAppProperties() {
+        
+        return new DefaultAppProperties(new HashMap<String, String>());
     }
 }

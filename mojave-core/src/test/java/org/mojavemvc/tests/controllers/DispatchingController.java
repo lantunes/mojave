@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
@@ -43,6 +44,9 @@ public class DispatchingController {
 
     @Inject
     HttpServletResponse response;
+    
+    @Inject
+    AppProperties appProperties;
 
     @BeforeAction
     public void before() {
@@ -50,8 +54,8 @@ public class DispatchingController {
         try {
 
             request.setAttribute("var", "dispatched");
-            //TODO hard-code /WEB-INF/jsp/ for now; when we can inject AppProperties, use that instead
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/" + "param.jsp");
+            String jspPath = appProperties.getProperty(JSP.PATH_PROPERTY);
+            RequestDispatcher dispatcher = request.getRequestDispatcher(jspPath + "param.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {

@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.util.ParamPathHelper;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestParamPathHelper {
 
     @Test

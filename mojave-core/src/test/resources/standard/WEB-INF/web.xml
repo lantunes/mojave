@@ -36,6 +36,10 @@
             <param-name>entity-marshallers</param-name>
             <param-value>org.mojavemvc.tests.marshallers</param-value>
         </init-param>
+        <init-param>
+            <param-name>initializers</param-name>
+            <param-value>org.mojavemvc.tests.initializers</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

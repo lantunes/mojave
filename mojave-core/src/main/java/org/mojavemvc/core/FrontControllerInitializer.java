@@ -16,8 +16,11 @@
 package org.mojavemvc.core;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,8 +33,13 @@ import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
+import org.mojavemvc.exception.DefaultJSPErrorHandler;
 import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
+import org.mojavemvc.initialization.AppProperties;
+import org.mojavemvc.initialization.AppPropertyCollector;
+import org.mojavemvc.initialization.InitParams;
+import org.mojavemvc.initialization.Initializer;
 import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.marshalling.JSONEntityMarshaller;
 import org.mojavemvc.marshalling.PlainTextEntityMarshaller;
@@ -52,18 +60,12 @@ public class FrontControllerInitializer {
     private static final Logger logger = LoggerFactory.getLogger(FrontControllerInitializer.class);
 
     private static final String CONTROLLER_CLASS_NAMESPACE = "controller-classes";
-    private static final String JSP_PATH = "jsp-path";
-    private static final String JSP_ERROR_FILE = "jsp-error-file";
     private static final String GUICE_MODULES = "guice-modules";
     private static final String ERROR_HANDLER_FACTORY = "error-handler-factory";
     private static final String ENTITY_MARSHALLERS = "entity-marshallers";
-
-    private String controllerClassNamespace;
-    private String jspPath;
-    private String jspErrorFile;
-    private String guiceModulesNamespace;
-    private String errorHandlerFactory;
-    private String entityMarshallersNamespace;
+    private static final String INITIALIZERS_NAMESPACE = "initializers";
+    
+    private static final String INTERNAL_INITIALIZER_PACKAGE = "org.mojavemvc.initialization.internal";
 
     private final ServletConfig servletConfig;
     private final ControllerContext context;
@@ -76,90 +78,76 @@ public class FrontControllerInitializer {
 
     public void performInitialization() {
 
-        readInitParams();
+        logger.debug("performing initialization...");
+        processInitializers();
         createGuiceInjector();
         createControllerDatabase();
         createErrorHandlerFactory();
     }
 
-    private void readInitParams() {
-
-        logger.debug("reading init parameters...");
-        readControllerClassNamespace();
-        readJSPPath();
-        readJSPErrorFile();
-        readGuiceModulesNamespace();
-        readErrorHandlerFactory();
-        readEntityMarshallersNamespace();
-    }
-
-    private void readControllerClassNamespace() {
-
-        controllerClassNamespace = servletConfig.getInitParameter(CONTROLLER_CLASS_NAMESPACE);
-        if (isEmpty(controllerClassNamespace)) {
-
-            throw new ConfigurationException("controller class namespace must be specified in " + "web.xml as servlet "
-                    + CONTROLLER_CLASS_NAMESPACE + " init-param.");
+    private void processInitializers() {
+        
+        Set<Class<? extends Initializer>> initializers = scanInitializerClasses();
+        
+        DefaultAppPropertyCollector collector = new DefaultAppPropertyCollector();
+        InitParams params = newInitParams();
+        for (Class<? extends Initializer> initializerClass : initializers) {
+            
+            initialize(initializerClass, collector, params);
         }
+        
+        context.setAttribute(AppProperties.KEY, 
+                new DefaultAppProperties(collector.getProperties()));
     }
 
-    private void readJSPPath() {
+    private Set<Class<? extends Initializer>> scanInitializerClasses() {
+        
+        List<String> packages = getInitializerPackages();
+        
+        Reflections reflections = new Reflections(packages.toArray());
+        Set<Class<? extends Initializer>> initializers = 
+                reflections.getSubTypesOf(Initializer.class);
+        return initializers;
+    }
 
-        jspPath = servletConfig.getInitParameter(JSP_PATH);
-        if (!isEmpty(jspPath)) {
-
-            jspPath = processContextPath(jspPath);
-            logger.debug("setting " + JSP_PATH + " to " + jspPath);
-
-        } else {
-
-            jspPath = "";
-            logger.debug("no " + JSP_PATH + " init-param specified; setting to \"\"");
+    private List<String> getInitializerPackages() {
+        
+        List<String> packages = new ArrayList<String>();
+        packages.add(INTERNAL_INITIALIZER_PACKAGE);
+        String initializerNamespace = 
+                servletConfig.getInitParameter(INITIALIZERS_NAMESPACE);
+        if (!isEmpty(initializerNamespace)) {
+            packages.add(initializerNamespace);
         }
+        return packages;
     }
-
-    private void readJSPErrorFile() {
-
-        jspErrorFile = servletConfig.getInitParameter(JSP_ERROR_FILE);
-        if (!isEmpty(jspErrorFile)) {
-
-            logger.debug("setting " + JSP_ERROR_FILE + " to " + jspErrorFile);
-
-        } else {
-
-            jspErrorFile = "";
-            logger.debug("no " + JSP_ERROR_FILE + " init-param specified; setting to \"\"");
-        }
-    }
-
-    private void readGuiceModulesNamespace() {
-
-        guiceModulesNamespace = servletConfig.getInitParameter(GUICE_MODULES);
-    }
-
-    private void readErrorHandlerFactory() {
-
-        errorHandlerFactory = servletConfig.getInitParameter(ERROR_HANDLER_FACTORY);
-        if (!isEmpty(errorHandlerFactory)) {
-
-            logger.debug("setting " + ERROR_HANDLER_FACTORY + " to " + errorHandlerFactory);
-
-        } else {
-
-            String defaultErrorHandlerFactory = (!isEmpty(jspErrorFile)) ? 
-                    DefaultJSPErrorHandlerFactory.class.getName() :
-                    DefaultErrorHandlerFactory.class.getName();
-
-            logger.debug("no " + ERROR_HANDLER_FACTORY + " init-param specified; setting to "
-                    + defaultErrorHandlerFactory);
-
-            errorHandlerFactory = defaultErrorHandlerFactory;
+    
+    private void initialize(Class<? extends Initializer> initializerClass, 
+            AppPropertyCollector collector, InitParams params) {
+        
+        try {
+            
+            Constructor<? extends Initializer> constructor = 
+                    initializerClass.getConstructor();
+            Initializer init = constructor.newInstance();
+            init.initialize(params, collector);
+            
+        } catch (Exception e) {
+            logger.error("error processing initializer " + 
+                    initializerClass.getName(), e);
         }
     }
     
-    private void readEntityMarshallersNamespace() {
+    @SuppressWarnings("unchecked")
+    private InitParams newInitParams() {
         
-        entityMarshallersNamespace = servletConfig.getInitParameter(ENTITY_MARSHALLERS);
+        Map<String, String> params = new HashMap<String, String>();
+        for (Enumeration<String> en = servletConfig.getInitParameterNames(); 
+                en.hasMoreElements();) {
+            String name = en.nextElement();
+            params.put(name, servletConfig.getInitParameter(name));
+        }
+        return new ServletInitParams(params);
     }
 
     private void createGuiceInjector() {
@@ -176,6 +164,16 @@ public class FrontControllerInitializer {
         } catch (Throwable e) {
             logger.error("error initializing Guice", e);
         }
+    }
+    
+    private Set<Class<? extends AbstractModule>> scanModuleClasses() {
+
+        String guiceModulesNamespace = servletConfig.getInitParameter(GUICE_MODULES);
+        if (!isEmpty(guiceModulesNamespace)) {
+            Reflections reflections = new Reflections(guiceModulesNamespace);
+            return reflections.getSubTypesOf(AbstractModule.class);
+        }
+        return new HashSet<Class<? extends AbstractModule>>();
     }
 
     private void createControllerDatabase() {
@@ -198,11 +196,26 @@ public class FrontControllerInitializer {
 
     private Set<Class<?>> scanControllerClasses() {
 
+        String controllerClassNamespace = getControllerClassNameSpace();
         Reflections reflections = new Reflections(controllerClassNamespace);
         Set<Class<?>> controllerClasses = reflections.getTypesAnnotatedWith(StatelessController.class);
         controllerClasses.addAll(reflections.getTypesAnnotatedWith(StatefulController.class));
         controllerClasses.addAll(reflections.getTypesAnnotatedWith(SingletonController.class));
         return controllerClasses;
+    }
+    
+    private String getControllerClassNameSpace() {
+        
+        String controllerClassNamespace = 
+                servletConfig.getInitParameter(CONTROLLER_CLASS_NAMESPACE);
+        if (isEmpty(controllerClassNamespace)) {
+
+            throw new ConfigurationException("controller class namespace " +
+                    "must be specified in " + "web.xml as servlet "
+                    + CONTROLLER_CLASS_NAMESPACE + " init-param.");
+        }
+        
+        return controllerClassNamespace;
     }
     
     private Map<String, EntityMarshaller> scanEntityMarshallers() {
@@ -215,10 +228,10 @@ public class FrontControllerInitializer {
         addToEntityMarshallerMap(new JSONEntityMarshaller(), marshallerMap);
         addToEntityMarshallerMap(new XMLEntityMarshaller(), marshallerMap);
         
-        if (!isEmpty(entityMarshallersNamespace)) {
-            Reflections reflections = new Reflections(entityMarshallersNamespace);
+        String marshallersNamespace = servletConfig.getInitParameter(ENTITY_MARSHALLERS);
+        if (!isEmpty(marshallersNamespace)) {
             Set<Class<? extends EntityMarshaller>> customMarshallers = 
-                    reflections.getSubTypesOf(EntityMarshaller.class);
+                    scanEntityMarshallerClasses(marshallersNamespace);
             for (Class<? extends EntityMarshaller> customMarshaller : customMarshallers) {
                 addToEntityMarshallerMap(customMarshaller, marshallerMap);
             }
@@ -235,6 +248,14 @@ public class FrontControllerInitializer {
         }
     }
     
+    private Set<Class<? extends EntityMarshaller>> scanEntityMarshallerClasses(String namespace) {
+        
+        Reflections reflections = new Reflections(namespace);
+        Set<Class<? extends EntityMarshaller>> customMarshallers = 
+                reflections.getSubTypesOf(EntityMarshaller.class);
+        return customMarshallers;
+    }
+    
     private void addToEntityMarshallerMap(Class<? extends EntityMarshaller> customMarshaller, 
             Map<String, EntityMarshaller> marshallerMap) {
         
@@ -249,34 +270,16 @@ public class FrontControllerInitializer {
             addToEntityMarshallerMap(marshaller, marshallerMap);
         }
     }
-    
-    private Set<Class<? extends AbstractModule>> scanModuleClasses() {
-
-        if (!isEmpty(guiceModulesNamespace)) {
-            Reflections reflections = new Reflections(guiceModulesNamespace);
-            return reflections.getSubTypesOf(AbstractModule.class);
-        }
-        return new HashSet<Class<? extends AbstractModule>>();
-    }
-
-    private String processContextPath(String path) {
-
-        if (path == null || path.trim().length() == 0) {
-            return path;
-        }
-        if (path.charAt(path.length() - 1) != '/') {
-            path += "/";
-        }
-        return path;
-    }
 
     private void createErrorHandlerFactory() {
 
-        logger.debug("creating error handler factory - " + errorHandlerFactory + " ...");
+        String errorHandlerFactoryName = getErrorHandlerFactoryName();
 
+        logger.debug("creating error handler factory - " + errorHandlerFactoryName + " ...");
+        
         try {
 
-            Class<?> errorHandlerFactoryClass = Class.forName(errorHandlerFactory);
+            Class<?> errorHandlerFactoryClass = Class.forName(errorHandlerFactoryName);
             FastClass errorHandlerFactoryFastClass = FastClass.create(errorHandlerFactoryClass);
             ErrorHandlerFactory errorHandlerFactory = (ErrorHandlerFactory) errorHandlerFactoryFastClass.newInstance();
 
@@ -286,6 +289,31 @@ public class FrontControllerInitializer {
 
             logger.error("error creating error handler factory", e);
         }
+    }
+    
+    private String getErrorHandlerFactoryName() {
+        
+        String errorHandlerFactory = servletConfig.getInitParameter(ERROR_HANDLER_FACTORY);
+        if (!isEmpty(errorHandlerFactory)) {
+
+            logger.debug("setting " + ERROR_HANDLER_FACTORY + " to " + errorHandlerFactory);
+
+        } else {
+
+            AppProperties properties = (AppProperties)context.getAttribute(AppProperties.KEY);
+            String jspErrorFile = properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY);
+            
+            String defaultErrorHandlerFactory = (!isEmpty(jspErrorFile)) ? 
+                    DefaultJSPErrorHandlerFactory.class.getName() :
+                    DefaultErrorHandlerFactory.class.getName();
+
+            logger.debug("no " + ERROR_HANDLER_FACTORY + " init-param specified; setting to "
+                    + defaultErrorHandlerFactory);
+
+            errorHandlerFactory = defaultErrorHandlerFactory;
+        }
+        
+        return errorHandlerFactory;
     }
 
     public void createInitControllers() {
@@ -330,13 +358,5 @@ public class FrontControllerInitializer {
 
     private boolean isEmpty(String arg) {
         return arg == null || arg.trim().length() == 0;
-    }
-
-    public String getJSPPath() {
-        return jspPath;
-    }
-
-    public String getJSPErrorFile() {
-        return jspErrorFile;
     }
 }

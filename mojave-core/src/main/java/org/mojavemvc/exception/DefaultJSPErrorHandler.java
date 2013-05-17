@@ -15,7 +15,7 @@
  */
 package org.mojavemvc.exception;
 
-import org.mojavemvc.FrontController;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
@@ -27,9 +27,12 @@ import org.mojavemvc.views.View;
  * @author Luis Antunes
  */
 public class DefaultJSPErrorHandler implements ErrorHandler {
+    
+    public static final String JSP_ERROR_FILE_PROPERTY = "mojavemvc-internal-jsp-error-file";
 
-    public View handleError(Throwable e) {
+    public View handleError(Throwable e, AppProperties properties) {
 
-        return new JSP(FrontController.getJSPErrorFile());
+        String errorFile = properties.getProperty(JSP_ERROR_FILE_PROPERTY);
+        return new JSP(errorFile);
     }
 }

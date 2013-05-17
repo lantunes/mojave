@@ -16,20 +16,33 @@
 package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mojavemvc.exception.DefaultErrorHandler;
 import org.mojavemvc.exception.ErrorHandler;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.PlainText;
 import org.mojavemvc.views.View;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestDefaultErrorHandler {
+    
+    private AppProperties properties;
 
+    @Before
+    public void beforeEachTest() {
+        properties = mock(AppProperties.class);
+    }
+    
     @Test
     public void handleError_NullException() throws Exception {
 
         ErrorHandler errorHandler = new DefaultErrorHandler();
-        View view = errorHandler.handleError(null);
+        View view = errorHandler.handleError(null, properties);
 
         assertTrue(view instanceof PlainText);
         PlainText stackTrace = (PlainText) view;
@@ -42,7 +55,7 @@ public class TestDefaultErrorHandler {
         Exception e = new Exception("testing");
         
         ErrorHandler errorHandler = new DefaultErrorHandler();
-        View view = errorHandler.handleError(e);
+        View view = errorHandler.handleError(e, properties);
 
         assertTrue(view instanceof PlainText);
         PlainText stackTrace = (PlainText) view;

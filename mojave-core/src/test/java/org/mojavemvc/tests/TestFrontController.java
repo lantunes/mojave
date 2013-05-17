@@ -40,6 +40,7 @@ import org.mojavemvc.tests.controllers.InterceptedController7;
 import org.mojavemvc.tests.controllers.InterceptedController8;
 import org.mojavemvc.tests.controllers.InterceptedController9;
 import org.mojavemvc.tests.controllers.StartupController;
+import org.mojavemvc.tests.initializers.SomeInitializer;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.interceptors.Interceptor10;
 import org.mojavemvc.tests.interceptors.Interceptor1b;
@@ -187,8 +188,8 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-int")
             .producesPage()
-                .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-                .withH2Tag(withContent("Hello from 0"));
+            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
+            .withH2Tag(withContent("Hello from 0"));
     }
 
     @Test
@@ -1159,7 +1160,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/intercepted-before")
             .producesPage()
-                .withH2Tag(withContent("Hello from interceptor5-beforeAction:req:resp:sess:someService"));
+            .withH2Tag(withContent("Hello from interceptor5-beforeAction:req:resp:sess:someService"));
     }
 
     @Test
@@ -1625,48 +1626,48 @@ public class TestFrontController extends AbstractWebTest {
     public void paramPathController_MatchingRegexRoute() throws Exception {
         
         assertThatRequestFor("/parampath/regex/john")
-        .producesPage()
-        .withH2Tag(withContent("Hello from john"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from john"));
     }
     
     @Test
     public void paramPathController_MultiParams() throws Exception {
         
         assertThatRequestFor("/parampath/multi/John/123")
-        .producesPage()
-        .withH2Tag(withContent("Hello from John, 123"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from John, 123"));
     }
     
     @Test
     public void paramPathController_Encoded() throws Exception {
         
         assertThatRequestFor("/parampath/encoded/a%2Bb/John/123")
-        .producesPage()
-        .withH2Tag(withContent("Hello from John, 123"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from John, 123"));
     }
     
     @Test
     public void paramPathController_GET() throws Exception {
         
         assertThatGETRequestFor("/parampath-http/say/John")
-        .producesPage()
-        .withH2Tag(withContent("Hello from John, GET"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from John, GET"));
     }
     
     @Test
     public void paramPathController_POST() throws Exception {
         
         assertThatPOSTRequestFor("/parampath-http/say/John")
-        .producesPage()
-        .withH2Tag(withContent("Hello from John, POST"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from John, POST"));
     }
     
     @Test
     public void paramPathController_DELETE() throws Exception {
         
         assertThatDELETERequestFor("/parampath-http/say/John")
-        .producesPage()
-        .withH2Tag(withContent("Hello from John, DELETE"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from John, DELETE"));
     }
     
     @Test
@@ -1689,34 +1690,34 @@ public class TestFrontController extends AbstractWebTest {
     public void inputStreamUsedAsParamByItself() throws Exception {
         
         assertThatRequestFor("/stream-param/inputStreamAlone")
-        .producesPage()
-        .withH2Tag(withContent("ServletInputStream"));
+            .producesPage()
+            .withH2Tag(withContent("ServletInputStream"));
     }
     
     @Test
     public void inputStreamUsedWithOtherParam() throws Exception {
         
         assertThatRequestFor("/stream-param/inputStreamWithParam?p1=other")
-        .producesPage()
-        .withH2Tag(withContent("other-ServletInputStream"));
+            .producesPage()
+            .withH2Tag(withContent("other-ServletInputStream"));
     }
     
     @Test
     public void controllerInheritance() throws Exception {
         
         assertThatRequestFor("/inheritance/test")
-        .producesPage()
-        .withH2Tag(withContent("Hello from inherited"));
+            .producesPage()
+            .withH2Tag(withContent("Hello from inherited"));
     }
     
     @Test
     public void inputStreamReturningController() throws Exception {
         
         assertThatRequestFor("/inputstream/plaintext")
-        .producesResponse()
-        .withContentType("text/plain")
-        .withHeader("Content-Length", String.valueOf("Hello".getBytes().length))
-        .withContent("Hello");
+            .producesResponse()
+            .withContentType("text/plain")
+            .withHeader("Content-Length", String.valueOf("Hello".getBytes().length))
+            .withContent("Hello");
     }
     
     @Test
@@ -1843,7 +1844,13 @@ public class TestFrontController extends AbstractWebTest {
     public void include() throws Exception {
         
         assertThatRequestFor("/index/include")
-        .producesPage()
-        .withH1Tag(withContent("Included"));
+            .producesPage()
+            .withH1Tag(withContent("Included"));
+    }
+    
+    @Test
+    public void initializerIsInvoked() {
+        
+        assertEquals("initialized", SomeInitializer.initialized);
     }
 }

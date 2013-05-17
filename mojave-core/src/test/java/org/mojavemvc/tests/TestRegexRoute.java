@@ -21,6 +21,9 @@ import org.junit.Test;
 import org.mojavemvc.core.RegexRoute;
 import org.mojavemvc.core.Route;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestRegexRoute {
 
     @Test

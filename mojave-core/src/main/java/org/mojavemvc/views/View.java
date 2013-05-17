@@ -21,6 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mojavemvc.initialization.AppProperties;
+
 /**
  * <p>
  * Represents the renderable view in the model-view-controller pattern. Users
@@ -52,8 +54,11 @@ public interface View {
      *            the servlet request
      * @param response
      *            the servlet response
+     * @param properties
+     *            the app properties set at startup through initializers
      * @throws ServletException
      * @throws IOException
      */
-    void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties) throws ServletException, IOException;
 }

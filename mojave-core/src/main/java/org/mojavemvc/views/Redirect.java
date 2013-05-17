@@ -21,6 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mojavemvc.initialization.AppProperties;
+
 /**
  * Sends a redirect to the given path, through the servlet response.
  * 
@@ -36,7 +38,8 @@ public class Redirect implements View {
     }
 
     @Override
-    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties) throws ServletException, IOException {
 
         response.sendRedirect(path);
     }

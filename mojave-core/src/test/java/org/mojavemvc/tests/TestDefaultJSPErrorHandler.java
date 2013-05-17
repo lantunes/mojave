@@ -16,29 +16,31 @@
 package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
-
-import java.lang.reflect.Field;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
-import org.mojavemvc.FrontController;
 import org.mojavemvc.exception.DefaultJSPErrorHandler;
 import org.mojavemvc.exception.ErrorHandler;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestDefaultJSPErrorHandler {
 
     @Test
     public void handleError() throws Exception {
 
         String errorJsp = "error.jsp";
-
-        Field f = FrontController.class.getDeclaredField("JSP_ERROR_FILE");
-        f.setAccessible(true);
-        f.set(null, errorJsp);
+        
+        AppProperties properties = mock(AppProperties.class);
+        when(properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY))
+            .thenReturn(errorJsp);
 
         ErrorHandler errorHandler = new DefaultJSPErrorHandler();
-        View view = errorHandler.handleError(null);
+        View view = errorHandler.handleError(null, properties);
 
         assertTrue(view instanceof JSP);
         JSP jspView = (JSP) view;

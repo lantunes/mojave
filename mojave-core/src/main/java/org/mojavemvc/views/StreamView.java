@@ -22,6 +22,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mojavemvc.initialization.AppProperties;
+
 /**
  * An instance of this class obtains the servlet's OutputStream, and writes the
  * payload to that stream. It sets the content type and content length before
@@ -48,7 +50,8 @@ public abstract class StreamView implements View {
     protected abstract byte[] getPayload();
 
     @Override
-    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties) throws ServletException, IOException {
 
         String contentType = getContentType();
         if (contentType != null && contentType.trim().length() != 0) {

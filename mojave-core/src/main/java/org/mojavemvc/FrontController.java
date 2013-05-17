@@ -40,6 +40,7 @@ import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
 import org.mojavemvc.exception.ErrorHandler;
 import org.mojavemvc.exception.ErrorHandlerFactory;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +56,6 @@ import com.google.inject.Injector;
 @SuppressWarnings("serial")
 public final class FrontController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
-
-    private static String JSP_PATH = null;
-    private static String JSP_ERROR_FILE = null;
 
     private ControllerContext ctx;
 
@@ -75,20 +73,7 @@ public final class FrontController extends HttpServlet {
 
         initializer.performInitialization();
 
-        JSP_PATH = initializer.getJSPPath();
-        JSP_ERROR_FILE = initializer.getJSPErrorFile();
-
         initializer.createInitControllers();
-    }
-
-    public static String getJSPPath() {
-
-        return JSP_PATH;
-    }
-
-    public static String getJSPErrorFile() {
-
-        return JSP_ERROR_FILE;
     }
 
     /**
@@ -207,6 +192,7 @@ public final class FrontController extends HttpServlet {
         ErrorHandler errorHandler = errorHandlerFactory.createErrorHandler();
 
         Injector injector = (Injector) ctx.getAttribute(GuiceInitializer.KEY);
+        AppProperties properties = (AppProperties) ctx.getAttribute(AppProperties.KEY);
 
         ServletResourceModule.set(req, res);
 
@@ -224,22 +210,22 @@ public final class FrontController extends HttpServlet {
     
             RequestProcessor requestProcessor = new RequestProcessor(resolver, invoker, errorHandler);
             
-            view = requestProcessor.process(routed.getController(), routed.getAction());
+            view = requestProcessor.process(routed.getController(), routed.getAction(), properties);
     
             logger.debug("processed request for " + requestProcessor.getControllerClassName() + "; rendering...");
 
-            view.render(req, res);
+            view.render(req, res, properties);
 
         } catch (Throwable e) {
 
             logger.error("error processing request: ", e);
-            view = errorHandler.handleError(e);
+            view = errorHandler.handleError(e, properties);
             if (view != null) {
                 /*
                  * we're not catching any exceptions thrown from rendering the
                  * error view
                  */
-                view.render(req, res);
+                view.render(req, res, properties);
             }
         }
     }

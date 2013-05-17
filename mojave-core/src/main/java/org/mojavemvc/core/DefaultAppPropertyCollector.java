@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests;
+package org.mojavemvc.core;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.Test;
-import org.mojavemvc.exception.DefaultJSPErrorHandler;
-import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
-import org.mojavemvc.exception.ErrorHandler;
+import org.mojavemvc.initialization.AppPropertyCollector;
 
 /**
+ * 
  * @author Luis Antunes
  */
-public class TestDefaultJSPErrorHandlerFactory {
+public class DefaultAppPropertyCollector implements AppPropertyCollector {
+    
+    private final Map<String, String> properties = new HashMap<String, String>();
 
-    @Test
-    public void createErrorHandler() throws Exception {
+    @Override
+    public void addProperty(String name, String property) {
+        properties.put(name, property);
+    }
 
-        DefaultJSPErrorHandlerFactory factory = new DefaultJSPErrorHandlerFactory();
-        ErrorHandler errorHandler = factory.createErrorHandler();
-
-        assertTrue(errorHandler instanceof DefaultJSPErrorHandler);
+    Map<String, String> getProperties() {
+        return new HashMap<String, String>(properties);
     }
 }

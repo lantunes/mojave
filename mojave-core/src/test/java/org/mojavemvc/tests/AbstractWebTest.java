@@ -47,6 +47,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 
+/**
+ * @author Luis Antunes
+ */
 public abstract class AbstractWebTest {
 
     private static final String host = "http://localhost:";

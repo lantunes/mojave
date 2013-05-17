@@ -22,6 +22,9 @@ import org.mojavemvc.exception.DefaultErrorHandler;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandler;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestDefaultErrorHandlerFactory {
     
     @Test

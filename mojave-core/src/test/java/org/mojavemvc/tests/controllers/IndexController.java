@@ -24,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mojavemvc.FrontController;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterConstruct;
 import org.mojavemvc.annotations.BeforeAction;
@@ -33,6 +32,7 @@ import org.mojavemvc.annotations.DefaultController;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.tests.services.SomeService;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.PlainText;
@@ -99,28 +99,19 @@ public class IndexController {
 
     @Action("with-param")
     public View withParamAction() {
-        if (parameterIsEmpty("var")) {
-            return new JSP(FrontController.getJSPErrorFile());
-        }
-
+        
         return new JSP("param", new String[] { "var" }, new Object[] { getParameter("var") });
     }
 
     @Action("another-param")
     public View anotherParamAction() {
-        if (parameterIsEmpty("var")) {
-            return new JSP(FrontController.getJSPErrorFile());
-        }
-
+        
         return new JSP("param").withAttribute("var", getParameter("var"));
     }
 
     @Action("some-service")
     public View someServiceAction() {
-        if (parameterIsEmpty("var")) {
-            return new JSP(FrontController.getJSPErrorFile());
-        }
-
+        
         String answer = someService.answerRequest(getParameter("var"));
 
         return new JSP("some-service").withAttribute("var", answer);
@@ -128,10 +119,7 @@ public class IndexController {
 
     @Action("test-annotation")
     public View doAnnotationTest() {
-        if (parameterIsEmpty("var")) {
-            return new JSP(FrontController.getJSPErrorFile());
-        }
-
+        
         return new JSP("param").withAttribute("var", getParameter("var"));
     }
 
@@ -252,11 +240,13 @@ public class IndexController {
         return new View() {
             @Override
             public void render(HttpServletRequest request, 
-                    HttpServletResponse response) throws ServletException,
+                    HttpServletResponse response, 
+                    AppProperties properties) throws ServletException,
                     IOException {
                 
+                String jspPath = properties.getProperty(JSP.JSP_PATH_PROPERTY);
                 RequestDispatcher dispatcher = 
-                        request.getRequestDispatcher(FrontController.getJSPPath() + "include.jsp");
+                        request.getRequestDispatcher(jspPath + "include.jsp");
                 dispatcher.include(request, response);
             }
         };

@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mojavemvc.FrontController;
+import org.mojavemvc.initialization.AppProperties;
 
 /**
  * An instance of this class is not thread-safe, and should not be cached and/or
@@ -40,6 +40,8 @@ import org.mojavemvc.FrontController;
  * @author Luis Antunes
  */
 public class JSP implements View {
+    
+    public static final String JSP_PATH_PROPERTY = "mojavemvc-internal-jsp-path";
 
     private static final String DOT_JSP = ".jsp";
     
@@ -195,7 +197,8 @@ public class JSP implements View {
     }
 
     @Override
-    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties) throws ServletException, IOException {
 
         if (attributes != null && !attributes.isEmpty()) {
 
@@ -205,7 +208,8 @@ public class JSP implements View {
             }
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(FrontController.getJSPPath() + jsp);
+        String jspPath = properties.getProperty(JSP_PATH_PROPERTY);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(jspPath + jsp);
         dispatcher.forward(request, response);
     }
 }

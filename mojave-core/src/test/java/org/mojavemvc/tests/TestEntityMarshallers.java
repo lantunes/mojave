@@ -33,6 +33,9 @@ import org.mojavemvc.views.PlainText;
 import org.mojavemvc.views.View;
 import org.mojavemvc.views.XML;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestEntityMarshallers {
 
     @Test

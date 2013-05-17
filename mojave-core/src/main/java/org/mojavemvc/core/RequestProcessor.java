@@ -16,6 +16,7 @@
 package org.mojavemvc.core;
 
 import org.mojavemvc.exception.ErrorHandler;
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class RequestProcessor {
         this.errorHandler = errorHandler;
     }
 
-    public View process(String controller, String action) {
+    public View process(String controller, String action, AppProperties properties) {
 
         View view;
 
@@ -60,7 +61,7 @@ public class RequestProcessor {
         } catch (Throwable e) {
 
             logger.error("error invoking action controller: ", e);
-            view = errorHandler.handleError(e);
+            view = errorHandler.handleError(e, properties);
         }
 
         return view;

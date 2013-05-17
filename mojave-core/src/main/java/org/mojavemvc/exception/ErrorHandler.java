@@ -15,6 +15,7 @@
  */
 package org.mojavemvc.exception;
 
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.View;
 
 /**
@@ -39,7 +40,9 @@ public interface ErrorHandler {
      * 
      * @param e
      *            the Throwable thrown during action processing
+     * @param properties
+     *            the app properties set at startup through initializers
      * @return a View that will be rendered instead
      */
-    View handleError(Throwable e);
+    View handleError(Throwable e, AppProperties properties);
 }

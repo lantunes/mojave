@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests;
+package org.mojavemvc.initialization;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.mojavemvc.exception.DefaultJSPErrorHandler;
-import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
-import org.mojavemvc.exception.ErrorHandler;
 
 /**
+ * 
  * @author Luis Antunes
  */
-public class TestDefaultJSPErrorHandlerFactory {
+public interface AppProperties {
+    
+    public static final String KEY = AppProperties.class.getName();
 
-    @Test
-    public void createErrorHandler() throws Exception {
-
-        DefaultJSPErrorHandlerFactory factory = new DefaultJSPErrorHandlerFactory();
-        ErrorHandler errorHandler = factory.createErrorHandler();
-
-        assertTrue(errorHandler instanceof DefaultJSPErrorHandler);
-    }
+    String getProperty(String name);
 }

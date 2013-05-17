@@ -19,7 +19,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mojavemvc.FrontController;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
@@ -51,7 +50,8 @@ public class DispatchingController {
         try {
 
             request.setAttribute("var", "dispatched");
-            RequestDispatcher dispatcher = request.getRequestDispatcher(FrontController.getJSPPath() + "param.jsp");
+            //TODO hard-code /WEB-INF/jsp/ for now; when we can inject AppProperties, use that instead
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/" + "param.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {

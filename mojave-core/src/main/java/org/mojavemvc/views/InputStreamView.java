@@ -23,6 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mojavemvc.initialization.AppProperties;
+
 /**
  * An instance of this class obtains the servlet's OutputStream, and copies 
  * the contents of the supplied InputStream to that stream. It sets the content type and 
@@ -68,7 +70,8 @@ public class InputStreamView implements View {
     }
     
     @Override
-    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties) throws ServletException, IOException {
         
         if (contentType != null && contentType.trim().length() != 0) {
             response.setContentType(contentType);

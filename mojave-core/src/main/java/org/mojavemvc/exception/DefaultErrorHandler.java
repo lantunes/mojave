@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.views.PlainText;
 
 /**
@@ -29,7 +30,7 @@ import org.mojavemvc.views.PlainText;
  */
 public class DefaultErrorHandler implements ErrorHandler {
 
-    public PlainText handleError(Throwable e) {
+    public PlainText handleError(Throwable e, AppProperties properties) {
         
         String message = "";
 

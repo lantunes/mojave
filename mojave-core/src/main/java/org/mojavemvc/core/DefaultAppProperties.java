@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.views;
+package org.mojavemvc.core;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mojavemvc.initialization.AppProperties;
 
 /**
- * <p>
- * This view does nothing during the call to render(). It is used when the
- * content of the response is specified in the response headers, instead of the
- * response body.
- * </p>
  * 
  * @author Luis Antunes
  */
-public class EmptyView implements View {
+public class DefaultAppProperties implements AppProperties {
 
-    @Override
-    public void render(HttpServletRequest request, HttpServletResponse response, 
-            AppProperties properties) throws ServletException, IOException {
-
-        /*
-         * do nothing to render the view
-         */
+    private final Map<String, String> properties;
+    
+    public DefaultAppProperties(Map<String, String> params) {
+        
+        this.properties = new HashMap<String, String>(params);
     }
-
+    
+    /**
+     * Return the value of the property, or null
+     * if it does not exist
+     * 
+     * @param name
+     * @return the value of the specified property, or null
+     * if it does not exist
+     */
+    public String getProperty(String name) {
+        return properties.get(name);
+    }
 }

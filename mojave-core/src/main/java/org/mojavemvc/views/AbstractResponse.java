@@ -28,6 +28,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mojavemvc.initialization.AppProperties;
+
 
 /**
  * @author Luis Antunes
@@ -136,7 +138,8 @@ public abstract class AbstractResponse<T extends AbstractResponse<T>> extends St
     }
     
     @Override
-    public void render(HttpServletRequest request, HttpServletResponse response) 
+    public void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties) 
             throws ServletException, IOException {
         
         response.setStatus(status);
@@ -145,6 +148,6 @@ public abstract class AbstractResponse<T extends AbstractResponse<T>> extends St
             response.setHeader(header.getKey(), header.getValue());
         }
         
-        super.render(request, response);
+        super.render(request, response, properties);
     }
 }

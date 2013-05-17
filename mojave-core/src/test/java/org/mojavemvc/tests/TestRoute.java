@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.mojavemvc.core.Route;
 import org.mojavemvc.core.Route.PathParameterElement;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestRoute {
 
     @Test

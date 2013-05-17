@@ -36,6 +36,9 @@ import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
+/**
+ * @author Luis Antunes
+ */
 public class TestGuiceInitializer {
 
     @Test

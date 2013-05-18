@@ -113,7 +113,7 @@ public class MojaveTemplateLoader implements TemplateLoader {
     
     @Override
     public Reader getReader(Object templateSource, String encoding)
-    throws IOException {
+            throws IOException {
 
         return ((TemplateSource)templateSource).getReader(encoding);
     }

@@ -22,11 +22,11 @@ import java.io.Reader;
 /**
  * @author Luis Antunes
  */
-public abstract class TemplateSource {
+public interface TemplateSource {
     
-    public abstract void close() throws IOException;
+    void close() throws IOException;
     
-    public abstract Reader getReader(String encoding) throws IOException;
+    Reader getReader(String encoding) throws IOException;
     
-    public abstract long getLastModified();
+    long getLastModified();
 }

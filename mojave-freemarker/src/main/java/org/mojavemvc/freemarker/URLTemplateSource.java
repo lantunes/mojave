@@ -25,7 +25,7 @@ import java.net.URLConnection;
 /**
  * @author Luis Antunes
  */
-public class URLTemplateSource extends TemplateSource {
+public class URLTemplateSource implements TemplateSource {
     
     private final URL url;
     private URLConnection conn;

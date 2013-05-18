@@ -24,7 +24,7 @@ import java.io.Reader;
 /**
  * @author Luis Antunes
  */
-public class FileTemplateSource extends TemplateSource {
+public class FileTemplateSource implements TemplateSource {
 
     private final File file;
     

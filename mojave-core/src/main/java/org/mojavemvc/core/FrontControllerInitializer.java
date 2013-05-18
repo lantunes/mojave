@@ -38,6 +38,7 @@ import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
 import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.initialization.AppPropertyCollector;
+import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.Initializer;
 import org.mojavemvc.marshalling.EntityMarshaller;
@@ -91,9 +92,10 @@ public class FrontControllerInitializer {
         
         DefaultAppPropertyCollector collector = new DefaultAppPropertyCollector();
         InitParams params = newInitParams();
+        AppResources resources = new ServletAppResources(servletConfig.getServletContext());
         for (Class<? extends Initializer> initializerClass : initializers) {
             
-            initialize(initializerClass, collector, params);
+            initialize(initializerClass, collector, resources, params);
         }
         
         context.setAttribute(AppProperties.KEY, 
@@ -109,7 +111,19 @@ public class FrontControllerInitializer {
                 reflections.getSubTypesOf(Initializer.class);
         return initializers;
     }
-
+    
+    @SuppressWarnings("unchecked")
+    private InitParams newInitParams() {
+        
+        Map<String, String> params = new HashMap<String, String>();
+        for (Enumeration<String> en = servletConfig.getInitParameterNames(); 
+                en.hasMoreElements();) {
+            String name = en.nextElement();
+            params.put(name, servletConfig.getInitParameter(name));
+        }
+        return new ServletInitParams(params);
+    }
+    
     private List<String> getInitializerPackages() {
         
         List<String> packages = new ArrayList<String>();
@@ -123,14 +137,14 @@ public class FrontControllerInitializer {
     }
     
     private void initialize(Class<? extends Initializer> initializerClass, 
-            AppPropertyCollector collector, InitParams params) {
+            AppPropertyCollector collector, AppResources resources, InitParams params) {
         
         try {
             
             Constructor<? extends Initializer> constructor = 
                     initializerClass.getConstructor();
             Initializer init = constructor.newInstance();
-            init.initialize(params, collector);
+            init.initialize(params, resources, collector);
             
         } catch (Exception e) {
             logger.error("error processing initializer " + 
@@ -138,18 +152,6 @@ public class FrontControllerInitializer {
         }
     }
     
-    @SuppressWarnings("unchecked")
-    private InitParams newInitParams() {
-        
-        Map<String, String> params = new HashMap<String, String>();
-        for (Enumeration<String> en = servletConfig.getInitParameterNames(); 
-                en.hasMoreElements();) {
-            String name = en.nextElement();
-            params.put(name, servletConfig.getInitParameter(name));
-        }
-        return new ServletInitParams(params);
-    }
-
     private void createGuiceInjector() {
 
         logger.debug("creating Guice Injector...");

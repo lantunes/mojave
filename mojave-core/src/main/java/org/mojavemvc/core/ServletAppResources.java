@@ -13,25 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.initialization.internal;
+package org.mojavemvc.core;
 
-import org.mojavemvc.initialization.AppPropertyCollector;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.servlet.ServletContext;
+
 import org.mojavemvc.initialization.AppResources;
-import org.mojavemvc.initialization.InitParams;
-import org.mojavemvc.initialization.Initializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Luis Antunes
  */
-public class FTLInitializer implements Initializer {
+public class ServletAppResources implements AppResources {
 
-    private static final Logger logger = LoggerFactory.getLogger(FTLInitializer.class);
+    private final ServletContext ctx;
+    
+    public ServletAppResources(ServletContext ctx) {
+        
+        this.ctx = ctx;
+    }
     
     @Override
-    public void initialize(InitParams initParams, AppResources resources, 
-            AppPropertyCollector collector) {
-        // TODO Auto-generated method stub
+    public String getRealPath(String path) {
+        
+        return ctx.getRealPath(path);
     }
+
+    @Override
+    public URL getResource(String path) throws MalformedURLException {
+        
+        return ctx.getResource(path);
+    }
+
 }

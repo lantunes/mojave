@@ -17,6 +17,7 @@ package org.mojavemvc.initialization.internal;
 
 import org.mojavemvc.exception.DefaultJSPErrorHandler;
 import org.mojavemvc.initialization.AppPropertyCollector;
+import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.Initializer;
 import org.mojavemvc.views.JSP;
@@ -35,7 +36,8 @@ public class JSPInitializer implements Initializer {
     private static final String JSP_ERROR_FILE = "jsp-error-file";
 
     @Override
-    public void initialize(InitParams initParams, AppPropertyCollector collector) {
+    public void initialize(InitParams initParams, AppResources resources, 
+            AppPropertyCollector collector) {
         
         readJSPPath(initParams, collector);
         readJSPErrorFile(initParams, collector);

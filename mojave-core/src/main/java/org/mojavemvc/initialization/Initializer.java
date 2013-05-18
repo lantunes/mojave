@@ -23,5 +23,6 @@ package org.mojavemvc.initialization;
  */
 public interface Initializer {
 
-    void initialize(InitParams initParams, AppPropertyCollector collector);
+    void initialize(InitParams initParams, AppResources resources, 
+            AppPropertyCollector collector);
 }

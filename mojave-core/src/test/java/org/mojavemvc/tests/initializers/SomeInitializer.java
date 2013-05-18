@@ -16,6 +16,7 @@
 package org.mojavemvc.tests.initializers;
 
 import org.mojavemvc.initialization.AppPropertyCollector;
+import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.Initializer;
 
@@ -27,7 +28,8 @@ public class SomeInitializer implements Initializer {
     public static String initialized = null;
     
     @Override
-    public void initialize(InitParams initParams, AppPropertyCollector collector) {
+    public void initialize(InitParams initParams, AppResources resources, 
+            AppPropertyCollector collector) {
 
         initialized = "initialized";
     }

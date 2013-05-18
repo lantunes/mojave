@@ -19,16 +19,7 @@ import java.util.concurrent.CountDownLatch;
 
 import junit.framework.Assert;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.DefaultHandler;
-import org.mortbay.jetty.handler.HandlerCollection;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,46 +29,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
- * Use an embedded Jetty servlet container and HtmlUnit to run the concurrency
- * tests.
- * 
  * @author Luis Antunes
  */
-public class TestMultiClient {
+public class TestMultiClient extends AbstractWebTest {
 
     private static final Logger logger = LoggerFactory.getLogger(TestMultiClient.class);
-
-    private static Server jetty;
-
-    @BeforeClass
-    public static void beforeTests() throws Exception {
-
-        jetty = new Server();
-        Connector connector = new SelectChannelConnector();
-        connector.setPort(8989);
-        jetty.setConnectors(new Connector[] { connector });
-
-        WebAppContext wactx = new WebAppContext();
-        wactx.setParentLoaderPriority(true);
-        wactx.setContextPath("/mvc");
-        wactx.setWar("src/test/resources/standard");
-
-        HandlerCollection handlers = new HandlerCollection();
-        handlers.setHandlers(new Handler[] { wactx, new DefaultHandler() });
-        jetty.setHandler(handlers);
-
-        jetty.start();
-    }
-
-    @AfterClass
-    public static void afterTests() throws Exception {
-
-        if (jetty != null) {
-            jetty.stop();
-            jetty.destroy();
-            jetty = null;
-        }
-    }
 
     @Test
     public void sameRequest_10clients() throws Exception {

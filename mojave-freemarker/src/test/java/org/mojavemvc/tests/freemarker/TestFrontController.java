@@ -15,23 +15,19 @@
  */
 package org.mojavemvc.tests.freemarker;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import org.mojavemvc.tests.AbstractWebTest;
 
 /**
- * 
  * @author Luis Antunes
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestFTLInitializer.class,
-    TestFrontController.class,
-    TestMultiClient.class
-})
-public class MojaveMVCFreemarkerTestSuite {
-    /*
-     *  the class remains completely empty,
-     *  being used only as a placeholder for 
-     *  the above annotations 
-     */
+public class TestFrontController extends AbstractWebTest {
+
+    @Test
+    public void basicRequest() throws Exception {
+
+        assertThatRequestFor("/ftl/basic/someValue")
+            .producesPage()
+            .withH1Tag(withContent("someValue"));
+    }
 }

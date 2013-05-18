@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
 
 /**
  * @author Luis Antunes
@@ -60,6 +61,7 @@ public class FTLInitializer implements Initializer {
         logger.debug("initializing freemarker Configuration...");
         Configuration config = new Configuration();
         config.setTemplateLoader(new MojaveTemplateLoader(resources, ftlPath));
+        config.setObjectWrapper(new DefaultObjectWrapper());
         return config;
     }
 }

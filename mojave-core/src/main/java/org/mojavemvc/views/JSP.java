@@ -15,13 +15,7 @@
  */
 package org.mojavemvc.views;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -39,15 +33,13 @@ import org.mojavemvc.initialization.AppProperties;
  * 
  * @author Luis Antunes
  */
-public class JSP implements View {
+public class JSP extends DataModelView<JSP> {
     
     public static final String PATH_PROPERTY = "mojavemvc-internal-jsp-path";
 
     private static final String DOT_JSP = ".jsp";
     
     protected final String jsp;
-
-    protected Map<String, Object> attributes = new HashMap<String, Object>();
 
     /**
      * Requires the name of the underlying JSP file. If the name is not suffixed
@@ -72,117 +64,6 @@ public class JSP implements View {
 
         this(jsp);
         setAttributesFromPairs(keys, values);
-    }
-
-    public Map<String, Object> getAttributes() {
-
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-
-        this.attributes = attributes;
-    }
-
-    public Object getAttribute(String key) {
-
-        return attributes.get(key);
-    }
-
-    public JSP withAttribute(String key, Object value) {
-
-        setAttribute(key, value);
-        return this;
-    }
-
-    public void setAttribute(String key, Object value) {
-
-        attributes.put(key, value);
-    }
-
-    public JSP withAttributesFromPairs(String[] keys, Object[] values) {
-
-        setAttributesFromPairs(keys, values);
-        return this;
-    }
-
-    public void setAttributesFromPairs(String[] keys, Object[] values) {
-
-        for (int i = 0; i < keys.length; i++) {
-
-            attributes.put(keys[i], values[i]);
-        }
-    }
-
-    public JSP withModel(Object javaBean) {
-
-        setModel(javaBean);
-        return this;
-    }
-
-    public void setModel(Object javaBean) {
-
-        try {
-
-            BeanInfo info = Introspector.getBeanInfo(javaBean.getClass());
-            for (PropertyDescriptor propertyDescriptor : info.getPropertyDescriptors()) {
-                String propertyName = propertyDescriptor.getName();
-                if (!propertyName.equals("class")) {
-                    Method getter = propertyDescriptor.getReadMethod();
-                    attributes.put(propertyName, getter.invoke(javaBean, new Object[] {}));
-                }
-            }
-
-        } catch (Exception e) {
-            /* ignore */
-        }
-    }
-
-    /**
-     * <p>
-     * This method is meant to facilitate testing by providing a means of easily
-     * getting the model representation described in the class's attributes.
-     * </p>
-     * 
-     * @param <T>
-     *            the model class type
-     * @param modelClass
-     *            the model class
-     * @return an instance of the model with values set from any attributes
-     * @throws Exception
-     */
-    public <T> T getModel(Class<T> modelClass) throws Exception {
-
-        BeanInfo info = Introspector.getBeanInfo(modelClass);
-
-        T model = modelClass.newInstance();
-
-        if (attributes != null && !attributes.isEmpty()) {
-
-            Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
-            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-            for (PropertyDescriptor pd : descriptors) {
-
-                if (properties.get(pd.getName()) != null) {
-
-                    throw new IllegalStateException("property already exists in bean");
-                }
-                properties.put(pd.getName(), pd);
-            }
-
-            for (String key : attributes.keySet()) {
-
-                PropertyDescriptor pd = properties.get(key);
-                /* there can be non-model attributes in the map */
-                if (pd != null) {
-
-                    Method setter = pd.getWriteMethod();
-                    setter.invoke(model, new Object[] { attributes.get(key) });
-                }
-            }
-        }
-
-        return model;
     }
 
     /**

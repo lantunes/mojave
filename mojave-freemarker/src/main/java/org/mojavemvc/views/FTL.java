@@ -23,19 +23,43 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mojavemvc.initialization.AppProperties;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 /**
  * @author Luis Antunes
  */
-public class FTL implements View {
+public class FTL extends DataModelView<FTL> {
 
     public static final String CONFIG_PROPERTY = "mojavemvc-internal-ftl-config";
+    
+    private final String templateName;
+    
+    public FTL(String templateName) {
+        
+        if (templateName == null || templateName.trim().length() == 0) {
+            throw new IllegalArgumentException("template name cannot be empty");
+        }
+        this.templateName = templateName;
+    }
     
     @Override
     public void render(HttpServletRequest request, HttpServletResponse response, 
             AppProperties properties)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
+
+        Configuration config = (Configuration)properties.getProperty(CONFIG_PROPERTY);
         
+        Template template = config.getTemplate(templateName);
+        
+        try {
+            
+            template.process(attributes, response.getWriter());
+            
+        } catch (TemplateException e) {
+            throw new RuntimeException("error processing template : " + templateName, e);
+        }
     }
 
 }

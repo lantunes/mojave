@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.freemarker;
+package org.mojavemvc.tests.freemarker.controllers;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.mojavemvc.annotations.Action;
+import org.mojavemvc.annotations.Param;
+import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.views.FTL;
 
 /**
- * 
  * @author Luis Antunes
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestFTLInitializer.class,
-    TestFrontController.class,
-    TestMultiClient.class
-})
-public class MojaveMVCFreemarkerTestSuite {
-    /*
-     *  the class remains completely empty,
-     *  being used only as a placeholder for 
-     *  the above annotations 
-     */
+@StatelessController("ftl")
+public class FTLController {
+
+    @Action("basic/:val")
+    public FTL basic(@Param("val") String val) {
+        
+        return new FTL("basic.ftl").withAttribute("val", val);
+    }
 }

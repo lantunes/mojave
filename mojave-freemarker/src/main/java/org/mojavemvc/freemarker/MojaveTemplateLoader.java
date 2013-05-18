@@ -98,7 +98,7 @@ public class MojaveTemplateLoader implements TemplateLoader {
             if (url != null) templateSource = new URLTemplateSource(url);
             
         } catch(MalformedURLException e) {
-            logger.warn("could not retrieve resource " + fullPath, e);
+            logger.error("could not retrieve resource " + fullPath, e);
             return null;
         }
         

@@ -54,7 +54,7 @@ public class DispatchingController {
         try {
 
             request.setAttribute("var", "dispatched");
-            String jspPath = appProperties.getProperty(JSP.PATH_PROPERTY);
+            String jspPath = (String)appProperties.getProperty(JSP.PATH_PROPERTY);
             RequestDispatcher dispatcher = request.getRequestDispatcher(jspPath + "param.jsp");
             dispatcher.forward(request, response);
 

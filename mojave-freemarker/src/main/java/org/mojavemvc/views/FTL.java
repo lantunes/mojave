@@ -13,16 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.initialization;
+package org.mojavemvc.views;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.mojavemvc.initialization.AppProperties;
 
 /**
- * 
  * @author Luis Antunes
  */
-public interface AppProperties {
-    
-    public static final String KEY = AppProperties.class.getName();
+public class FTL implements View {
 
-    Object getProperty(String name);
+    public static final String CONFIG_PROPERTY = "mojavemvc-internal-ftl-config";
+    
+    @Override
+    public void render(HttpServletRequest request, HttpServletResponse response, 
+            AppProperties properties)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

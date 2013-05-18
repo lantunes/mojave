@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.initialization;
+package org.mojavemvc.tests.freemarker;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * 
  * @author Luis Antunes
  */
-public interface AppProperties {
-    
-    public static final String KEY = AppProperties.class.getName();
-
-    Object getProperty(String name);
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestFTLInitializer.class
+})
+public class MojaveMVCFreemarkerTestSuite {
+    /*
+     *  the class remains completely empty,
+     *  being used only as a placeholder for 
+     *  the above annotations 
+     */
 }

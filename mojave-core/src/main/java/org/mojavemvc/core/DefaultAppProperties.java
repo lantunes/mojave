@@ -26,11 +26,11 @@ import org.mojavemvc.initialization.AppProperties;
  */
 public class DefaultAppProperties implements AppProperties {
 
-    private final Map<String, String> properties;
+    private final Map<String, Object> properties;
     
-    public DefaultAppProperties(Map<String, String> params) {
+    public DefaultAppProperties(Map<String, Object> params) {
         
-        this.properties = new HashMap<String, String>(params);
+        this.properties = new HashMap<String, Object>(params);
     }
     
     /**
@@ -41,7 +41,7 @@ public class DefaultAppProperties implements AppProperties {
      * @return the value of the specified property, or null
      * if it does not exist
      */
-    public String getProperty(String name) {
+    public Object getProperty(String name) {
         return properties.get(name);
     }
 }

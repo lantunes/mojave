@@ -88,6 +88,6 @@ public class TestGuiceInitializer {
     
     private AppProperties newAppProperties() {
         
-        return new DefaultAppProperties(new HashMap<String, String>());
+        return new DefaultAppProperties(new HashMap<String, Object>());
     }
 }

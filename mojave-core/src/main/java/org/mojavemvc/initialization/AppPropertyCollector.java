@@ -21,5 +21,5 @@ package org.mojavemvc.initialization;
  */
 public interface AppPropertyCollector {
 
-    void addProperty(String name, String property);
+    void addProperty(String name, Object property);
 }

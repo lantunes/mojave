@@ -26,14 +26,14 @@ import org.mojavemvc.initialization.AppPropertyCollector;
  */
 public class DefaultAppPropertyCollector implements AppPropertyCollector {
     
-    private final Map<String, String> properties = new HashMap<String, String>();
+    private final Map<String, Object> properties = new HashMap<String, Object>();
 
     @Override
-    public void addProperty(String name, String property) {
+    public void addProperty(String name, Object property) {
         properties.put(name, property);
     }
 
-    Map<String, String> getProperties() {
-        return new HashMap<String, String>(properties);
+    Map<String, Object> getProperties() {
+        return new HashMap<String, Object>(properties);
     }
 }

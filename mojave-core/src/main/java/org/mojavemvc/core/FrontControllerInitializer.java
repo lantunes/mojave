@@ -304,7 +304,7 @@ public class FrontControllerInitializer {
         } else {
 
             AppProperties properties = (AppProperties)context.getAttribute(AppProperties.KEY);
-            String jspErrorFile = properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY);
+            String jspErrorFile = (String)properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY);
             
             String defaultErrorHandlerFactory = (!isEmpty(jspErrorFile)) ? 
                     DefaultJSPErrorHandlerFactory.class.getName() :

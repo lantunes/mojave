@@ -15,23 +15,51 @@
  */
 package org.mojavemvc.initialization.internal;
 
+import org.mojavemvc.freemarker.MojaveTemplateLoader;
 import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.Initializer;
+import org.mojavemvc.views.FTL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import freemarker.template.Configuration;
 
 /**
  * @author Luis Antunes
  */
 public class FTLInitializer implements Initializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(FTLInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.freemarker");
+    
+    private static final String FTL_PATH = "ftl-path";
     
     @Override
     public void initialize(InitParams initParams, AppResources resources, 
             AppPropertyCollector collector) {
-        // TODO Auto-generated method stub
+        
+        String ftlPath = getFTLPath(initParams);
+        Configuration config = initFTLConfig(resources, ftlPath);
+        collector.addProperty(FTL.CONFIG_PROPERTY, config);
+    }
+
+    private String getFTLPath(InitParams initParams) {
+        
+        String ftlPath = initParams.getParameter(FTL_PATH);
+        if (ftlPath == null || ftlPath.trim().length() == 0) {
+            ftlPath = "/";
+            logger.debug("no " + FTL_PATH + " init-param specified");
+        }
+        logger.debug("setting " + FTL_PATH + " to " + ftlPath);
+        return ftlPath;
+    }
+    
+    private Configuration initFTLConfig(AppResources resources, String ftlPath) {
+        
+        logger.debug("initializing freemarker Configuration...");
+        Configuration config = new Configuration();
+        config.setTemplateLoader(new MojaveTemplateLoader(resources, ftlPath));
+        return config;
     }
 }

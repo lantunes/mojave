@@ -32,7 +32,7 @@ public class DefaultJSPErrorHandler implements ErrorHandler {
 
     public View handleError(Throwable e, AppProperties properties) {
 
-        String errorFile = properties.getProperty(JSP_ERROR_FILE_PROPERTY);
+        String errorFile = (String)properties.getProperty(JSP_ERROR_FILE_PROPERTY);
         return new JSP(errorFile);
     }
 }

@@ -208,7 +208,7 @@ public class JSP implements View {
             }
         }
 
-        String jspPath = properties.getProperty(PATH_PROPERTY);
+        String jspPath = (String)properties.getProperty(PATH_PROPERTY);
         RequestDispatcher dispatcher = request.getRequestDispatcher(jspPath + jsp);
         dispatcher.forward(request, response);
     }

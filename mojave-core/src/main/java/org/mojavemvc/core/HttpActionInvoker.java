@@ -47,10 +47,6 @@ public class HttpActionInvoker implements ActionInvoker {
     private final String action;
     private final Map<String, Object> parameterMap;
 
-    private Object actionController;
-    private Class<?> actionControllerClass;
-    private ActionSignature actionSignature;
-
     public HttpActionInvoker(HttpServletRequest request, HttpServletResponse response, ControllerDatabase controllerDb,
             RoutedRequest routed, Injector injector) {
 
@@ -70,16 +66,12 @@ public class HttpActionInvoker implements ActionInvoker {
 
     public View invokeAction(Object actionController, ActionSignature actionSignature) throws Exception {
 
-        this.actionController = actionController;
-        actionControllerClass = actionController.getClass();
-        this.actionSignature = actionSignature;
-
-        logInitMessage();
-
-        return invokeActionMethod();
+        Class<?> actionControllerClass = actionController.getClass();
+        logInitMessage(actionSignature, actionControllerClass);
+        return invokeActionMethod(actionController, actionSignature, actionControllerClass);
     }
 
-    private void logInitMessage() {
+    private void logInitMessage(ActionSignature actionSignature, Class<?> actionControllerClass) {
 
         String message = "";
         if (actionSignature != null) {
@@ -91,7 +83,8 @@ public class HttpActionInvoker implements ActionInvoker {
         logger.debug(message);
     }
 
-    private View invokeActionMethod() throws Exception {
+    private View invokeActionMethod(Object actionController, ActionSignature actionSignature, 
+            Class<?> actionControllerClass) throws Exception {
 
         View view = null;
 
@@ -99,7 +92,7 @@ public class HttpActionInvoker implements ActionInvoker {
 
         List<Object> classInterceptors = createInterceptors(controllerDb.getInterceptorsFor(actionControllerClass));
 
-        List<Object> methodInterceptors = createInterceptorsForAction();
+        List<Object> methodInterceptors = createInterceptorsForAction(actionSignature, actionControllerClass);
 
         for (Object interceptor : classInterceptors) {
 
@@ -161,7 +154,8 @@ public class HttpActionInvoker implements ActionInvoker {
         return view;
     }
 
-    private List<Object> createInterceptorsForAction() throws Exception {
+    private List<Object> createInterceptorsForAction(ActionSignature actionSignature, 
+            Class<?> actionControllerClass) throws Exception {
 
         List<Class<?>> interceptorClasses = null;
         interceptorClasses = actionSignature.getInterceptorClasses(controllerDb, actionControllerClass, action);

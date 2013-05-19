@@ -33,7 +33,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public class TestMultiClient extends AbstractWebTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestMultiClient.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.tests");
 
     @Test
     public void sameRequest_10clients() throws Exception {

@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BaseActionSignature implements ActionSignature {
 
-    protected static final Logger logger = LoggerFactory.getLogger(BaseActionSignature.class);
+    protected static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     /*
      * the method name of the @Action method

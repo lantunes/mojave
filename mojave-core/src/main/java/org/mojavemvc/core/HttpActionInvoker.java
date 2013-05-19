@@ -37,7 +37,7 @@ import com.google.inject.Injector;
  */
 public class HttpActionInvoker implements ActionInvoker {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpActionInvoker.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;

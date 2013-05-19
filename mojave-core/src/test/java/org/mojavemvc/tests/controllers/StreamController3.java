@@ -36,7 +36,7 @@ import com.google.inject.Inject;
 @StatelessController("stream3")
 public class StreamController3 {
 
-    private static final Logger logger = LoggerFactory.getLogger(StreamController3.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.tests");
 
     @Inject
     private HttpServletResponse response;

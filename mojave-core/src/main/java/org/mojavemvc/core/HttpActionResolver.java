@@ -36,7 +36,7 @@ import com.google.inject.Injector;
  */
 public class HttpActionResolver implements ActionResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpActionResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     private final ControllerContext context;
     private final HttpServletRequest request;

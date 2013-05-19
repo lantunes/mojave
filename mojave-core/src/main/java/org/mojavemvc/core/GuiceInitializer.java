@@ -41,7 +41,7 @@ import com.google.inject.Module;
  */
 public class GuiceInitializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(GuiceInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     public static final String KEY = Injector.class.getName();
 

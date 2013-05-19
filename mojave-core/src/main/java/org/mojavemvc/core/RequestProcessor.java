@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RequestProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     private final ActionResolver resolver;
     private final ActionInvoker invoker;

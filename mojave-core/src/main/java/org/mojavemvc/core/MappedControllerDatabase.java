@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MappedControllerDatabase implements ControllerDatabase {
 
-    private static final Logger logger = LoggerFactory.getLogger(MappedControllerDatabase.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     /*
      * a map of the controller variable names to their classes (eg. "index" ->

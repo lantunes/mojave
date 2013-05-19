@@ -37,7 +37,7 @@ import com.google.inject.Inject;
 @StatelessController("dispatching")
 public class DispatchingController {
 
-    private static final Logger logger = LoggerFactory.getLogger(StreamController3.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.tests");
 
     @Inject
     HttpServletRequest request;

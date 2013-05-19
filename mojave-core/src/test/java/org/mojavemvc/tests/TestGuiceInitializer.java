@@ -52,10 +52,10 @@ public class TestGuiceInitializer {
 
         Map<Key<?>, Binding<?>> bindings = injector.getAllBindings();
 
-        assertNotNull((Binding<HttpServletRequest>) bindings.get(Key.get(HttpServletRequest.class)));
-        assertNotNull((Binding<HttpServletResponse>) bindings.get(Key.get(HttpServletResponse.class)));
-        assertNotNull((Binding<HttpSession>) bindings.get(Key.get(HttpSession.class)));
-        assertNotNull((Binding<AppProperties>) bindings.get(Key.get(AppProperties.class)));
+        assertBindingExistsFor(HttpServletRequest.class, bindings);
+        assertBindingExistsFor(HttpServletResponse.class, bindings);
+        assertBindingExistsFor(HttpSession.class, bindings);
+        assertBindingExistsFor(AppProperties.class, bindings);
     }
 
     @Test
@@ -65,12 +65,12 @@ public class TestGuiceInitializer {
 
         Map<Key<?>, Binding<?>> bindings = injector.getAllBindings();
 
-        assertNotNull((Binding<HttpServletRequest>) bindings.get(Key.get(HttpServletRequest.class)));
-        assertNotNull((Binding<HttpServletResponse>) bindings.get(Key.get(HttpServletResponse.class)));
-        assertNotNull((Binding<HttpSession>) bindings.get(Key.get(HttpSession.class)));
-        assertNotNull((Binding<AppProperties>) bindings.get(Key.get(AppProperties.class)));
-        assertNotNull((Binding<SomeService>) bindings.get(Key.get(SomeService.class)));
-        assertNotNull((Binding<IInjectableController>) bindings.get(Key.get(IInjectableController.class)));
+        assertBindingExistsFor(HttpServletRequest.class, bindings);
+        assertBindingExistsFor(HttpServletResponse.class, bindings);
+        assertBindingExistsFor(HttpSession.class, bindings);
+        assertBindingExistsFor(AppProperties.class, bindings);
+        assertBindingExistsFor(SomeService.class, bindings);
+        assertBindingExistsFor(IInjectableController.class, bindings);
     }
     
     /*---------------------------------------------*/
@@ -89,5 +89,9 @@ public class TestGuiceInitializer {
     private AppProperties newAppProperties() {
         
         return new DefaultAppProperties(new HashMap<String, Object>());
+    }
+    
+    private <T> void assertBindingExistsFor(Class<T> clazz, Map<Key<?>, Binding<?>> bindings) {
+        assertNotNull((Binding<T>) bindings.get(Key.get(clazz)));
     }
 }

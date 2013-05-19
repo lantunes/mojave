@@ -55,7 +55,7 @@ import com.google.inject.Injector;
  */
 @SuppressWarnings("serial")
 public final class FrontController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     private ControllerContext ctx;
 

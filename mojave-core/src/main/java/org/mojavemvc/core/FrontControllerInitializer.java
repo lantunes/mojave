@@ -58,7 +58,7 @@ import com.google.inject.Injector;
  */
 public class FrontControllerInitializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(FrontControllerInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
     private static final String CONTROLLER_CLASS_NAMESPACE = "controller-classes";
     private static final String GUICE_MODULES = "guice-modules";

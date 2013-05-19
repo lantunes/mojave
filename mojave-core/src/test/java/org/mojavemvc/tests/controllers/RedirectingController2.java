@@ -33,7 +33,7 @@ import com.google.inject.Inject;
 @StatelessController("redirecting2")
 public class RedirectingController2 {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedirectingController2.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.tests");
 
     @Inject
     private HttpServletResponse response;

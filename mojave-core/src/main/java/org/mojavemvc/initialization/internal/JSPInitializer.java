@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JSPInitializer implements Initializer {
     
-    private static final Logger logger = LoggerFactory.getLogger(JSPInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
     
     private static final String JSP_PATH = "jsp-path";
     private static final String JSP_ERROR_FILE = "jsp-error-file";

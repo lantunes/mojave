@@ -3,7 +3,7 @@
 ========================
 
 Mojave (pronounced Mo-hav-ee) is an annotation-driven, POJO-based web application development framework for Java. 
-It borrows ideas from Spring Web MVC and EJB 3.1, and incorporates Guice. It attempts to:
+It borrows ideas from Spring Web MVC, JAX-RS and EJB 3.1, and incorporates Guice. It attempts to:
 
 * facilitate TDD and Dependency Injection, and ultimately the development of decoupled components, by providing IoC capabilities
 * remove concurrency concerns from web application development by providing a single-thread programming model

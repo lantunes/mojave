@@ -73,7 +73,7 @@ public abstract class AbstractWebTest {
         jetty.setConnectors(new Connector[] { connector });
 
         WebAppContext wactx = new WebAppContext();
-        wactx.setClassLoader(TestFrontController.class.getClassLoader());
+        wactx.setClassLoader(AbstractWebTest.class.getClassLoader());
         wactx.setParentLoaderPriority(true);
         wactx.setContextPath(ctx);
         wactx.setWar("src/test/resources/standard");

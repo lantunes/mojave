@@ -16,6 +16,8 @@
 package org.mojavemvc.initialization.internal;
 
 import org.mojavemvc.exception.DefaultJSPErrorHandler;
+import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
+import org.mojavemvc.exception.ErrorHandlerFactory;
 import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
@@ -30,33 +32,30 @@ import org.slf4j.LoggerFactory;
  */
 public class JSPInitializer implements Initializer {
     
-    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.jsp");
     
-    private static final String JSP_PATH = "jsp-path";
-    private static final String JSP_ERROR_FILE = "jsp-error-file";
+    private static final String JSP_PATH_INIT_PARAM = "jsp-path";
+    private static final String JSP_ERROR_FILE_INIT_PARAM = "jsp-error-file";
 
     @Override
     public void initialize(InitParams initParams, AppResources resources, 
             AppPropertyCollector collector) {
         
-        readJSPPath(initParams, collector);
-        readJSPErrorFile(initParams, collector);
+        /*
+         * initialize JSP support only if there is a jsp-path init param
+         */
+        String jspPath = initParams.getParameter(JSP_PATH_INIT_PARAM);
+        if (!isEmpty(jspPath)) {
+            processJSPPath(initParams, collector, jspPath);
+            readJSPErrorFile(initParams, collector);
+        }
     }
     
-    private void readJSPPath(InitParams initParams, AppPropertyCollector collector) {
+    private void processJSPPath(InitParams initParams, AppPropertyCollector collector, 
+            String jspPath) {
 
-        String jspPath = initParams.getParameter(JSP_PATH);
-        if (!isEmpty(jspPath)) {
-
-            jspPath = processContextPath(jspPath);
-            logger.debug("setting " + JSP_PATH + " to " + jspPath);
-
-        } else {
-
-            jspPath = "";
-            logger.debug("no " + JSP_PATH + " init-param specified; setting to \"\"");
-        }
-        
+        jspPath = processContextPath(jspPath);
+        logger.debug("setting " + JSP_PATH_INIT_PARAM + " to " + jspPath);
         collector.addProperty(JSP.PATH_PROPERTY, jspPath);
     }
     
@@ -73,18 +72,14 @@ public class JSPInitializer implements Initializer {
 
     private void readJSPErrorFile(InitParams initParams, AppPropertyCollector collector) {
 
-        String jspErrorFile = initParams.getParameter(JSP_ERROR_FILE);
+        String jspErrorFile = initParams.getParameter(JSP_ERROR_FILE_INIT_PARAM);
         if (!isEmpty(jspErrorFile)) {
 
-            logger.debug("setting " + JSP_ERROR_FILE + " to " + jspErrorFile);
-
-        } else {
-
-            jspErrorFile = "";
-            logger.debug("no " + JSP_ERROR_FILE + " init-param specified; setting to \"\"");
+            logger.debug("setting " + JSP_ERROR_FILE_INIT_PARAM + " to " + jspErrorFile);
+            collector.addProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE, jspErrorFile);
+            collector.addProperty(ErrorHandlerFactory.DEFAULT_FACTORY, 
+                    DefaultJSPErrorHandlerFactory.class.getName());
         }
-        
-        collector.addProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY, jspErrorFile);
     }
     
     private boolean isEmpty(String arg) {

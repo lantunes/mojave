@@ -36,6 +36,9 @@ package org.mojavemvc.exception;
 public interface ErrorHandlerFactory {
 
     public static final String KEY = ErrorHandlerFactory.class.getName();
+    
+    public static final String DEFAULT_FACTORY = 
+            "mojavemvc-internal-default-errhandlerfactory";
 
     /**
      * <p>

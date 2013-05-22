@@ -15,24 +15,13 @@
  */
 package org.mojavemvc.exception;
 
-import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.views.JSP;
-import org.mojavemvc.views.View;
-
 /**
- * The default JSP {@link ErrorHandler} for the application. Simply returns a
- * {@link JSP} based on the 'jsp-error-file' init parameter (see
- * {@link org.mojavemvc.FrontController}).
- * 
  * @author Luis Antunes
  */
-public class DefaultJSPErrorHandler implements ErrorHandler {
-    
-    public static final String JSP_ERROR_FILE = "mojavemvc-internal-jsp-error-file";
+public class DefaultVMErrorHandlerFactory implements ErrorHandlerFactory {
 
-    public View handleError(Throwable e, AppProperties properties) {
+    public ErrorHandler createErrorHandler() {
 
-        String errorFile = (String)properties.getProperty(JSP_ERROR_FILE);
-        return new JSP(errorFile);
+        return new DefaultVMErrorHandler();
     }
 }

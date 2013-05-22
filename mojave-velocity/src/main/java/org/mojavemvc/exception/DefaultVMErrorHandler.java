@@ -16,23 +16,23 @@
 package org.mojavemvc.exception;
 
 import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.views.VelocityView;
 import org.mojavemvc.views.View;
 
 /**
- * The default JSP {@link ErrorHandler} for the application. Simply returns a
- * {@link JSP} based on the 'jsp-error-file' init parameter (see
+ * The default Velocity template {@link ErrorHandler} for the application. Simply returns a
+ * {@link VelocityView} based on the 'vm-error-file' init parameter (see
  * {@link org.mojavemvc.FrontController}).
  * 
  * @author Luis Antunes
  */
-public class DefaultJSPErrorHandler implements ErrorHandler {
+public class DefaultVMErrorHandler implements ErrorHandler {
     
-    public static final String JSP_ERROR_FILE = "mojavemvc-internal-jsp-error-file";
+    public static final String VM_ERROR_FILE = "mojavemvc-internal-vm-error-file";
 
     public View handleError(Throwable e, AppProperties properties) {
 
-        String errorFile = (String)properties.getProperty(JSP_ERROR_FILE);
-        return new JSP(errorFile);
+        String errorFile = (String)properties.getProperty(VM_ERROR_FILE);
+        return new VelocityView(errorFile);
     }
 }

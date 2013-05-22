@@ -16,23 +16,23 @@
 package org.mojavemvc.exception;
 
 import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.views.FTL;
 import org.mojavemvc.views.View;
 
 /**
- * The default JSP {@link ErrorHandler} for the application. Simply returns a
- * {@link JSP} based on the 'jsp-error-file' init parameter (see
+ * The default FreeMarker template {@link ErrorHandler} for the application. Simply returns a
+ * {@link FTL} based on the 'ftl-error-file' init parameter (see
  * {@link org.mojavemvc.FrontController}).
  * 
  * @author Luis Antunes
  */
-public class DefaultJSPErrorHandler implements ErrorHandler {
+public class DefaultFTLErrorHandler implements ErrorHandler {
     
-    public static final String JSP_ERROR_FILE = "mojavemvc-internal-jsp-error-file";
+    public static final String FTL_ERROR_FILE = "mojavemvc-internal-ftl-error-file";
 
     public View handleError(Throwable e, AppProperties properties) {
 
-        String errorFile = (String)properties.getProperty(JSP_ERROR_FILE);
-        return new JSP(errorFile);
+        String errorFile = (String)properties.getProperty(FTL_ERROR_FILE);
+        return new FTL(errorFile);
     }
 }

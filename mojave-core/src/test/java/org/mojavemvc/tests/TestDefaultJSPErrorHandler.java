@@ -36,7 +36,7 @@ public class TestDefaultJSPErrorHandler {
         String errorJsp = "error.jsp";
         
         AppProperties properties = mock(AppProperties.class);
-        when(properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY))
+        when(properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE))
             .thenReturn(errorJsp);
 
         ErrorHandler errorHandler = new DefaultJSPErrorHandler();

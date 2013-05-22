@@ -33,8 +33,6 @@ import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
-import org.mojavemvc.exception.DefaultJSPErrorHandler;
-import org.mojavemvc.exception.DefaultJSPErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
 import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.initialization.AppPropertyCollector;
@@ -297,24 +295,20 @@ public class FrontControllerInitializer {
     private String getErrorHandlerFactoryName() {
         
         String errorHandlerFactory = servletConfig.getInitParameter(ERROR_HANDLER_FACTORY);
-        if (!isEmpty(errorHandlerFactory)) {
+        if (isEmpty(errorHandlerFactory)) {
 
-            logger.debug("setting " + ERROR_HANDLER_FACTORY + " to " + errorHandlerFactory);
-
-        } else {
-
-            AppProperties properties = (AppProperties)context.getAttribute(AppProperties.KEY);
-            String jspErrorFile = (String)properties.getProperty(DefaultJSPErrorHandler.JSP_ERROR_FILE_PROPERTY);
+            logger.debug("no " + ERROR_HANDLER_FACTORY + " init-param specified, using default...");
             
-            String defaultErrorHandlerFactory = (!isEmpty(jspErrorFile)) ? 
-                    DefaultJSPErrorHandlerFactory.class.getName() :
-                    DefaultErrorHandlerFactory.class.getName();
-
-            logger.debug("no " + ERROR_HANDLER_FACTORY + " init-param specified; setting to "
-                    + defaultErrorHandlerFactory);
-
+            AppProperties properties = (AppProperties)context.getAttribute(AppProperties.KEY);
+            String defaultErrorHandlerFactory = (String)properties.getProperty(ErrorHandlerFactory.DEFAULT_FACTORY);
+            if (isEmpty(defaultErrorHandlerFactory)) {
+                defaultErrorHandlerFactory = DefaultErrorHandlerFactory.class.getName();
+            }
+            
             errorHandlerFactory = defaultErrorHandlerFactory;
         }
+        
+        logger.debug("setting " + ERROR_HANDLER_FACTORY + " to " + errorHandlerFactory);
         
         return errorHandlerFactory;
     }

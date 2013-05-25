@@ -27,6 +27,11 @@
             <artifactId>atmosphere-runtime</artifactId>
             <version>1.0.13</version>
         </dependency>
+        <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-annotations</artifactId>
+            <version>1.0.13</version>
+        </dependency>
         
         <!-- test dependencies -->
         <dependency>

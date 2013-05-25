@@ -166,13 +166,7 @@ public class FrontControllerInitializer {
     private Set<Class<? extends AbstractModule>> scanModuleClasses() {
 
         String guiceModulesNamespaces = servletConfig.getInitParameter(GUICE_MODULES);
-        List<String> packages = new ArrayList<String>();
-        if (isEmpty(guiceModulesNamespaces)) {
-            /* scan the entire classpath for modules */
-            packages.add("");
-        } else {
-            addNamespaces(guiceModulesNamespaces, packages);
-        }
+        List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);
         return scanner.scanModules(packages);
     }
 
@@ -209,13 +203,7 @@ public class FrontControllerInitializer {
         
         String controllerClassNamespaces = 
                 servletConfig.getInitParameter(CONTROLLER_CLASSES);
-        List<String> packages = new ArrayList<String>();
-        if (isEmpty(controllerClassNamespaces)) {
-            /* scan the entire classpath for controllers */
-            packages.add("");
-        } else {
-            addNamespaces(controllerClassNamespaces, packages);
-        }
+        List<String> packages = getPackagesOrEntireClasspathIfEmpty(controllerClassNamespaces);
         return packages;
     }
     
@@ -347,6 +335,18 @@ public class FrontControllerInitializer {
         }
     }
 
+    private List<String> getPackagesOrEntireClasspathIfEmpty(String namespaces) {
+        
+        List<String> packages = new ArrayList<String>();
+        if (isEmpty(namespaces)) {
+            /* scan the entire classpath */
+            packages.add("");
+        } else {
+            addNamespaces(namespaces, packages);
+        }
+        return packages;
+    }
+    
     private void addNamespaces(String ns, List<String> packages) {
         
         String[] namespaces = ns.split(NAMESPACE_SEPARATOR);

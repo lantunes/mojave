@@ -26,6 +26,7 @@ import org.mojavemvc.marshalling.EntityMarshaller;
 import org.reflections.Reflections;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 
 /**
  * @author Luis Antunes
@@ -42,10 +43,13 @@ public class ReflectionsClasspathScanner implements ClasspathScanner {
     }
 
     @Override
-    public Set<Class<? extends AbstractModule>> scanModules(List<String> packages) {
+    public Set<Class<? extends Module>> scanModules(List<String> packages) {
         
         Reflections reflections = new Reflections(packages.toArray());
-        Set<Class<? extends AbstractModule>> modules = reflections.getSubTypesOf(AbstractModule.class);
+        Set<Class<? extends Module>> modules = reflections.getSubTypesOf(Module.class);
+        /* we have to check for AbstractModule explicitly because users may have either
+         * implemented Module or sub-classed AbstractModule */
+        modules.addAll(reflections.getSubTypesOf(AbstractModule.class));
         /* make sure the framework's module is never included in the scan results */
         modules.remove(ServletResourceModule.class);
         return modules;

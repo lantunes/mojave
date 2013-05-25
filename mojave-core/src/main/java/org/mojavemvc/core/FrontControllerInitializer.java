@@ -42,8 +42,8 @@ import org.mojavemvc.marshalling.XMLEntityMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
  * 
@@ -152,7 +152,7 @@ public class FrontControllerInitializer {
 
         try {
 
-            Set<Class<? extends AbstractModule>> moduleClasses = scanModuleClasses();
+            Set<Class<? extends Module>> moduleClasses = scanModuleClasses();
             AppProperties appProps = (AppProperties)context.getAttribute(AppProperties.KEY);
             GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, appProps);
             Injector injector = guiceInitializer.initializeInjector();
@@ -163,7 +163,7 @@ public class FrontControllerInitializer {
         }
     }
     
-    private Set<Class<? extends AbstractModule>> scanModuleClasses() {
+    private Set<Class<? extends Module>> scanModuleClasses() {
 
         String guiceModulesNamespaces = servletConfig.getInitParameter(GUICE_MODULES);
         List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);

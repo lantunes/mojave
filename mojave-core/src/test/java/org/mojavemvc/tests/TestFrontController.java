@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Test;
 import org.mojavemvc.tests.controllers.StartupController;
 import org.mojavemvc.tests.initializers.SomeInitializer;
+import org.mojavemvc.tests.initializers.SomeOtherInitializer;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.interceptors.Interceptor10;
 import org.mojavemvc.tests.interceptors.Interceptor1b;
@@ -1852,5 +1853,6 @@ public class TestFrontController extends AbstractWebTest {
     public void initializerIsInvoked() {
         
         assertEquals("initialized", SomeInitializer.initialized);
+        assertEquals("initialized", SomeOtherInitializer.other_initialized);
     }
 }

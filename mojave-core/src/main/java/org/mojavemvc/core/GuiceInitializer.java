@@ -23,7 +23,6 @@ import org.mojavemvc.initialization.AppProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -33,9 +32,7 @@ import com.google.inject.Module;
  * class creates a single instance of a Guice Injector to be added to the
  * controller context during startup.
  * <p>
- * NOTE: All modules must extend com.google.inject.AbstractModule due to
- * limitations of the classpath component scanning framework. Also, all modules
- * must provide a no-arg contructor.
+ * NOTE: All modules must provide a no-arg contructor.
  * 
  * @author Luis Antunes
  */
@@ -45,10 +42,10 @@ public class GuiceInitializer {
 
     public static final String KEY = Injector.class.getName();
 
-    private final Set<Class<? extends AbstractModule>> moduleClasses;
+    private final Set<Class<? extends Module>> moduleClasses;
     private final AppProperties appProperties;
 
-    public GuiceInitializer(Set<Class<? extends AbstractModule>> moduleClasses, 
+    public GuiceInitializer(Set<Class<? extends Module>> moduleClasses, 
             AppProperties appProperties) {
 
         this.moduleClasses = moduleClasses;

@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.core;
+package org.mojavemvc.tests.initializers;
 
-import java.util.List;
-import java.util.Set;
-
-import org.mojavemvc.initialization.Initializer;
-import org.mojavemvc.marshalling.EntityMarshaller;
-
-import com.google.inject.Module;
+import org.mojavemvc.initialization.AppPropertyCollector;
+import org.mojavemvc.initialization.AppResources;
+import org.mojavemvc.initialization.InitParams;
 
 /**
  * @author Luis Antunes
  */
-public interface ClasspathScanner {
+public class SomeOtherInitializer extends SomeInitializer {
 
-    Set<Class<? extends Initializer>> scanInitializers(List<String> packages);
+    public static String other_initialized = null;
     
-    Set<Class<? extends Module>> scanModules(List<String> packages);
-    
-    Set<Class<?>> scanControllers(List<String> packages);
-    
-    Set<Class<? extends EntityMarshaller>> scanEntityMarshallers(List<String> packages);
+    @Override
+    public void initialize(InitParams initParams, AppResources resources, 
+            AppPropertyCollector collector) {
+
+        other_initialized = "initialized";
+    }
 }

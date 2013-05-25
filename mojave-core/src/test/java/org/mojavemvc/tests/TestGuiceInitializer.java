@@ -34,10 +34,10 @@ import org.mojavemvc.tests.controllers.IInjectableController;
 import org.mojavemvc.tests.modules.SomeModule;
 import org.mojavemvc.tests.services.SomeService;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
 
 /**
  * @author Luis Antunes
@@ -75,10 +75,10 @@ public class TestGuiceInitializer {
     
     /*---------------------------------------------*/
     
-    private Injector initializeInjector(Class<? extends AbstractModule>...modules) throws Exception {
+    private Injector initializeInjector(Class<? extends Module>...modules) throws Exception {
         
-        Set<Class<? extends AbstractModule>> moduleClasses = new HashSet<Class<? extends AbstractModule>>();
-        for (Class<? extends AbstractModule> module : modules) {
+        Set<Class<? extends Module>> moduleClasses = new HashSet<Class<? extends Module>>();
+        for (Class<? extends Module> module : modules) {
             moduleClasses.add(module);
         }
         GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, newAppProperties());

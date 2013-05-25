@@ -26,7 +26,7 @@ import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.Initializer;
-import org.mojavemvc.views.VelocityView;
+import org.mojavemvc.views.VM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ public class VelocityInitializer implements Initializer {
         engine.setProperty("mojave.resource.loader.path", path);
         engine.init();
         
-        collector.addProperty(VelocityView.CONFIG_PROPERTY, engine);
+        collector.addProperty(VM.CONFIG_PROPERTY, engine);
         
         readVMErrorFile(initParams, collector);
     }

@@ -24,7 +24,7 @@ import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.internal.VelocityInitializer;
-import org.mojavemvc.views.VelocityView;
+import org.mojavemvc.views.VM;
 
 /**
  * 
@@ -42,6 +42,6 @@ public class TestVelocityInitializer {
         VelocityInitializer init = new VelocityInitializer();
         init.initialize(params, resources, collector);
         
-        verify(collector).addProperty(eq(VelocityView.CONFIG_PROPERTY), any(VelocityEngine.class));
+        verify(collector).addProperty(eq(VM.CONFIG_PROPERTY), any(VelocityEngine.class));
     }
 }

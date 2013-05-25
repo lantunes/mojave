@@ -18,7 +18,7 @@ package org.mojavemvc.tests.velocity.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.VelocityView;
+import org.mojavemvc.views.VM;
 
 /**
  * @author Luis Antunes
@@ -27,8 +27,8 @@ import org.mojavemvc.views.VelocityView;
 public class VMController {
 
     @Action("basic/:val")
-    public VelocityView basic(@Param("val") String val) {
+    public VM basic(@Param("val") String val) {
         
-        return new VelocityView("basic.vm").withAttribute("val", val);
+        return new VM("basic.vm").withAttribute("val", val);
     }
 }

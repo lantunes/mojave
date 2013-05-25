@@ -29,13 +29,13 @@ import org.mojavemvc.initialization.AppProperties;
 /**
  * @author Luis Antunes
  */
-public class VelocityView extends DataModelView<VelocityView> {
+public class VM extends DataModelView<VM> {
 
     public static final String CONFIG_PROPERTY = "mojavemvc-internal-vm-config";
     
     private final String templateName;
     
-    public VelocityView(String templateName) {
+    public VM(String templateName) {
         
         if (templateName == null || templateName.trim().length() == 0) {
             throw new IllegalArgumentException("template name cannot be empty");

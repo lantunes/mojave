@@ -16,12 +16,12 @@
 package org.mojavemvc.exception;
 
 import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.views.VelocityView;
+import org.mojavemvc.views.VM;
 import org.mojavemvc.views.View;
 
 /**
  * The default Velocity template {@link ErrorHandler} for the application. Simply returns a
- * {@link VelocityView} based on the 'vm-error-file' init parameter (see
+ * {@link VM} based on the 'vm-error-file' init parameter (see
  * {@link org.mojavemvc.FrontController}).
  * 
  * @author Luis Antunes
@@ -33,6 +33,6 @@ public class DefaultVMErrorHandler implements ErrorHandler {
     public View handleError(Throwable e, AppProperties properties) {
 
         String errorFile = (String)properties.getProperty(VM_ERROR_FILE);
-        return new VelocityView(errorFile);
+        return new VM(errorFile);
     }
 }

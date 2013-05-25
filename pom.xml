@@ -12,6 +12,7 @@
         <module>mojave-core</module>
         <module>mojave-freemarker</module>
     <module>mojave-velocity</module>
+    <module>mojave-atmosphere</module>
   </modules>
     <licenses>
         <license>

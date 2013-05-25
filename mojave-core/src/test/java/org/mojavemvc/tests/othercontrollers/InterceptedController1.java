@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
 import java.util.List;
 
@@ -35,8 +35,9 @@ import com.google.inject.Inject;
 /**
  * @author Luis Antunes
  */
-@StatelessController("intercepted6")
-public class InterceptedController6 {
+@StatelessController("intercepted1")
+@InterceptedBy(Interceptor1.class)
+public class InterceptedController1 {
 
     @Inject
     private HttpServletRequest req;
@@ -53,7 +54,6 @@ public class InterceptedController6 {
     public static List<String> invocationList;
 
     @Action("some-action")
-    @InterceptedBy(Interceptor1.class)
     public View someAction() {
 
         invocationList.add("someAction");

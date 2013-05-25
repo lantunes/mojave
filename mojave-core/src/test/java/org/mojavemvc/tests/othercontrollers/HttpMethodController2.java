@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
-
-import javax.servlet.http.HttpServletResponse;
+package org.mojavemvc.tests.othercontrollers;
 
 import org.mojavemvc.annotations.DefaultAction;
-import org.mojavemvc.annotations.HEADAction;
+import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
-
-import com.google.inject.Inject;
 
 /**
  * 
  * @author Luis Antunes
  */
-@StatelessController("httpmethod4")
-public class HttpMethodController4 {
-
-    @Inject
-    HttpServletResponse resp;
+@StatelessController("httpmethod2")
+public class HttpMethodController2 {
 
     @DefaultAction
     public View defaultAction() {
@@ -42,11 +34,9 @@ public class HttpMethodController4 {
         return new JSP("param").withAttribute("var", "default");
     }
 
-    @HEADAction
-    public View doHeadAction() {
+    @POSTAction
+    public View doPostAction() {
 
-        resp.setHeader("CALLED", "called");
-
-        return new EmptyView();
+        return new JSP("param").withAttribute("var", "post");
     }
 }

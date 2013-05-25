@@ -34,6 +34,7 @@ import org.mojavemvc.core.HttpActionResolver;
 import org.mojavemvc.core.HttpMethod;
 import org.mojavemvc.core.HttpParameterMapSource;
 import org.mojavemvc.core.HttpRequestRouter;
+import org.mojavemvc.core.ReflectionsClasspathScanner;
 import org.mojavemvc.core.RequestProcessor;
 import org.mojavemvc.core.RequestRouter;
 import org.mojavemvc.core.RoutedRequest;
@@ -69,7 +70,8 @@ public final class FrontController extends HttpServlet {
 
         ctx = new FrontControllerContext();
 
-        FrontControllerInitializer initializer = new FrontControllerInitializer(getServletConfig(), ctx);
+        FrontControllerInitializer initializer = 
+                new FrontControllerInitializer(getServletConfig(), ctx, new ReflectionsClasspathScanner());
 
         initializer.performInitialization();
 

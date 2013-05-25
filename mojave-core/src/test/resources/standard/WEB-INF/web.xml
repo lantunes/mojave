@@ -18,7 +18,10 @@
         <servlet-class>org.mojavemvc.FrontController</servlet-class>
         <init-param>
             <param-name>controller-classes</param-name>
-            <param-value>org.mojavemvc.tests.controllers</param-value>
+            <param-value>
+                org.mojavemvc.tests.controllers,
+                org.mojavemvc.tests.othercontrollers
+            </param-value>
         </init-param>
         <init-param>
             <param-name>jsp-path</param-name>

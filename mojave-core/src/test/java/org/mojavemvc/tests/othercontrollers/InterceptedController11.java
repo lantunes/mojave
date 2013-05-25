@@ -13,33 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
 import java.util.List;
 
+import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.InterceptedBy;
-import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.interceptors.Interceptor1;
-import org.mojavemvc.tests.interceptors.Interceptor1b;
+import org.mojavemvc.tests.interceptors.Interceptor9;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
-/**
- * 
- * @author Luis Antunes
- */
-@StatelessController("intercepted13")
-@InterceptedBy(Interceptor1.class)
-public class InterceptedController13 {
+@StatelessController("intercepted11")
+@InterceptedBy(Interceptor9.class)
+public class InterceptedController11 {
 
     public static List<String> invocationList;
 
-    @POSTAction
-    @InterceptedBy(Interceptor1b.class)
+    @Action("some-action")
     public View someAction() {
 
-        invocationList.add("postAction");
-        return new JSP("param").withAttribute("var", "postAction");
+        invocationList.add("someAction");
+        return new JSP("param").withAttribute("var", "someAction");
     }
 }

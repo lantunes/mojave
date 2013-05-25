@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
-import java.util.List;
-
-import org.mojavemvc.annotations.Action;
-import org.mojavemvc.annotations.InterceptedBy;
+import org.mojavemvc.annotations.DefaultAction;
+import org.mojavemvc.annotations.PUTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.interceptors.Interceptor9;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
-@StatelessController("intercepted11")
-@InterceptedBy(Interceptor9.class)
-public class InterceptedController11 {
+/**
+ * 
+ * @author Luis Antunes
+ */
+@StatelessController("httpmethod3")
+public class HttpMethodController3 {
 
-    public static List<String> invocationList;
+    @DefaultAction
+    public View defaultAction() {
 
-    @Action("some-action")
-    public View someAction() {
+        return new JSP("param").withAttribute("var", "default");
+    }
 
-        invocationList.add("someAction");
-        return new JSP("param").withAttribute("var", "someAction");
+    @PUTAction
+    public View doPutAction() {
+
+        return new JSP("param").withAttribute("var", "put");
     }
 }

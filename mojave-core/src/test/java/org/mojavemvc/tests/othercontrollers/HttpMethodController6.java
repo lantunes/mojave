@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
+import org.mojavemvc.annotations.DELETEAction;
 import org.mojavemvc.annotations.DefaultAction;
-import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
@@ -25,8 +25,8 @@ import org.mojavemvc.views.View;
  * 
  * @author Luis Antunes
  */
-@StatelessController("httpmethod2")
-public class HttpMethodController2 {
+@StatelessController("httpmethod6")
+public class HttpMethodController6 {
 
     @DefaultAction
     public View defaultAction() {
@@ -34,9 +34,9 @@ public class HttpMethodController2 {
         return new JSP("param").withAttribute("var", "default");
     }
 
-    @POSTAction
-    public View doPostAction() {
+    @DELETEAction
+    public View doDeleteAction() {
 
-        return new JSP("param").withAttribute("var", "post");
+        return new JSP("param").withAttribute("var", "delete");
     }
 }

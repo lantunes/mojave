@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
 import java.util.List;
 
@@ -26,6 +26,9 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor1;
+import org.mojavemvc.tests.interceptors.Interceptor1b;
+import org.mojavemvc.tests.interceptors.Interceptor1c;
+import org.mojavemvc.tests.interceptors.Interceptor1d;
 import org.mojavemvc.tests.services.SomeService;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
@@ -35,9 +38,9 @@ import com.google.inject.Inject;
 /**
  * @author Luis Antunes
  */
-@StatelessController("intercepted1")
-@InterceptedBy(Interceptor1.class)
-public class InterceptedController1 {
+@StatelessController("intercepted8")
+@InterceptedBy({ Interceptor1.class, Interceptor1b.class })
+public class InterceptedController8 {
 
     @Inject
     private HttpServletRequest req;
@@ -54,6 +57,7 @@ public class InterceptedController1 {
     public static List<String> invocationList;
 
     @Action("some-action")
+    @InterceptedBy({ Interceptor1c.class, Interceptor1d.class })
     public View someAction() {
 
         invocationList.add("someAction");
@@ -61,6 +65,7 @@ public class InterceptedController1 {
     }
 
     @DefaultAction
+    @InterceptedBy({ Interceptor1c.class, Interceptor1d.class })
     public View defaultAction() {
 
         invocationList.add("defaultAction");

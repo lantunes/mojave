@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.core;
 
-import org.mojavemvc.annotations.DefaultAction;
-import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.annotations.TRACEAction;
-import org.mojavemvc.views.JSP;
-import org.mojavemvc.views.View;
+import java.util.List;
+import java.util.Set;
+
+import org.mojavemvc.initialization.Initializer;
+import org.mojavemvc.marshalling.EntityMarshaller;
+
+import com.google.inject.AbstractModule;
 
 /**
- * 
  * @author Luis Antunes
  */
-@StatelessController("httpmethod5")
-public class HttpMethodController5 {
+public interface ClasspathScanner {
 
-    @DefaultAction
-    public View defaultAction() {
-
-        return new JSP("param").withAttribute("var", "default");
-    }
-
-    @TRACEAction
-    public View doTraceAction() {
-
-        return new JSP("param").withAttribute("var", "trace");
-    }
+    Set<Class<? extends Initializer>> scanInitializers(List<String> packages);
+    
+    Set<Class<? extends AbstractModule>> scanModules(List<String> packages);
+    
+    Set<Class<?>> scanControllers(List<String> packages);
+    
+    Set<Class<? extends EntityMarshaller>> scanEntityMarshallers(List<String> packages);
 }

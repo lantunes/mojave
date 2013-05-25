@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
 import org.mojavemvc.annotations.DefaultAction;
-import org.mojavemvc.annotations.GETAction;
+import org.mojavemvc.annotations.OPTIONSAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
@@ -25,8 +25,8 @@ import org.mojavemvc.views.View;
  * 
  * @author Luis Antunes
  */
-@StatelessController("httpmethod1")
-public class HttpMethodController1 {
+@StatelessController("httpmethod7")
+public class HttpMethodController7 {
 
     @DefaultAction
     public View defaultAction() {
@@ -34,9 +34,9 @@ public class HttpMethodController1 {
         return new JSP("param").withAttribute("var", "default");
     }
 
-    @GETAction
-    public View doGetAction() {
+    @OPTIONSAction
+    public View doOptionsAction() {
 
-        return new JSP("param").withAttribute("var", "get");
+        return new JSP("param").withAttribute("var", "options");
     }
 }

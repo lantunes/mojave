@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
-import org.mojavemvc.annotations.DELETEAction;
+import javax.servlet.http.HttpServletResponse;
+
 import org.mojavemvc.annotations.DefaultAction;
+import org.mojavemvc.annotations.HEADAction;
 import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
+
+import com.google.inject.Inject;
 
 /**
  * 
  * @author Luis Antunes
  */
-@StatelessController("httpmethod6")
-public class HttpMethodController6 {
+@StatelessController("httpmethod4")
+public class HttpMethodController4 {
+
+    @Inject
+    HttpServletResponse resp;
 
     @DefaultAction
     public View defaultAction() {
@@ -34,9 +42,11 @@ public class HttpMethodController6 {
         return new JSP("param").withAttribute("var", "default");
     }
 
-    @DELETEAction
-    public View doDeleteAction() {
+    @HEADAction
+    public View doHeadAction() {
 
-        return new JSP("param").withAttribute("var", "delete");
+        resp.setHeader("CALLED", "called");
+
+        return new EmptyView();
     }
 }

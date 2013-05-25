@@ -13,43 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.mojavemvc.annotations.HEADAction;
+import org.mojavemvc.annotations.DELETEAction;
 import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.interceptors.Interceptor1b;
-import org.mojavemvc.views.EmptyView;
+import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
-
-import com.google.inject.Inject;
 
 /**
  * 
  * @author Luis Antunes
  */
-@StatelessController("intercepted17")
+@StatelessController("intercepted19")
 @InterceptedBy(Interceptor1.class)
-public class InterceptedController17 {
+public class InterceptedController19 {
 
     public static List<String> invocationList;
 
-    @Inject
-    HttpServletResponse resp;
-
-    @HEADAction
+    @DELETEAction
     @InterceptedBy(Interceptor1b.class)
     public View someAction() {
 
-        invocationList.add("headAction");
-
-        resp.setHeader("CALLED", "called");
-
-        return new EmptyView();
+        invocationList.add("deleteAction");
+        return new JSP("param").withAttribute("var", "deleteAction");
     }
 }

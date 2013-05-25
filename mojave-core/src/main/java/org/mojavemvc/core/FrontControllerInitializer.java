@@ -19,7 +19,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,9 +27,6 @@ import javax.servlet.ServletConfig;
 
 import net.sf.cglib.reflect.FastClass;
 
-import org.mojavemvc.annotations.SingletonController;
-import org.mojavemvc.annotations.StatefulController;
-import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
@@ -43,7 +39,6 @@ import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.marshalling.JSONEntityMarshaller;
 import org.mojavemvc.marshalling.PlainTextEntityMarshaller;
 import org.mojavemvc.marshalling.XMLEntityMarshaller;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,21 +53,26 @@ public class FrontControllerInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
-    private static final String CONTROLLER_CLASS_NAMESPACE = "controller-classes";
+    private static final String CONTROLLER_CLASSES = "controller-classes";
     private static final String GUICE_MODULES = "guice-modules";
     private static final String ERROR_HANDLER_FACTORY = "error-handler-factory";
     private static final String ENTITY_MARSHALLERS = "entity-marshallers";
-    private static final String INITIALIZERS_NAMESPACE = "initializers";
+    private static final String INITIALIZERS = "initializers";
     
     private static final String INTERNAL_INITIALIZER_PACKAGE = "org.mojavemvc.initialization.internal";
+    
+    private static final String NAMESPACE_SEPARATOR = ",";
 
     private final ServletConfig servletConfig;
     private final ControllerContext context;
+    private final ClasspathScanner scanner;
 
-    public FrontControllerInitializer(ServletConfig servletConfig, ControllerContext context) {
+    public FrontControllerInitializer(ServletConfig servletConfig, ControllerContext context, 
+            ClasspathScanner scanner) {
 
         this.servletConfig = servletConfig;
         this.context = context;
+        this.scanner = scanner;
     }
 
     public void performInitialization() {
@@ -103,11 +103,7 @@ public class FrontControllerInitializer {
     private Set<Class<? extends Initializer>> scanInitializerClasses() {
         
         List<String> packages = getInitializerPackages();
-        
-        Reflections reflections = new Reflections(packages.toArray());
-        Set<Class<? extends Initializer>> initializers = 
-                reflections.getSubTypesOf(Initializer.class);
-        return initializers;
+        return scanner.scanInitializers(packages);
     }
     
     @SuppressWarnings("unchecked")
@@ -126,14 +122,14 @@ public class FrontControllerInitializer {
         
         List<String> packages = new ArrayList<String>();
         packages.add(INTERNAL_INITIALIZER_PACKAGE);
-        String initializerNamespace = 
-                servletConfig.getInitParameter(INITIALIZERS_NAMESPACE);
-        if (!isEmpty(initializerNamespace)) {
-            packages.add(initializerNamespace);
+        String initializerNamespaces = 
+                servletConfig.getInitParameter(INITIALIZERS);
+        if (!isEmpty(initializerNamespaces)) {
+            addNamespaces(initializerNamespaces, packages);
         }
         return packages;
     }
-    
+
     private void initialize(Class<? extends Initializer> initializerClass, 
             AppPropertyCollector collector, AppResources resources, InitParams params) {
         
@@ -169,12 +165,15 @@ public class FrontControllerInitializer {
     
     private Set<Class<? extends AbstractModule>> scanModuleClasses() {
 
-        String guiceModulesNamespace = servletConfig.getInitParameter(GUICE_MODULES);
-        if (!isEmpty(guiceModulesNamespace)) {
-            Reflections reflections = new Reflections(guiceModulesNamespace);
-            return reflections.getSubTypesOf(AbstractModule.class);
+        String guiceModulesNamespaces = servletConfig.getInitParameter(GUICE_MODULES);
+        List<String> packages = new ArrayList<String>();
+        if (isEmpty(guiceModulesNamespaces)) {
+            /* scan the entire classpath for modules */
+            packages.add("");
+        } else {
+            addNamespaces(guiceModulesNamespaces, packages);
         }
-        return new HashSet<Class<? extends AbstractModule>>();
+        return scanner.scanModules(packages);
     }
 
     private void createControllerDatabase() {
@@ -197,26 +196,27 @@ public class FrontControllerInitializer {
 
     private Set<Class<?>> scanControllerClasses() {
 
-        String controllerClassNamespace = getControllerClassNameSpace();
-        Reflections reflections = new Reflections(controllerClassNamespace);
-        Set<Class<?>> controllerClasses = reflections.getTypesAnnotatedWith(StatelessController.class);
-        controllerClasses.addAll(reflections.getTypesAnnotatedWith(StatefulController.class));
-        controllerClasses.addAll(reflections.getTypesAnnotatedWith(SingletonController.class));
-        return controllerClasses;
-    }
-    
-    private String getControllerClassNameSpace() {
-        
-        String controllerClassNamespace = 
-                servletConfig.getInitParameter(CONTROLLER_CLASS_NAMESPACE);
-        if (isEmpty(controllerClassNamespace)) {
-
-            throw new ConfigurationException("controller class namespace " +
-                    "must be specified in " + "web.xml as servlet "
-                    + CONTROLLER_CLASS_NAMESPACE + " init-param.");
+        List<String> packages = getControllerPackages();
+        Set<Class<?>> controllers = scanner.scanControllers(packages);
+        if (controllers == null || controllers.isEmpty()) {
+            throw new ConfigurationException("there must be at least one " +
+                    "controller in the application");
         }
+        return controllers;
+    }
+
+    private List<String> getControllerPackages() {
         
-        return controllerClassNamespace;
+        String controllerClassNamespaces = 
+                servletConfig.getInitParameter(CONTROLLER_CLASSES);
+        List<String> packages = new ArrayList<String>();
+        if (isEmpty(controllerClassNamespaces)) {
+            /* scan the entire classpath for controllers */
+            packages.add("");
+        } else {
+            addNamespaces(controllerClassNamespaces, packages);
+        }
+        return packages;
     }
     
     private Map<String, EntityMarshaller> scanEntityMarshallers() {
@@ -229,10 +229,12 @@ public class FrontControllerInitializer {
         addToEntityMarshallerMap(new JSONEntityMarshaller(), marshallerMap);
         addToEntityMarshallerMap(new XMLEntityMarshaller(), marshallerMap);
         
-        String marshallersNamespace = servletConfig.getInitParameter(ENTITY_MARSHALLERS);
-        if (!isEmpty(marshallersNamespace)) {
+        String marshallersNamespaces = servletConfig.getInitParameter(ENTITY_MARSHALLERS);
+        if (!isEmpty(marshallersNamespaces)) {
+            List<String> packages = new ArrayList<String>();
+            addNamespaces(marshallersNamespaces, packages);
             Set<Class<? extends EntityMarshaller>> customMarshallers = 
-                    scanEntityMarshallerClasses(marshallersNamespace);
+                    scanner.scanEntityMarshallers(packages);
             for (Class<? extends EntityMarshaller> customMarshaller : customMarshallers) {
                 addToEntityMarshallerMap(customMarshaller, marshallerMap);
             }
@@ -247,14 +249,6 @@ public class FrontControllerInitializer {
         for (String contentType : marshaller.contentTypesHandled()) {
             marshallerMap.put(contentType, marshaller);
         }
-    }
-    
-    private Set<Class<? extends EntityMarshaller>> scanEntityMarshallerClasses(String namespace) {
-        
-        Reflections reflections = new Reflections(namespace);
-        Set<Class<? extends EntityMarshaller>> customMarshallers = 
-                reflections.getSubTypesOf(EntityMarshaller.class);
-        return customMarshallers;
     }
     
     private void addToEntityMarshallerMap(Class<? extends EntityMarshaller> customMarshaller, 
@@ -353,6 +347,16 @@ public class FrontControllerInitializer {
         }
     }
 
+    private void addNamespaces(String ns, List<String> packages) {
+        
+        String[] namespaces = ns.split(NAMESPACE_SEPARATOR);
+        for (String namespace : namespaces) {
+            if (!isEmpty(namespace)) {
+                packages.add(namespace.trim());
+            }
+        }
+    }
+    
     private boolean isEmpty(String arg) {
         return arg == null || arg.trim().length() == 0;
     }

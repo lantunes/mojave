@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
+package org.mojavemvc.tests.othercontrollers;
 
 import java.util.List;
 
@@ -22,15 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.mojavemvc.annotations.Action;
-import org.mojavemvc.annotations.AfterAction;
-import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor1;
-import org.mojavemvc.tests.interceptors.Interceptor1b;
-import org.mojavemvc.tests.interceptors.Interceptor1c;
-import org.mojavemvc.tests.interceptors.Interceptor1d;
 import org.mojavemvc.tests.services.SomeService;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
@@ -40,9 +35,8 @@ import com.google.inject.Inject;
 /**
  * @author Luis Antunes
  */
-@StatelessController("intercepted9")
-@InterceptedBy({ Interceptor1.class, Interceptor1b.class })
-public class InterceptedController9 {
+@StatelessController("intercepted6")
+public class InterceptedController6 {
 
     @Inject
     private HttpServletRequest req;
@@ -58,20 +52,8 @@ public class InterceptedController9 {
 
     public static List<String> invocationList;
 
-    @BeforeAction
-    public void beforeAction() {
-
-        invocationList.add("beforeAction");
-    }
-
-    @AfterAction
-    public void afterAction() {
-
-        invocationList.add("afterAction");
-    }
-
     @Action("some-action")
-    @InterceptedBy({ Interceptor1c.class, Interceptor1d.class })
+    @InterceptedBy(Interceptor1.class)
     public View someAction() {
 
         invocationList.add("someAction");
@@ -79,7 +61,6 @@ public class InterceptedController9 {
     }
 
     @DefaultAction
-    @InterceptedBy({ Interceptor1c.class, Interceptor1d.class })
     public View defaultAction() {
 
         invocationList.add("defaultAction");

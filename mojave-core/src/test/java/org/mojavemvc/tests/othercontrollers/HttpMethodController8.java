@@ -13,27 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.tests.controllers;
-
-import java.util.List;
+package org.mojavemvc.tests.othercontrollers;
 
 import org.mojavemvc.annotations.Action;
-import org.mojavemvc.annotations.InterceptedBy;
+import org.mojavemvc.annotations.DefaultAction;
+import org.mojavemvc.annotations.GETAction;
+import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.interceptors.Interceptor4;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
-@StatelessController("intercepted10")
-@InterceptedBy(Interceptor4.class)
-public class InterceptedController10 {
+/**
+ * 
+ * @author Luis Antunes
+ */
+@StatelessController("httpmethod8")
+public class HttpMethodController8 {
 
-    public static List<String> invocationList;
+    @DefaultAction
+    public View defaultAction() {
 
-    @Action("some-action")
-    public View someAction() {
+        return new JSP("param").withAttribute("var", "default");
+    }
 
-        invocationList.add("someAction");
-        return new JSP("param").withAttribute("var", "someAction");
+    @POSTAction
+    @GETAction
+    public View doMultiAction() {
+
+        return new JSP("param").withAttribute("var", "multi");
+    }
+
+    @Action
+    public View sayHello() {
+
+        return new JSP("param").withAttribute("var", "sayHello");
     }
 }

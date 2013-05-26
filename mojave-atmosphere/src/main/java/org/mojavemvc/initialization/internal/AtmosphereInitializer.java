@@ -17,6 +17,7 @@ package org.mojavemvc.initialization.internal;
 
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.mojavemvc.atmosphere.AtmosphereInterceptor;
+import org.mojavemvc.atmosphere.MojaveAtmosphereHandler;
 import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
@@ -37,6 +38,10 @@ public class AtmosphereInitializer implements Initializer {
         logger.info("initializing Atmosphere framework...");
         
         AtmosphereFramework framework = new AtmosphereFramework(false, true);
+        
+        //TODO does the "/" mapping have any significance in this case?
+        framework.addAtmosphereHandler("/", new MojaveAtmosphereHandler());
+        
         //TODO call init() after configure class using setters or
         // call framework.init(servletConfig), and add support for passing along ServletConfig
         framework.init();

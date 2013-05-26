@@ -18,9 +18,12 @@ package org.mojavemvc.atmosphere;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.AtmosphereRequest;
+import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResponse;
+import org.atmosphere.cpr.FrameworkConfig;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.aop.RequestContext;
@@ -35,9 +38,15 @@ import com.google.inject.Inject;
  */
 public class AtmosphereInterceptor {
     
-    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.atmosphere");
+    private static final Logger logger = 
+            LoggerFactory.getLogger("org.mojavemvc.atmosphere");
 
-    public static final String ATMOSPHERE_FRAMEWORK = "mojavemvc-internal-atmosphere-framework";
+    public static final String ATMOSPHERE_FRAMEWORK = 
+            "mojavemvc-internal-atmosphere-framework";
+    
+    private static final String INSTALLATION_ERROR = 
+            "The Atmosphere Framework is not installed properly " +
+            "and unexpected results may occur.";
     
     @Inject
     AppProperties appProperties;
@@ -45,14 +54,15 @@ public class AtmosphereInterceptor {
     @BeforeAction
     public void beforeAction(RequestContext ctx) {
         
-        AtmosphereFramework framework = 
-                (AtmosphereFramework)appProperties.getProperty(ATMOSPHERE_FRAMEWORK);
+        AtmosphereFramework framework = (AtmosphereFramework) appProperties
+                .getProperty(ATMOSPHERE_FRAMEWORK);
         HttpServletRequest req = ctx.getRequest();
         HttpServletResponse res = ctx.getResponse();
         
         try {
             
-            framework.doCometSupport(AtmosphereRequest.wrap(req), AtmosphereResponse.wrap(res));
+            framework.doCometSupport(
+                    AtmosphereRequest.wrap(req), AtmosphereResponse.wrap(res));
             
         } catch (Exception e) {
             logger.error("error invoking Atmosphere framework", e);
@@ -61,6 +71,26 @@ public class AtmosphereInterceptor {
     
     @AfterAction
     public void afterAction(RequestContext ctx) {
+        
+        HttpServletRequest servletReq = ctx.getRequest();
+        
+        AtmosphereConfig config = (AtmosphereConfig) servletReq
+                .getAttribute(FrameworkConfig.ATMOSPHERE_CONFIG);
+        if (config == null) {
+            logger.error(INSTALLATION_ERROR);
+            throw new IllegalStateException(INSTALLATION_ERROR);
+        }
+        
+        AtmosphereResource resource = (AtmosphereResource) servletReq
+                .getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
+        //TODO debugging
+        logger.info("resource: " + resource);
+        
+        //TODO get current status
+        //HttpServletResponse response = ctx.getResponse();
+        //if (response.getStatus() == 204) {
+        //    response.setStatus(200);
+        //}
         
         //TODO handle Atmosphere annotations here
         /*

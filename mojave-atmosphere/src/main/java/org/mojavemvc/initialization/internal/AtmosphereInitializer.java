@@ -34,7 +34,7 @@ public class AtmosphereInitializer implements Initializer {
     @Override
     public void initialize(InitParams initParams, AppResources resources, AppPropertyCollector collector) {
 
-        logger.debug("initializing Atmosphere framework...");
+        logger.info("initializing Atmosphere framework...");
         
         AtmosphereFramework framework = new AtmosphereFramework(false, true);
         //TODO call init() after configure class using setters or

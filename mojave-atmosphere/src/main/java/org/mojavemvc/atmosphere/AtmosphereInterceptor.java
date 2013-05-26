@@ -93,10 +93,6 @@ public class AtmosphereInterceptor {
         //    response.setStatus(200);
         //}
         
-        Suspend suspendAnnotation = ctx.getActionAnnotation(Suspend.class);
-        //TODO debugging
-        logger.info("suspend annotation found: " + (suspendAnnotation != null));
-        
         //TODO handle Atmosphere annotations here
         /*
          * This is modeled after org.atmosphere.jersey.AtmosphereFilter
@@ -105,6 +101,14 @@ public class AtmosphereInterceptor {
          * the resource method is processed--in fact, it must be, as 
          * org.mojavemvc.atmosphere.SuspendResponse is a possible return value 
          */
-        //TODO place return value in the RequestContext
+        
+        Suspend suspendAnnotation = ctx.getActionAnnotation(Suspend.class);
+        //TODO debugging
+        logger.info("suspend annotation found: " + (suspendAnnotation != null));
+        
+        Object entity = ctx.getActionReturnValue();
+        if (entity != null && entity instanceof SuspendResponse) {
+            //handle SUSPEND_RESPONSE action
+        }
     }
 }

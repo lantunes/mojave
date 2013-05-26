@@ -127,7 +127,7 @@ public class HttpActionInvoker implements ActionInvoker {
         logger.debug("invoked " + actionSignature.methodName() + " for " + actionControllerClass.getName());
 
         View afterActionView = invokeAfterActionIfRequired(actionController, actionAnnotations,
-                controllerDb.getAfterActionMethodFor(actionControllerClass), args);
+                controllerDb.getAfterActionMethodFor(actionControllerClass), args, entity);
 
         if (afterActionView != null) {
             view = afterActionView;
@@ -136,7 +136,7 @@ public class HttpActionInvoker implements ActionInvoker {
         for (Object interceptor : methodInterceptors) {
 
             View interceptorView = invokeAfterActionIfRequired(interceptor, actionAnnotations,
-                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args);
+                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args, entity);
             if (interceptorView != null) {
                 view = interceptorView;
                 break;
@@ -146,7 +146,7 @@ public class HttpActionInvoker implements ActionInvoker {
         for (Object interceptor : classInterceptors) {
 
             View interceptorView = invokeAfterActionIfRequired(interceptor, actionAnnotations,
-                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args);
+                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args, entity);
             if (interceptorView != null) {
                 view = interceptorView;
                 break;
@@ -183,19 +183,20 @@ public class HttpActionInvoker implements ActionInvoker {
             throws Exception {
 
         return invokeBeforeOrAfterActionIfRequired(instance, actionAnnotations, 
-                interceptorMethod, actionArgs, "before");
+                interceptorMethod, actionArgs, null, "before");
     }
 
     private View invokeAfterActionIfRequired(Object instance, Annotation[] actionAnnotations, 
-            ActionSignature interceptorMethod, Object[] actionArgs)
+            ActionSignature interceptorMethod, Object[] actionArgs, Object entity)
             throws Exception {
 
         return invokeBeforeOrAfterActionIfRequired(instance, actionAnnotations, 
-                interceptorMethod, actionArgs, "after");
+                interceptorMethod, actionArgs, entity, "after");
     }
 
     private View invokeBeforeOrAfterActionIfRequired(Object instance, Annotation[] actionAnnotations,
-            ActionSignature interceptorMethod, Object[] actionArgs, String which) throws Exception {
+            ActionSignature interceptorMethod, Object[] actionArgs, Object entity, 
+            String which) throws Exception {
 
         View view = null;
 
@@ -208,7 +209,7 @@ public class HttpActionInvoker implements ActionInvoker {
             FastClass actionFastClass = controllerDb.getFastClass(instance.getClass());
             Object returnObj = actionFastClass.invoke(interceptorMethod.fastIndex(), instance,
                     getBeforeOrAfterActionArgs(interceptorMethod.parameterTypes(), actionArgs, 
-                            actionAnnotations));
+                            actionAnnotations, entity));
 
             if (returnObj != null && returnObj instanceof View) {
                 view = (View) returnObj;
@@ -230,14 +231,15 @@ public class HttpActionInvoker implements ActionInvoker {
     }
 
     private Object[] getBeforeOrAfterActionArgs(Class<?>[] paramterTypes, Object[] actionArgs, 
-            Annotation[] actionAnnotations) {
+            Annotation[] actionAnnotations, Object entity) {
 
         Object[] args = new Object[] {};
 
         if (paramterTypes != null && paramterTypes.length == 1 && paramterTypes[0].equals(RequestContext.class)) {
 
             args = new Object[1];
-            args[0] = new RequestContext(request, response, actionArgs, action, controller, actionAnnotations);
+            args[0] = new RequestContext(request, response, actionArgs, 
+                    action, controller, actionAnnotations, entity);
         }
 
         return args;

@@ -62,10 +62,11 @@ public class RequestContext {
     private final String action;
     private final String controller;
     private final Annotation[] actionAnnotations;
+    private final Object unmarshalledEntity;
 
     public RequestContext(HttpServletRequest request, HttpServletResponse response, 
             Object[] parameters, String action, String controller, 
-            Annotation[] actionAnnotations) {
+            Annotation[] actionAnnotations, Object unmarshalledEntity) {
 
         this.request = request;
         this.response = response;
@@ -73,6 +74,7 @@ public class RequestContext {
         this.action = action;
         this.controller = controller;
         this.actionAnnotations = actionAnnotations;
+        this.unmarshalledEntity = unmarshalledEntity;
     }
 
     /**
@@ -153,5 +155,19 @@ public class RequestContext {
             }
         }
         return null;
+    }
+    
+    /**
+     * Gets the unmarshalled entity resulting from processing
+     * an action method. If this is called before an action method
+     * invocation, this will return null. If this is called after
+     * an action method invocation, it will return the unmarshalled
+     * entity, which may or may not be a View.
+     * 
+     * @return the unmarshalled entity, or null if none exists
+     */
+    public Object getActionReturnValue() {
+        
+        return unmarshalledEntity;
     }
 }

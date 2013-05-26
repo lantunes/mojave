@@ -16,6 +16,7 @@
 package org.mojavemvc.core;
 
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
@@ -38,4 +39,6 @@ public interface ActionSignature {
     Object[] getArgs(Map<String, ?> parametersMap, InputStream servletInputStream);
     
     View marshall(Object entity);
+    
+    Annotation[] getAnnotations();
 }

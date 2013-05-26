@@ -763,7 +763,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
 
         ActionSignature sig = new HttpMethodActionSignature(httpMethod, fastIndex, actionMethod.getName(),
                 actionMethod.getParameterTypes(), actionMethod.getParameterAnnotations(), 
-                paramMarshaller, viewMarshaller);
+                actionMethod.getDeclaredAnnotations(), paramMarshaller, viewMarshaller);
         httpMethodActionMap.put(httpMethod, sig);
         
         addRoute(actionMethod, fastClass.getJavaClass().getName(), controllerVariable, 
@@ -782,7 +782,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new BaseActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                method.getParameterAnnotations(), paramMarshaller, viewMarshaller);
+                method.getParameterAnnotations(), method.getDeclaredAnnotations(), 
+                paramMarshaller, viewMarshaller);
         actionMap.put(action, sig);
         
         addRoute(method, fastClass.getJavaClass().getName(), controllerVariable, action, isDefaultController);
@@ -1042,7 +1043,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new BaseActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                new Annotation[][] {});
+                new Annotation[][] {}, method.getDeclaredAnnotations());
 
         map.put(clazz, sig);
     }
@@ -1069,7 +1070,7 @@ public class MappedControllerDatabase implements ControllerDatabase {
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new BaseActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                new Annotation[][] {});
+                new Annotation[][] {}, method.getDeclaredAnnotations());
 
         map.put(controllerClass, sig);
     }
@@ -1106,7 +1107,8 @@ public class MappedControllerDatabase implements ControllerDatabase {
         int fastIndex = fastClass.getIndex(method.getName(), method.getParameterTypes());
 
         ActionSignature sig = new DefaultActionSignature(fastIndex, method.getName(), method.getParameterTypes(),
-                method.getParameterAnnotations(), paramMarshaller, viewMarshaller);
+                method.getParameterAnnotations(), method.getDeclaredAnnotations(), 
+                paramMarshaller, viewMarshaller);
 
         map.put(controllerClass, sig);
         

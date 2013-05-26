@@ -85,21 +85,25 @@ public class BaseActionSignature implements ActionSignature {
     private final EntityMarshaller paramMarshaller;
     
     private final EntityMarshaller viewMarshaller;
+    
+    private final Annotation[] methodAnnotations;
 
     public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
-            Annotation[][] paramAnnotations) {
-        this(fastIndex, methodName, paramTypes, paramAnnotations, null, new DefaultEntityMarshaller());
+            Annotation[][] paramAnnotations, Annotation[] methodAnnotations) {
+        this(fastIndex, methodName, paramTypes, paramAnnotations, methodAnnotations, 
+                null, new DefaultEntityMarshaller());
     }
     
     public BaseActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes, 
-            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller, 
-            EntityMarshaller viewMarshaller) {
+            Annotation[][] paramAnnotations, Annotation[] methodAnnotations, 
+            EntityMarshaller paramMarshaller, EntityMarshaller viewMarshaller) {
 
         this.fastIndex = fastIndex;
         this.methodName = methodName;
         this.paramTypeMap = new Object[paramTypes.length][2];
         this.paramMarshaller = paramMarshaller;
         this.viewMarshaller = viewMarshaller;
+        this.methodAnnotations = methodAnnotations;
 
         int i = 0;
         for (Annotation[] annotationsForParam : paramAnnotations) {
@@ -134,7 +138,12 @@ public class BaseActionSignature implements ActionSignature {
 
         return fastIndex;
     }
-
+    
+    public Annotation[] getAnnotations() {
+        
+        return methodAnnotations;
+    }
+    
     public List<Class<?>> getInterceptorClasses(ControllerDatabase controllerDb, Class<?> controllerClass, String action) {
 
         return controllerDb.getInterceptorsForAction(controllerClass, action);

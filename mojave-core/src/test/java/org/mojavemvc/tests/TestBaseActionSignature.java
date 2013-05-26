@@ -40,7 +40,8 @@ public class TestBaseActionSignature {
     @Test
     public void noParameters() {
 
-        ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] {}, new Annotation[][] {});
+        ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] {}, 
+                new Annotation[][] {}, new Annotation[]{});
 
         assertEquals(0, sig.parameterTypes().length);
         assertEquals(0, sig.getArgs(new HashMap<String, Object>(), null).length);
@@ -52,7 +53,8 @@ public class TestBaseActionSignature {
         ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] { String.class, Integer.class,
                 Double.class, Date.class, Long.class, InputStream.class }, 
                 new Annotation[][] { { createParam("p1") }, { createParam("p2") },
-                { createParam("p3") }, { createParam("p4") }, { createParam("p5") }, { createResource() } });
+                { createParam("p3") }, { createParam("p4") }, { createParam("p5") }, { createResource() } }, 
+                new Annotation[]{});
 
         InputStream in = Mockito.mock(InputStream.class);
         
@@ -88,7 +90,7 @@ public class TestBaseActionSignature {
         ActionSignature sig = new BaseActionSignature(1, "testAction", new Class[] { String.class, Integer.class,
                 Double.class, Date.class, SomeUserDefinedType.class, Long.class }, new Annotation[][] { { createParam("p1") },
                 { createParam("p2") }, { createParam("p3") }, { createParam("p4") }, { createParam("p5") }, 
-                { createParam("p6") } });
+                { createParam("p6") } }, new Annotation[]{});
 
         SomeUserDefinedType userDefinedType = new SomeUserDefinedType();
 

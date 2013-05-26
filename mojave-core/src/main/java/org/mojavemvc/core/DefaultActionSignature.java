@@ -27,9 +27,11 @@ import org.mojavemvc.marshalling.EntityMarshaller;
 public class DefaultActionSignature extends BaseActionSignature {
 
     public DefaultActionSignature(int fastIndex, String methodName, Class<?>[] paramTypes,
-            Annotation[][] paramAnnotations, EntityMarshaller paramMarshaller, EntityMarshaller viewMarshaller) {
+            Annotation[][] paramAnnotations, Annotation[] methodAnnotations, 
+            EntityMarshaller paramMarshaller, EntityMarshaller viewMarshaller) {
 
-        super(fastIndex, methodName, paramTypes, paramAnnotations, paramMarshaller, viewMarshaller);
+        super(fastIndex, methodName, paramTypes, paramAnnotations, methodAnnotations, 
+                paramMarshaller, viewMarshaller);
     }
 
     @Override

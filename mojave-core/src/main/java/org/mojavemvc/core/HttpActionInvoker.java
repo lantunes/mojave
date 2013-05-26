@@ -15,6 +15,7 @@
  */
 package org.mojavemvc.core;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -201,7 +202,8 @@ public class HttpActionInvoker implements ActionInvoker {
 
             FastClass actionFastClass = controllerDb.getFastClass(instance.getClass());
             Object returnObj = actionFastClass.invoke(actionMethod.fastIndex(), instance,
-                    getBeforeOrAfterActionArgs(actionMethod.parameterTypes(), args));
+                    getBeforeOrAfterActionArgs(actionMethod.parameterTypes(), args, 
+                            actionMethod.getAnnotations()));
 
             if (returnObj != null && returnObj instanceof View) {
                 view = (View) returnObj;
@@ -222,14 +224,15 @@ public class HttpActionInvoker implements ActionInvoker {
         return view;
     }
 
-    private Object[] getBeforeOrAfterActionArgs(Class<?>[] paramterTypes, Object[] actionArgs) {
+    private Object[] getBeforeOrAfterActionArgs(Class<?>[] paramterTypes, Object[] actionArgs, 
+            Annotation[] actionAnnotations) {
 
         Object[] args = new Object[] {};
 
         if (paramterTypes != null && paramterTypes.length == 1 && paramterTypes[0].equals(RequestContext.class)) {
 
             args = new Object[1];
-            args[0] = new RequestContext(request, response, actionArgs, action, controller);
+            args[0] = new RequestContext(request, response, actionArgs, action, controller, actionAnnotations);
         }
 
         return args;

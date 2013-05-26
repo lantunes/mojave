@@ -15,6 +15,8 @@
  */
 package org.mojavemvc.aop;
 
+import java.lang.annotation.Annotation;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,15 +61,18 @@ public class RequestContext {
     private final Object[] parameters;
     private final String action;
     private final String controller;
+    private final Annotation[] actionAnnotations;
 
-    public RequestContext(HttpServletRequest request, HttpServletResponse response, Object[] parameters, String action,
-            String controller) {
+    public RequestContext(HttpServletRequest request, HttpServletResponse response, 
+            Object[] parameters, String action, String controller, 
+            Annotation[] actionAnnotations) {
 
         this.request = request;
         this.response = response;
         this.parameters = parameters;
         this.action = action;
         this.controller = controller;
+        this.actionAnnotations = actionAnnotations;
     }
 
     /**
@@ -118,5 +123,16 @@ public class RequestContext {
      */
     public String getController() {
         return controller;
+    }
+    
+    /**
+     * Gets the annotations present on the action invoked for this
+     * request, or an empty array if there are no annotations.
+     * 
+     * @return the annotations present on the action method
+     */
+    public Annotation[] getActionAnnotations() {
+        
+        return actionAnnotations;
     }
 }

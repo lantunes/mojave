@@ -90,6 +90,7 @@ public class HttpActionInvoker implements ActionInvoker {
         View view = null;
 
         Object[] args = actionSignature.getArgs(parameterMap, request.getInputStream());
+        Annotation[] actionAnnotations = actionSignature.getAnnotations();
 
         List<Object> classInterceptors = createInterceptors(controllerDb.getInterceptorsFor(actionControllerClass));
 
@@ -97,7 +98,7 @@ public class HttpActionInvoker implements ActionInvoker {
 
         for (Object interceptor : classInterceptors) {
 
-            view = invokeBeforeActionIfRequired(interceptor,
+            view = invokeBeforeActionIfRequired(interceptor, actionAnnotations,
                     controllerDb.getBeforeActionMethodForInterceptor(interceptor.getClass()), args);
             if (view != null) {
                 return view;
@@ -106,14 +107,14 @@ public class HttpActionInvoker implements ActionInvoker {
 
         for (Object interceptor : methodInterceptors) {
 
-            view = invokeBeforeActionIfRequired(interceptor,
+            view = invokeBeforeActionIfRequired(interceptor, actionAnnotations,
                     controllerDb.getBeforeActionMethodForInterceptor(interceptor.getClass()), args);
             if (view != null) {
                 return view;
             }
         }
 
-        view = invokeBeforeActionIfRequired(actionController,
+        view = invokeBeforeActionIfRequired(actionController, actionAnnotations,
                 controllerDb.getBeforeActionMethodFor(actionControllerClass), args);
 
         if (view != null) {
@@ -125,7 +126,7 @@ public class HttpActionInvoker implements ActionInvoker {
         view = actionSignature.marshall(entity);
         logger.debug("invoked " + actionSignature.methodName() + " for " + actionControllerClass.getName());
 
-        View afterActionView = invokeAfterActionIfRequired(actionController,
+        View afterActionView = invokeAfterActionIfRequired(actionController, actionAnnotations,
                 controllerDb.getAfterActionMethodFor(actionControllerClass), args);
 
         if (afterActionView != null) {
@@ -134,7 +135,7 @@ public class HttpActionInvoker implements ActionInvoker {
 
         for (Object interceptor : methodInterceptors) {
 
-            View interceptorView = invokeAfterActionIfRequired(interceptor,
+            View interceptorView = invokeAfterActionIfRequired(interceptor, actionAnnotations,
                     controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args);
             if (interceptorView != null) {
                 view = interceptorView;
@@ -144,7 +145,7 @@ public class HttpActionInvoker implements ActionInvoker {
 
         for (Object interceptor : classInterceptors) {
 
-            View interceptorView = invokeAfterActionIfRequired(interceptor,
+            View interceptorView = invokeAfterActionIfRequired(interceptor, actionAnnotations,
                     controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args);
             if (interceptorView != null) {
                 view = interceptorView;
@@ -177,33 +178,37 @@ public class HttpActionInvoker implements ActionInvoker {
         return interceptors;
     }
 
-    private View invokeBeforeActionIfRequired(Object instance, ActionSignature actionMethod, Object[] args)
+    private View invokeBeforeActionIfRequired(Object instance, Annotation[] actionAnnotations, 
+            ActionSignature interceptorMethod, Object[] actionArgs)
             throws Exception {
 
-        return invokeBeforeOrAfterActionIfRequired(instance, actionMethod, args, "before");
+        return invokeBeforeOrAfterActionIfRequired(instance, actionAnnotations, 
+                interceptorMethod, actionArgs, "before");
     }
 
-    private View invokeAfterActionIfRequired(Object instance, ActionSignature actionMethod, Object[] args)
+    private View invokeAfterActionIfRequired(Object instance, Annotation[] actionAnnotations, 
+            ActionSignature interceptorMethod, Object[] actionArgs)
             throws Exception {
 
-        return invokeBeforeOrAfterActionIfRequired(instance, actionMethod, args, "after");
+        return invokeBeforeOrAfterActionIfRequired(instance, actionAnnotations, 
+                interceptorMethod, actionArgs, "after");
     }
 
-    private View invokeBeforeOrAfterActionIfRequired(Object instance, ActionSignature actionMethod, Object[] args,
-            String which) throws Exception {
+    private View invokeBeforeOrAfterActionIfRequired(Object instance, Annotation[] actionAnnotations,
+            ActionSignature interceptorMethod, Object[] actionArgs, String which) throws Exception {
 
         View view = null;
 
-        if (actionMethod != null) {
+        if (interceptorMethod != null) {
             /*
              * we've already validated that there are no method parameters when
              * creating the controller database
              */
 
             FastClass actionFastClass = controllerDb.getFastClass(instance.getClass());
-            Object returnObj = actionFastClass.invoke(actionMethod.fastIndex(), instance,
-                    getBeforeOrAfterActionArgs(actionMethod.parameterTypes(), args, 
-                            actionMethod.getAnnotations()));
+            Object returnObj = actionFastClass.invoke(interceptorMethod.fastIndex(), instance,
+                    getBeforeOrAfterActionArgs(interceptorMethod.parameterTypes(), actionArgs, 
+                            actionAnnotations));
 
             if (returnObj != null && returnObj instanceof View) {
                 view = (View) returnObj;

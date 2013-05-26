@@ -18,6 +18,7 @@ package org.mojavemvc.atmosphere;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.AtmosphereRequest;
@@ -92,6 +93,10 @@ public class AtmosphereInterceptor {
         //    response.setStatus(200);
         //}
         
+        Suspend suspendAnnotation = ctx.getActionAnnotation(Suspend.class);
+        //TODO debugging
+        logger.info("suspend annotation found: " + (suspendAnnotation != null));
+        
         //TODO handle Atmosphere annotations here
         /*
          * This is modeled after org.atmosphere.jersey.AtmosphereFilter
@@ -100,6 +105,6 @@ public class AtmosphereInterceptor {
          * the resource method is processed--in fact, it must be, as 
          * org.mojavemvc.atmosphere.SuspendResponse is a possible return value 
          */
-        //TODO place action method annotations and return value in the RequestContext
+        //TODO place return value in the RequestContext
     }
 }

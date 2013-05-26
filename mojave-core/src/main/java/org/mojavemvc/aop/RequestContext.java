@@ -135,4 +135,23 @@ public class RequestContext {
         
         return actionAnnotations;
     }
+    
+    /**
+     * Gets the annotation specified, or null if it does not exist.
+     * 
+     * @param annotationClass
+     * @return the annotation for the specified annotation type if present, 
+     * otherwise null 
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Annotation> T getActionAnnotation(Class<T> annotationClass) {
+        
+        Annotation[] annotations = getActionAnnotations();
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().equals(annotationClass)) {
+                return (T)annotation;
+            }
+        }
+        return null;
+    }
 }

@@ -18,14 +18,26 @@ package org.mojavemvc.tests.atmosphere.controllers;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
 import org.mojavemvc.annotations.GETAction;
+import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.atmosphere.AtmosphereInterceptor;
 
 /**
  * @author Luis Antunes
  */
 @StatelessController("atmosphere")
+/*
+ * TODO during creation of controller database,
+ * if class contains Atmosphere annotations, should
+ * automatically attach interceptor?--implies a hook
+ * exists into controller database process
+ * 
+ * or, just have an @AtmosphereController, if such
+ * controllers must be singletons, etc.
+ */
+@InterceptedBy(AtmosphereInterceptor.class)
 public class AtmosphereController {
 
     @Suspend(contentType = "application/json")

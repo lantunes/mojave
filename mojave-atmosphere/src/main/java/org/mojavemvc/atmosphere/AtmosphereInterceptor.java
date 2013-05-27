@@ -15,20 +15,33 @@
  */
 package org.mojavemvc.atmosphere;
 
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.atmosphere.annotation.Asynchronous;
+import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.annotation.Cluster;
+import org.atmosphere.annotation.Publish;
+import org.atmosphere.annotation.Resume;
+import org.atmosphere.annotation.Schedule;
+import org.atmosphere.annotation.Subscribe;
 import org.atmosphere.annotation.Suspend;
+import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResponse;
+import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.FrameworkConfig;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.initialization.AppProperties;
+import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +84,7 @@ public class AtmosphereInterceptor {
     }
     
     @AfterAction
-    public void afterAction(RequestContext ctx) {
+    public View afterAction(RequestContext ctx) {
         
         HttpServletRequest servletReq = ctx.getRequest();
         
@@ -93,7 +106,7 @@ public class AtmosphereInterceptor {
         //    response.setStatus(200);
         //}
         
-        //TODO handle Atmosphere annotations here
+        //TODO handle Atmosphere annotations
         /*
          * This is modeled after org.atmosphere.jersey.AtmosphereFilter
          * which does its work through a com.sun.jersey.spi.container.ContainerResponseFilter
@@ -102,13 +115,173 @@ public class AtmosphereInterceptor {
          * org.mojavemvc.atmosphere.SuspendResponse is a possible return value 
          */
         
-        Suspend suspendAnnotation = ctx.getActionAnnotation(Suspend.class);
-        //TODO debugging
-        logger.info("suspend annotation found: " + (suspendAnnotation != null));
+        View view = null;
         
         Object entity = ctx.getActionReturnValue();
-        if (entity != null && entity instanceof SuspendResponse) {
-            //handle SUSPEND_RESPONSE action
+        if (SuspendResponse.class.isAssignableFrom(entity.getClass())) {
+            suspendResponse();
+            /* don't process any annotations */
+            return view;
         }
+        
+        Broadcast broadcastAnnotation = ctx.getActionAnnotation(Broadcast.class);
+        if (broadcastAnnotation != null) {
+            if (broadcastAnnotation.resumeOnBroadcast()) {
+                resumeOnBroadcast();
+            } else {
+                broadcast();
+            }
+            
+            Cluster clusterAnnotation = ctx.getActionAnnotation(Cluster.class);
+            if (clusterAnnotation != null) {
+                //TODO handle Cluster
+            }
+        }
+        
+        Asynchronous asyncAnnotation = ctx.getActionAnnotation(Asynchronous.class);
+        if (asyncAnnotation != null) {
+            asynchronous();
+        }
+        
+        Suspend suspendAnnotation = ctx.getActionAnnotation(Suspend.class);
+        if (suspendAnnotation != null) {
+            if (suspendAnnotation.resumeOnBroadcast()) {
+                suspendResume();
+            } else {
+                suspend();
+            }
+        }
+        
+        Subscribe subscribeAnnotation = ctx.getActionAnnotation(Subscribe.class);
+        if (subscribeAnnotation != null) {
+            subscribe();
+        }
+        
+        Publish publishAnnotation = ctx.getActionAnnotation(Publish.class);
+        if (publishAnnotation != null) {
+            publish();
+        }
+        
+        Resume resumeAnnotation = ctx.getActionAnnotation(Resume.class);
+        if (resumeAnnotation != null) {
+            resume();
+        }
+        
+        Schedule scheduleAnnotation = ctx.getActionAnnotation(Schedule.class);
+        if (scheduleAnnotation != null) {
+            
+            int period = scheduleAnnotation.period();
+            int waitFor = scheduleAnnotation.waitFor();
+            
+            if (scheduleAnnotation.resumeOnBroadcast()) {
+                view = scheduleResume(period, waitFor, entity, resource);
+            } else {
+                view = schedule(period, waitFor, entity, resource);
+            }
+        }
+        
+        /*
+         * TODO 
+         * in org.atmosphere.jersey.AtmosphereFilter there are often 
+         * calls to com.sun.jersey.spi.container.ContainerResponse.write(),
+         * which writes the response's entity to the outputstream; this seems
+         * to commit the response in the process, so it should be sufficient here
+         * to simply return a View instead; if not, then try working with the 
+         * HttpServletResponse directly instead
+         */
+        return view;
+    }
+
+    private View schedule(int timeout, int waitFor, Object entity, 
+            AtmosphereResource resource) {
+        
+        View view = null;
+        
+        Object message = entity;
+        Broadcaster broadcaster = resource.getBroadcaster();
+        if (entity instanceof Broadcastable) {
+            broadcaster = ((Broadcastable) entity).getBroadcaster();
+            message = ((Broadcastable) entity).getMessage();
+            entity = ((Broadcastable) entity).getResponseMessage();
+        }
+
+        if (entity != null) {
+            //TODO see com.sun.jersey.spi.container.ContainerResponse.write()
+            //view = (create View from entity)
+        }
+
+        broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
+        
+        return view;
+    }
+
+    private View scheduleResume(int timeout, int waitFor, Object entity, 
+            AtmosphereResource resource) {
+
+        View view = null;
+        
+        Object message = entity;
+        Broadcaster broadcaster = resource.getBroadcaster();
+        if (entity instanceof Broadcastable) {
+            broadcaster = ((Broadcastable) entity).getBroadcaster();
+            message = ((Broadcastable) entity).getMessage();
+            entity = ((Broadcastable) entity).getResponseMessage();
+        }
+
+        if (entity != null) {
+            //TODO see com.sun.jersey.spi.container.ContainerResponse.write()
+            //view = (create View from entity)
+        }
+
+        configureResumeOnBroadcast(broadcaster);
+
+        broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
+        
+        return view;
+    }
+    
+    private void configureResumeOnBroadcast(Broadcaster b) {
+        
+        Iterator<AtmosphereResource> i = b.getAtmosphereResources().iterator();
+        while (i.hasNext()) {
+            HttpServletRequest r = (HttpServletRequest) i.next().getRequest();
+            r.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, true);
+        }
+    }
+
+    private void resume() {
+        // TODO Auto-generated method stub
+    }
+
+    private void publish() {
+        // TODO Auto-generated method stub
+    }
+
+    private void subscribe() {
+        // TODO Auto-generated method stub
+    }
+
+    private void suspend() {
+        // TODO Auto-generated method stub
+    }
+
+    private void suspendResume() {
+        // TODO Auto-generated method stub
+    }
+
+    private void asynchronous() {
+        // TODO Auto-generated method stub
+    }
+
+    private void broadcast() {
+        // TODO Auto-generated method stub
+    }
+
+    private void resumeOnBroadcast() {
+        // TODO Auto-generated method stub
+    }
+
+    private void suspendResponse() {
+        // TODO Auto-generated method stub
     }
 }

@@ -15,13 +15,30 @@
  */
 package org.mojavemvc.atmosphere;
 
+import org.atmosphere.cpr.Broadcaster;
+
 /**
  * @author Luis Antunes
  */
-public class SuspendResponse {
+public class Broadcastable {
 
     /*
      * TODO
-     * see org.atmosphere.jersey.SuspendResponse
+     * see org.atmosphere.jersey.Broadcastable
      */
+    
+    public Object getMessage() {
+        //TODO
+        return null;
+    }
+
+    public Broadcaster getBroadcaster() {
+        //TODO
+        return null;
+    }
+
+    public Object getResponseMessage() {
+        //TODO
+        return null;
+    }
 }

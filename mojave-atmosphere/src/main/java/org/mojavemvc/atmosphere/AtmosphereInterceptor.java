@@ -121,6 +121,14 @@ public class AtmosphereInterceptor {
         if (SuspendResponse.class.isAssignableFrom(entity.getClass())) {
             suspendResponse();
             /* don't process any annotations */
+            /*
+             * TODO
+             * what is the @Returns content-type on an action that
+             * returns a SuspendResponse?--what will the action invoker
+             * marshall this object to?
+             * -- the SuspendResponse wraps an entity--the content-type
+             *    applies to that entity
+             */
             return view;
         }
         
@@ -207,6 +215,37 @@ public class AtmosphereInterceptor {
 
         if (entity != null) {
             //TODO see com.sun.jersey.spi.container.ContainerResponse.write()
+            /*
+             * we can provide the marshalled View in the RequestContext, or even
+             * provide a marshall() method in the RequestContext that uses the 
+             * ActionSignature underneath to marshall; in the case of the Mojave 
+             * framework, the entity here will never be null: it
+             * will always be at least a View, and what if the entity is assigned 
+             * from Broadcastable.getResponseMessage()? where is the marshaller for
+             * that content?
+             * 
+             * 3 possibilities for entity here:
+             * 
+             * 1. it was a View (that was marshalled to itself in the action invoker)
+             * -- in this case, do nothing here, as it is already the View that will be
+             *    returned to the client
+             *    
+             * 2. it was a non-Broadcastable entity
+             * -- in this case, do nothing here, as it has already been marshalled to
+             *    the View that will be returned to the client
+             * 
+             * 3. it was a Broadcastable and is now the Broadcastable response message
+             * -- we must set the View here by marshalling this message
+             * --- if we set the @Returns content-type as the content of the 
+             *     Broadcastable's response message, then there will be problems in
+             *     the action invoker when it tries to marshall the Broadcastable 
+             *     itself using the response message's content type
+             * 
+             * if the entity is other than a SuspendResponse, as it is in this case,
+             * then a @Returns annotation must be present on the method to indicate the
+             * return content-type--then the problem is getting the EntityMarshaller
+             * corresponding to the indicated content-type
+             */
             //view = (create View from entity)
         }
 
@@ -230,6 +269,9 @@ public class AtmosphereInterceptor {
 
         if (entity != null) {
             //TODO see com.sun.jersey.spi.container.ContainerResponse.write()
+            /*
+             * see schedule() above
+             */
             //view = (create View from entity)
         }
 

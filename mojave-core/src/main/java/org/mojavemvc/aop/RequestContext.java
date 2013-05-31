@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mojavemvc.views.View;
+
 /**
  * <p>
  * Supplied as an optional parameter to &#064;BeforeAction and &#064;AfterAction
@@ -63,10 +65,12 @@ public class RequestContext {
     private final String controller;
     private final Annotation[] actionAnnotations;
     private final Object unmarshalledEntity;
+    private final View marshalledEntity;
 
     public RequestContext(HttpServletRequest request, HttpServletResponse response, 
             Object[] parameters, String action, String controller, 
-            Annotation[] actionAnnotations, Object unmarshalledEntity) {
+            Annotation[] actionAnnotations, Object unmarshalledEntity,
+            View marshalledEntity) {
 
         this.request = request;
         this.response = response;
@@ -75,6 +79,7 @@ public class RequestContext {
         this.controller = controller;
         this.actionAnnotations = actionAnnotations;
         this.unmarshalledEntity = unmarshalledEntity;
+        this.marshalledEntity = marshalledEntity;
     }
 
     /**
@@ -169,5 +174,20 @@ public class RequestContext {
     public Object getActionReturnValue() {
         
         return unmarshalledEntity;
+    }
+    
+    /**
+     * Gets the marshalled entity--the View--from processing an
+     * action method. If this is called before an action method
+     * invocation, this will return null. If this is called after
+     * an action method invocation, it will return the marshalled
+     * entity, which will be a View.
+     * 
+     * @return the marshalled entity, or null if marshalling was 
+     * not yet performed
+     */
+    public View getMarshalledEntity() {
+        
+        return marshalledEntity;
     }
 }

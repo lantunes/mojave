@@ -41,6 +41,7 @@ import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.initialization.AppProperties;
+import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,7 @@ public class AtmosphereInterceptor {
     public View afterAction(RequestContext ctx) {
         
         HttpServletRequest servletReq = ctx.getRequest();
+        HttpServletResponse servletResp = ctx.getResponse();
         
         AtmosphereConfig config = (AtmosphereConfig) servletReq
                 .getAttribute(FrameworkConfig.ATMOSPHERE_CONFIG);
@@ -116,8 +118,9 @@ public class AtmosphereInterceptor {
          */
         
         View view = null;
-        
         Object entity = ctx.getActionReturnValue();
+        View marshalledEntity = ctx.getMarshalledEntity();
+        
         if (SuspendResponse.class.isAssignableFrom(entity.getClass())) {
             suspendResponse();
             /* don't process any annotations */
@@ -128,6 +131,11 @@ public class AtmosphereInterceptor {
              * marshall this object to?
              * -- the SuspendResponse wraps an entity--the content-type
              *    applies to that entity
+             * -- we can provide overrides for the base entity marshallers that additionally
+             *    check for Broadcastable and SuspendResponse, and provide a way to marshall
+             *    those special cases
+             * --- but we'll need to provide a way for mojave-core extensions to override
+             *     those marshallers without needing to specify a servlet init param
              */
             return view;
         }
@@ -182,9 +190,9 @@ public class AtmosphereInterceptor {
             int waitFor = scheduleAnnotation.waitFor();
             
             if (scheduleAnnotation.resumeOnBroadcast()) {
-                view = scheduleResume(period, waitFor, entity, resource);
+                view = scheduleResume(period, waitFor, entity, marshalledEntity, resource, servletResp);
             } else {
-                view = schedule(period, waitFor, entity, resource);
+                view = schedule(period, waitFor, entity, marshalledEntity, resource, servletResp);
             }
         }
         
@@ -195,13 +203,13 @@ public class AtmosphereInterceptor {
          * which writes the response's entity to the outputstream; this seems
          * to commit the response in the process, so it should be sufficient here
          * to simply return a View instead; if not, then try working with the 
-         * HttpServletResponse directly instead
+         * HttpServletResponse directly instead and return an EmptyView
          */
         return view;
     }
 
-    private View schedule(int timeout, int waitFor, Object entity, 
-            AtmosphereResource resource) {
+    private View schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
+            AtmosphereResource resource, HttpServletResponse resp) {
         
         View view = null;
         
@@ -216,37 +224,50 @@ public class AtmosphereInterceptor {
         if (entity != null) {
             //TODO see com.sun.jersey.spi.container.ContainerResponse.write()
             /*
-             * we can provide the marshalled View in the RequestContext, or even
-             * provide a marshall() method in the RequestContext that uses the 
-             * ActionSignature underneath to marshall; in the case of the Mojave 
-             * framework, the entity here will never be null: it
-             * will always be at least a View, and what if the entity is assigned 
-             * from Broadcastable.getResponseMessage()? where is the marshaller for
-             * that content?
+             * in the case of the Mojave framework, the entity here will never be null: it
+             * will always be at least a View--unless it is a Broadcastable and the 
+             * getResponseMessage() returns null 
+             * 
+             * what if the entity is assigned from Broadcastable.getResponseMessage()? 
+             * where is the marshaller for that content?
+             * - if we set the @Returns content-type as the content of the 
+             *   Broadcastable's response message, then there will be problems in
+             *   the action invoker when it tries to marshall the Broadcastable 
+             *   itself using the response message's content type
+             * -- we can provide overrides for the base entity marshallers that additionally
+             *    check for Broadcastable and SuspendResponse, and provide a way to marshall
+             *    those special cases
+             * --- but we'll need to provide a way for mojave-core extensions to override
+             *     those marshallers without needing to specify a servlet init param
              * 
              * 3 possibilities for entity here:
              * 
-             * 1. it was a View (that was marshalled to itself in the action invoker)
-             * -- in this case, do nothing here, as it is already the View that will be
-             *    returned to the client
+             * 1. it is a View (that was marshalled to itself in the action invoker)
+             * -- call render() on the marshalledEntity, 
+             *    and commit the response if it is not committed
              *    
-             * 2. it was a non-Broadcastable entity
-             * -- in this case, do nothing here, as it has already been marshalled to
-             *    the View that will be returned to the client
+             * 2. it is a non-Broadcastable entity
+             * -- call render() on the marshalledEntity, 
+             *    and commit the response if it is not committed
              * 
              * 3. it was a Broadcastable and is now the Broadcastable response message
-             * -- we must set the View here by marshalling this message
-             * --- if we set the @Returns content-type as the content of the 
-             *     Broadcastable's response message, then there will be problems in
-             *     the action invoker when it tries to marshall the Broadcastable 
-             *     itself using the response message's content type
+             * -- call render() on the marshalledEntity, 
+             *    and commit the response if it is not committed
+             *     
+             * NOTE: committed means: write status and headers and flush the outputstream
              * 
              * if the entity is other than a SuspendResponse, as it is in this case,
              * then a @Returns annotation must be present on the method to indicate the
              * return content-type--then the problem is getting the EntityMarshaller
              * corresponding to the indicated content-type
              */
-            //view = (create View from entity)
+            //write entity to response outputstream
+            /*
+             * TODO if the response is properly committed above, there is no
+             * need to return an EmptyView, as the action invoker will check
+             * for a committed response and return an EmptyView itself
+             */
+            view = new EmptyView();
         }
 
         broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
@@ -254,8 +275,8 @@ public class AtmosphereInterceptor {
         return view;
     }
 
-    private View scheduleResume(int timeout, int waitFor, Object entity, 
-            AtmosphereResource resource) {
+    private View scheduleResume(int timeout, int waitFor, Object entity, View marshalledEntity, 
+            AtmosphereResource resource, HttpServletResponse resp) {
 
         View view = null;
         
@@ -272,7 +293,8 @@ public class AtmosphereInterceptor {
             /*
              * see schedule() above
              */
-            //view = (create View from entity)
+            //write entity to response outputstream
+            view = new EmptyView();
         }
 
         configureResumeOnBroadcast(broadcaster);

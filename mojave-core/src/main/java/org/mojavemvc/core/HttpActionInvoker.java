@@ -123,11 +123,13 @@ public class HttpActionInvoker implements ActionInvoker {
 
         FastClass actionFastClass = controllerDb.getFastClass(actionControllerClass);
         Object entity = actionFastClass.invoke(actionSignature.fastIndex(), actionController, args);
-        view = actionSignature.marshall(entity);
+        View marshalledEntity = actionSignature.marshall(entity);
+        view = marshalledEntity;
         logger.debug("invoked " + actionSignature.methodName() + " for " + actionControllerClass.getName());
 
         View afterActionView = invokeAfterActionIfRequired(actionController, actionAnnotations,
-                controllerDb.getAfterActionMethodFor(actionControllerClass), args, entity);
+                controllerDb.getAfterActionMethodFor(actionControllerClass), 
+                args, entity, marshalledEntity);
 
         if (afterActionView != null) {
             view = afterActionView;
@@ -136,7 +138,8 @@ public class HttpActionInvoker implements ActionInvoker {
         for (Object interceptor : methodInterceptors) {
 
             View interceptorView = invokeAfterActionIfRequired(interceptor, actionAnnotations,
-                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args, entity);
+                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), 
+                    args, entity, marshalledEntity);
             if (interceptorView != null) {
                 view = interceptorView;
                 break;
@@ -146,7 +149,8 @@ public class HttpActionInvoker implements ActionInvoker {
         for (Object interceptor : classInterceptors) {
 
             View interceptorView = invokeAfterActionIfRequired(interceptor, actionAnnotations,
-                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), args, entity);
+                    controllerDb.getAfterActionMethodForInterceptor(interceptor.getClass()), 
+                    args, entity, marshalledEntity);
             if (interceptorView != null) {
                 view = interceptorView;
                 break;
@@ -183,19 +187,19 @@ public class HttpActionInvoker implements ActionInvoker {
             throws Exception {
 
         return invokeBeforeOrAfterActionIfRequired(instance, actionAnnotations, 
-                interceptorMethod, actionArgs, null, "before");
+                interceptorMethod, actionArgs, null, null, "before");
     }
 
     private View invokeAfterActionIfRequired(Object instance, Annotation[] actionAnnotations, 
-            ActionSignature interceptorMethod, Object[] actionArgs, Object entity)
+            ActionSignature interceptorMethod, Object[] actionArgs, Object entity, View marshalledEntity)
             throws Exception {
 
         return invokeBeforeOrAfterActionIfRequired(instance, actionAnnotations, 
-                interceptorMethod, actionArgs, entity, "after");
+                interceptorMethod, actionArgs, entity, marshalledEntity, "after");
     }
 
     private View invokeBeforeOrAfterActionIfRequired(Object instance, Annotation[] actionAnnotations,
-            ActionSignature interceptorMethod, Object[] actionArgs, Object entity, 
+            ActionSignature interceptorMethod, Object[] actionArgs, Object entity, View marshalledEntity,
             String which) throws Exception {
 
         View view = null;
@@ -209,7 +213,7 @@ public class HttpActionInvoker implements ActionInvoker {
             FastClass actionFastClass = controllerDb.getFastClass(instance.getClass());
             Object returnObj = actionFastClass.invoke(interceptorMethod.fastIndex(), instance,
                     getBeforeOrAfterActionArgs(interceptorMethod.parameterTypes(), actionArgs, 
-                            actionAnnotations, entity));
+                            actionAnnotations, entity, marshalledEntity));
 
             if (returnObj != null && returnObj instanceof View) {
                 view = (View) returnObj;
@@ -231,7 +235,7 @@ public class HttpActionInvoker implements ActionInvoker {
     }
 
     private Object[] getBeforeOrAfterActionArgs(Class<?>[] paramterTypes, Object[] actionArgs, 
-            Annotation[] actionAnnotations, Object entity) {
+            Annotation[] actionAnnotations, Object entity, View marshalledEntity) {
 
         Object[] args = new Object[] {};
 
@@ -239,7 +243,7 @@ public class HttpActionInvoker implements ActionInvoker {
 
             args = new Object[1];
             args[0] = new RequestContext(request, response, actionArgs, 
-                    action, controller, actionAnnotations, entity);
+                    action, controller, actionAnnotations, entity, marshalledEntity);
         }
 
         return args;

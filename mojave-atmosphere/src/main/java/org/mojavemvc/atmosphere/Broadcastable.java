@@ -16,6 +16,7 @@
 package org.mojavemvc.atmosphere;
 
 import org.atmosphere.cpr.Broadcaster;
+import org.mojavemvc.annotations.Marshall;
 
 /**
  * @author Luis Antunes
@@ -37,6 +38,7 @@ public class Broadcastable {
         return null;
     }
 
+    @Marshall
     public Object getResponseMessage() {
         //TODO
         return null;

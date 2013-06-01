@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.atmosphere;
+package org.mojavemvc.annotations;
 
-import org.mojavemvc.marshalling.Marshallable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * <p>
+ * This annotation is used to flag a method's return
+ * value as the entity that is to be marshalled by
+ * a marshaller. The class containing the method 
+ * annotated with this annotation is not marshalled
+ * itself.
+ * <p/>
+ * 
  * @author Luis Antunes
  */
-public class SuspendResponse<E> implements Marshallable<E> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Marshall {
 
-    @Override
-    public E getEntity() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * TODO
-     * see org.atmosphere.jersey.SuspendResponse
-     */
 }

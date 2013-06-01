@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojavemvc.atmosphere;
-
-import org.mojavemvc.marshalling.Marshallable;
+package org.mojavemvc.marshalling;
 
 /**
+ * A class implementing this interface will itself not 
+ * be marshalled. Instead, the entity will be retrieved
+ * through this interface, and it will be marshalled instead.
+ * 
  * @author Luis Antunes
  */
-public class SuspendResponse<E> implements Marshallable<E> {
+public interface Marshallable<E> {
 
-    @Override
-    public E getEntity() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * TODO
-     * see org.atmosphere.jersey.SuspendResponse
+    /**
+     * Returns the entity that is to be marshalled
+     * 
+     * @return the entity that is to be marshalled
      */
+    E getEntity();
 }

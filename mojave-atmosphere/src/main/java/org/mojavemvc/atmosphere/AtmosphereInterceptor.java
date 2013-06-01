@@ -179,14 +179,10 @@ public class AtmosphereInterceptor {
         Schedule scheduleAnnotation = ctx.getActionAnnotation(Schedule.class);
         if (scheduleAnnotation != null) {
             
-            int period = scheduleAnnotation.period();
-            int waitFor = scheduleAnnotation.waitFor();
-            
-            if (scheduleAnnotation.resumeOnBroadcast()) {
-                scheduleResume(period, waitFor, entity, marshalledEntity, resource, req, resp);
-            } else {
-                schedule(period, waitFor, entity, marshalledEntity, resource, req, resp);
-            }
+            schedule(scheduleAnnotation.period(), 
+                    scheduleAnnotation.waitFor(), 
+                    entity, marshalledEntity, resource, req, resp, 
+                    scheduleAnnotation.resumeOnBroadcast());
         }
         
         /*
@@ -206,7 +202,8 @@ public class AtmosphereInterceptor {
     }
 
     private void schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
-            AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp) {
+            AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp, 
+            boolean resume) {
         
         Object message = entity;
         Broadcaster broadcaster = resource.getBroadcaster();
@@ -245,31 +242,10 @@ public class AtmosphereInterceptor {
             write(marshalledEntity, req, resp);
         }
 
-        broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
-    }
-
-    private void scheduleResume(int timeout, int waitFor, Object entity, View marshalledEntity, 
-            AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp) {
-
-        Object message = entity;
-        Broadcaster broadcaster = resource.getBroadcaster();
-        if (entity instanceof Broadcastable) {
-            broadcaster = ((Broadcastable) entity).getBroadcaster();
-            message = ((Broadcastable) entity).getMessage();
-            entity = ((Broadcastable) entity).getResponseMessage();
+        if (resume) {
+            configureResumeOnBroadcast(broadcaster);
         }
-
-        if (entity != null) {
-            //TODO see com.sun.jersey.spi.container.ContainerResponse.write()
-            /*
-             * see schedule() above
-             */
-            //write entity to response outputstream
-            write(marshalledEntity, req, resp);
-        }
-
-        configureResumeOnBroadcast(broadcaster);
-
+        
         broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
     }
     
@@ -284,7 +260,7 @@ public class AtmosphereInterceptor {
             
         } catch (Exception e) {
             // TODO 
-            logger.error("error scheduling", e);
+            logger.error("error writing entity", e);
         }
     }
     

@@ -34,6 +34,15 @@ import org.mojavemvc.views.View;
  * all requests of the associated content types.
  * </p>
  * 
+ * <p>
+ * Implementations should also support marshalling
+ * embedded entities. Embedded entities can be achieved
+ * through either the {@link Marshallable} interface, or
+ * through the {@link org.mojavemvc.annotations.Marshall}
+ * annotation. An {@link EntityResolver} can be used to
+ * facilitate this process.
+ * </p>
+ * 
  * @author Luis Antunes
  */
 public interface EntityMarshaller {

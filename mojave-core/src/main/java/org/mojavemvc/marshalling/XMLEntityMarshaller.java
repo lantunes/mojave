@@ -32,8 +32,11 @@ public class XMLEntityMarshaller implements EntityMarshaller {
      */
     private static final XmlMapper mapper = new XmlMapper();
     
+    private final EntityResolver entityResolver = new EntityResolver();
+    
     @Override
     public View marshall(Object entity) {
+        entity = entityResolver.resolve(entity);
         return new XML(entity);
     }
 

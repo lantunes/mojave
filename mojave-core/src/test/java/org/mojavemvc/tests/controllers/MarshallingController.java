@@ -19,10 +19,12 @@ import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Entity;
 import org.mojavemvc.annotations.Expects;
+import org.mojavemvc.annotations.Marshall;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
+import org.mojavemvc.marshalling.Marshallable;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 
@@ -121,6 +123,29 @@ public class MarshallingController {
             .withAttribute("p2", pojo.getVal());
     }
     
+    /* marshalling an embedded entity */
+    
+    @Action("returns/embedded/plaintext/pojo")
+    @Returns("text/plain")
+    public MarshallablePojo<SimplePojo> returnEmbeddedPlainTextPojo() {
+        return new MarshallablePojo<SimplePojo>(
+                new SimplePojo("marshalledStringPojo"));
+    }
+    
+    @Action("returns/embedded/json")
+    @Returns("application/json")
+    public MarshallablePojo<SimplePojo> returnEmbeddedJSON() {
+        return new MarshallablePojo<SimplePojo>(
+                new SimplePojo("marshalledJSON"));
+    }
+    
+    @Action("returns/embedded/xml")
+    @Returns("application/xml")
+    public AnnotatedPojo returnEmbeddedXML() {
+        return new AnnotatedPojo(new SimplePojo("marshalledXML"));
+    }
+    
+    
     /*------------------------------------*/
     
     public static class SimplePojo {
@@ -143,6 +168,34 @@ public class MarshallingController {
         @Override
         public String toString() {
             return val;
+        }
+    }
+    
+    public static class MarshallablePojo<E> implements Marshallable<E> {
+
+        private E entity;
+        
+        public MarshallablePojo(E entity) {
+            this.entity = entity;
+        }
+        
+        @Override
+        public E getEntity() {
+            return entity;
+        }
+    }
+    
+    public static class AnnotatedPojo {
+        
+        private Object entity;
+        
+        public AnnotatedPojo(Object entity) {
+            this.entity = entity;
+        }
+        
+        @Marshall
+        public Object getReturnMessage() {
+            return entity;
         }
     }
     

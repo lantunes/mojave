@@ -1842,6 +1842,33 @@ public class TestFrontController extends AbstractWebTest {
     }
     
     @Test
+    public void marshallingReturnsEmbeddedPlainTextPojo() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/embedded/plaintext/pojo")
+            .producesResponse()
+            .withContentType("text/plain")
+            .withContent("marshalledStringPojo");
+    }
+    
+    @Test
+    public void marshallingReturnsEmbeddedJSON() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/embedded/json")
+            .producesResponse()
+            .withContentType("application/json")
+            .withContent("{\"val\":\"marshalledJSON\"}");
+    }
+    
+    @Test
+    public void marshallingReturnsEmbeddedXML() throws Exception {
+        
+        assertThatRequestFor("/marshalling/returns/embedded/xml")
+            .producesResponse()
+            .withContentType("application/xml")
+            .withContent("<SimplePojo><val>marshalledXML</val></SimplePojo>");
+    }
+    
+    @Test
     public void include() throws Exception {
         
         assertThatRequestFor("/index/include")

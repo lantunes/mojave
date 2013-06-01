@@ -31,9 +31,12 @@ public class JSONEntityMarshaller implements EntityMarshaller {
      * ObjectMapper is thread-safe
      */
     private static final ObjectMapper mapper = new ObjectMapper();
+    
+    private final EntityResolver entityResolver = new EntityResolver();
 
     @Override
     public View marshall(Object entity) {
+        entity = entityResolver.resolve(entity);
         return new JSON(entity);
     }
 

@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 
 import org.mojavemvc.marshalling.EntityMarshaller;
+import org.mojavemvc.marshalling.EntityResolver;
 import org.mojavemvc.views.View;
 
 /**
@@ -29,8 +30,11 @@ import org.mojavemvc.views.View;
  */
 public class CSVEntityMarshaller implements EntityMarshaller {
 
+    private final EntityResolver entityResolver = new EntityResolver();
+    
     @Override
     public View marshall(Object entity) {
+        entity = entityResolver.resolve(entity);
         return new CSV(entity);
     }
 

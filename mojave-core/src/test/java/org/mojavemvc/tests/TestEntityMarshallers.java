@@ -23,8 +23,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.mojavemvc.annotations.Marshall;
 import org.mojavemvc.marshalling.DefaultEntityMarshaller;
 import org.mojavemvc.marshalling.JSONEntityMarshaller;
+import org.mojavemvc.marshalling.Marshallable;
 import org.mojavemvc.marshalling.PlainTextEntityMarshaller;
 import org.mojavemvc.marshalling.XMLEntityMarshaller;
 import org.mojavemvc.views.EmptyView;
@@ -164,6 +166,80 @@ public class TestEntityMarshallers {
         assertEquals("test", entity.getVal());
     }
     
+    
+    /* Marshallable marshalling */
+    
+    @Test
+    public void jsonEntityMarshallerHandlesMarshallable() {
+        
+        JSONEntityMarshaller m = new JSONEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        MarshallablePojo<SimplePojo> marshallable = 
+                new MarshallablePojo<SimplePojo>(entity);
+        View v = m.marshall(marshallable);
+        assertTrue(v instanceof JSON);
+        assertEquals(new JSON(entity).toString(), ((JSON)v).toString());
+    }
+    
+    @Test
+    public void plainTextEntityMarshallerHandlesMarshallable() {
+        
+        PlainTextEntityMarshaller m = new PlainTextEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        MarshallablePojo<SimplePojo> marshallable = 
+                new MarshallablePojo<SimplePojo>(entity);
+        View v = m.marshall(marshallable);
+        assertTrue(v instanceof PlainText);
+        assertEquals(new PlainText(entity).toString(), ((PlainText)v).toString());
+    }
+    
+    @Test
+    public void xmlEntityMarshallerHandlesMarshallable() {
+        
+        XMLEntityMarshaller m = new XMLEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        MarshallablePojo<SimplePojo> marshallable = 
+                new MarshallablePojo<SimplePojo>(entity);
+        View v = m.marshall(marshallable);
+        assertTrue(v instanceof XML);
+        assertEquals(new XML(entity).toString(), ((XML)v).toString());
+    }
+    
+    /* @Marshall marshalling */
+    
+    @Test
+    public void jsonEntityMarshallerHandlesMarshallAnnotation() {
+        
+        JSONEntityMarshaller m = new JSONEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        AnnotatedPojo marshallable = new AnnotatedPojo(entity);
+        View v = m.marshall(marshallable);
+        assertTrue(v instanceof JSON);
+        assertEquals(new JSON(entity).toString(), ((JSON)v).toString());
+    }
+    
+    @Test
+    public void plainTextEntityMarshallerHandlesMarshallAnnotation() {
+        
+        PlainTextEntityMarshaller m = new PlainTextEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        AnnotatedPojo marshallable = new AnnotatedPojo(entity);
+        View v = m.marshall(marshallable);
+        assertTrue(v instanceof PlainText);
+        assertEquals(new PlainText(entity).toString(), ((PlainText)v).toString());
+    }
+    
+    @Test
+    public void xmlEntityMarshallerHandlesMarshallAnnotation() {
+        
+        XMLEntityMarshaller m = new XMLEntityMarshaller();
+        SimplePojo entity = new SimplePojo("test");
+        AnnotatedPojo marshallable = new AnnotatedPojo(entity);
+        View v = m.marshall(marshallable);
+        assertTrue(v instanceof XML);
+        assertEquals(new XML(entity).toString(), ((XML)v).toString());
+    }
+    
     /*------------------------------------*/
     
     public static class SimplePojo {
@@ -186,6 +262,34 @@ public class TestEntityMarshallers {
         @Override
         public String toString() {
             return val;
+        }
+    }
+    
+    public static class MarshallablePojo<E> implements Marshallable<E> {
+
+        private E entity;
+        
+        public MarshallablePojo(E entity) {
+            this.entity = entity;
+        }
+        
+        @Override
+        public E getEntity() {
+            return entity;
+        }
+    }
+    
+    public static class AnnotatedPojo {
+        
+        private Object entity;
+        
+        public AnnotatedPojo(Object entity) {
+            this.entity = entity;
+        }
+        
+        @Marshall
+        public Object getReturnMessage() {
+            return entity;
         }
     }
 }

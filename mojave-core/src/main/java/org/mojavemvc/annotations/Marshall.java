@@ -29,6 +29,14 @@ import java.lang.annotation.Target;
  * itself.
  * <p/>
  * 
+ * <p>
+ * NOTE: Methods annotated with this annotation must return
+ * the entity that is to be marshalled, and must not
+ * require any parameters. Only the first method 
+ * encountered with this annotation in a class will be
+ * invoked.
+ * </p>
+ * 
  * @author Luis Antunes
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -61,17 +61,26 @@ public class EntityResolver {
         
         Method marshallMethod = marshallMethodMap.get(entityClass);
         if (marshallMethod != null) {
-            try {
-                Object o = marshallMethod.invoke(entity);
-                return o;
-            } catch (Exception e) {
-                logger.error("error invoking method " + marshallMethod.getName() + 
-                        " annotated with @" + Marshall.class.getSimpleName() + 
-                        " in class " + entityClass.getName(), e);
-            }
+            return invokeMarshallMethod(marshallMethod, entity, entityClass.getName());
         }
         
         return entity;
+    }
+
+    private Object invokeMarshallMethod(Method marshallMethod, Object entity, 
+            String entityClassName) {
+        
+        try {
+            
+            Object o = marshallMethod.invoke(entity);
+            return o;
+            
+        } catch (Exception e) {
+            logger.error("error invoking method " + marshallMethod.getName() + 
+                    " annotated with @" + Marshall.class.getSimpleName() + 
+                    " in class " + entityClassName, e);
+            return null;
+        }
     }
 
     private void cacheMarshallMethod(Class<? extends Object> entityClass) {

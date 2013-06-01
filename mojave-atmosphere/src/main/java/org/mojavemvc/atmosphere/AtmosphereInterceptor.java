@@ -87,17 +87,17 @@ public class AtmosphereInterceptor {
     @AfterAction
     public View afterAction(RequestContext ctx) {
         
-        HttpServletRequest servletReq = ctx.getRequest();
-        HttpServletResponse servletResp = ctx.getResponse();
+        HttpServletRequest req = ctx.getRequest();
+        HttpServletResponse resp = ctx.getResponse();
         
-        AtmosphereConfig config = (AtmosphereConfig) servletReq
+        AtmosphereConfig config = (AtmosphereConfig) req
                 .getAttribute(FrameworkConfig.ATMOSPHERE_CONFIG);
         if (config == null) {
             logger.error(INSTALLATION_ERROR);
             throw new IllegalStateException(INSTALLATION_ERROR);
         }
         
-        AtmosphereResource resource = (AtmosphereResource) servletReq
+        AtmosphereResource resource = (AtmosphereResource) req
                 .getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
         //TODO debugging
         logger.info("resource: " + resource);
@@ -125,17 +125,12 @@ public class AtmosphereInterceptor {
             suspendResponse();
             /* don't process any annotations */
             /*
-             * TODO
              * what is the @Returns content-type on an action that
              * returns a SuspendResponse?--what will the action invoker
              * marshall this object to?
              * -- the SuspendResponse wraps an entity--the content-type
              *    applies to that entity
-             * -- we can provide overrides for the base entity marshallers that additionally
-             *    check for Broadcastable and SuspendResponse, and provide a way to marshall
-             *    those special cases
-             * --- but we'll need to provide a way for mojave-core extensions to override
-             *     those marshallers without needing to specify a servlet init param
+             * --- the action invoker will marshall the embedded entity
              */
             return view;
         }
@@ -190,9 +185,9 @@ public class AtmosphereInterceptor {
             int waitFor = scheduleAnnotation.waitFor();
             
             if (scheduleAnnotation.resumeOnBroadcast()) {
-                view = scheduleResume(period, waitFor, entity, marshalledEntity, resource, servletResp);
+                view = scheduleResume(period, waitFor, entity, marshalledEntity, resource, req, resp);
             } else {
-                view = schedule(period, waitFor, entity, marshalledEntity, resource, servletResp);
+                view = schedule(period, waitFor, entity, marshalledEntity, resource, req, resp);
             }
         }
         
@@ -209,7 +204,7 @@ public class AtmosphereInterceptor {
     }
 
     private View schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
-            AtmosphereResource resource, HttpServletResponse resp) {
+            AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp) {
         
         View view = null;
         
@@ -262,6 +257,16 @@ public class AtmosphereInterceptor {
              * corresponding to the indicated content-type
              */
             //write entity to response outputstream
+            try {
+                
+                marshalledEntity.render(req, resp, appProperties);
+                resp.getOutputStream().flush();
+                
+            } catch (Exception e) {
+                // TODO 
+                logger.error("error scheduling", e);
+            }
+            
             /*
              * TODO if the response is properly committed above, there is no
              * need to return an EmptyView, as the action invoker will check
@@ -276,7 +281,7 @@ public class AtmosphereInterceptor {
     }
 
     private View scheduleResume(int timeout, int waitFor, Object entity, View marshalledEntity, 
-            AtmosphereResource resource, HttpServletResponse resp) {
+            AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp) {
 
         View view = null;
         
@@ -294,6 +299,15 @@ public class AtmosphereInterceptor {
              * see schedule() above
              */
             //write entity to response outputstream
+            try {
+                
+                marshalledEntity.render(req, resp, appProperties);
+                resp.getOutputStream().flush();
+                
+            } catch (Exception e) {
+                // TODO 
+                logger.error("error scheduling", e);
+            }
             view = new EmptyView();
         }
 

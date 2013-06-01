@@ -41,7 +41,6 @@ import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +84,7 @@ public class AtmosphereInterceptor {
     }
     
     @AfterAction
-    public View afterAction(RequestContext ctx) {
+    public void afterAction(RequestContext ctx) {
         
         HttpServletRequest req = ctx.getRequest();
         HttpServletResponse resp = ctx.getResponse();
@@ -117,7 +116,6 @@ public class AtmosphereInterceptor {
          * org.mojavemvc.atmosphere.SuspendResponse is a possible return value 
          */
         
-        View view = null;
         Object entity = ctx.getActionReturnValue();
         View marshalledEntity = ctx.getMarshalledReturnValue();
         
@@ -132,7 +130,7 @@ public class AtmosphereInterceptor {
              *    applies to that entity
              * --- the action invoker will marshall the embedded entity
              */
-            return view;
+            return;
         }
         
         Broadcast broadcastAnnotation = ctx.getActionAnnotation(Broadcast.class);
@@ -185,9 +183,9 @@ public class AtmosphereInterceptor {
             int waitFor = scheduleAnnotation.waitFor();
             
             if (scheduleAnnotation.resumeOnBroadcast()) {
-                view = scheduleResume(period, waitFor, entity, marshalledEntity, resource, req, resp);
+                scheduleResume(period, waitFor, entity, marshalledEntity, resource, req, resp);
             } else {
-                view = schedule(period, waitFor, entity, marshalledEntity, resource, req, resp);
+                schedule(period, waitFor, entity, marshalledEntity, resource, req, resp);
             }
         }
         
@@ -199,14 +197,16 @@ public class AtmosphereInterceptor {
          * to commit the response in the process, so it should be sufficient here
          * to simply return a View instead; if not, then try working with the 
          * HttpServletResponse directly instead and return an EmptyView
+         * 
+         * TODO if the response is properly committed above, there is no
+         * need to return an EmptyView, as the action invoker will check
+         * for a committed response and return an EmptyView itself
          */
-        return view;
+        //return view;
     }
 
-    private View schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
+    private void schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
             AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp) {
-        
-        View view = null;
         
         Object message = entity;
         Broadcaster broadcaster = resource.getBroadcaster();
@@ -223,60 +223,34 @@ public class AtmosphereInterceptor {
              * will always be at least a View--unless it is a Broadcastable and the 
              * getResponseMessage() returns null 
              * 
-             * what if the entity is assigned from Broadcastable.getResponseMessage()? 
-             * where is the marshaller for that content?
-             * - if we set the @Returns content-type as the content of the 
-             *   Broadcastable's response message, then there will be problems in
-             *   the action invoker when it tries to marshall the Broadcastable 
-             *   itself using the response message's content type
-             * -- we can provide overrides for the base entity marshallers that additionally
-             *    check for Broadcastable and SuspendResponse, and provide a way to marshall
-             *    those special cases
-             * --- but we'll need to provide a way for mojave-core extensions to override
-             *     those marshallers without needing to specify a servlet init param
-             * 
              * 3 possibilities for entity here:
              * 
              * 1. it is a View (that was marshalled to itself in the action invoker)
-             * -- call render() on the marshalledEntity, 
-             *    and commit the response if it is not committed
-             *    
              * 2. it is a non-Broadcastable entity
-             * -- call render() on the marshalledEntity, 
-             *    and commit the response if it is not committed
-             * 
              * 3. it was a Broadcastable and is now the Broadcastable response message
-             * -- call render() on the marshalledEntity, 
-             *    and commit the response if it is not committed
              *     
              * NOTE: committed means: write status and headers and flush the outputstream
              * 
              * if the entity is other than a SuspendResponse, as it is in this case,
              * then a @Returns annotation must be present on the method to indicate the
-             * return content-type--then the problem is getting the EntityMarshaller
-             * corresponding to the indicated content-type
+             * return content-type--the action invoker will marshall any embedded entity
              */
             //write entity to response outputstream
-            write(marshalledEntity, req, resp);
-            
             /*
-             * TODO if the response is properly committed above, there is no
-             * need to return an EmptyView, as the action invoker will check
-             * for a committed response and return an EmptyView itself
+             * NOTE:
+             * we can work with the marshalledEntity and we don't need to write out the 
+             * entity itself, as it would have been marshalled even if it were embedded, 
+             * as in the case of Broadcastable.getResponseMessage()
              */
-            view = new EmptyView();
+            write(marshalledEntity, req, resp);
         }
 
         broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
-        
-        return view;
     }
 
-    private View scheduleResume(int timeout, int waitFor, Object entity, View marshalledEntity, 
+    private void scheduleResume(int timeout, int waitFor, Object entity, View marshalledEntity, 
             AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp) {
 
-        View view = null;
-        
         Object message = entity;
         Broadcaster broadcaster = resource.getBroadcaster();
         if (entity instanceof Broadcastable) {
@@ -292,14 +266,11 @@ public class AtmosphereInterceptor {
              */
             //write entity to response outputstream
             write(marshalledEntity, req, resp);
-            view = new EmptyView();
         }
 
         configureResumeOnBroadcast(broadcaster);
 
         broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
-        
-        return view;
     }
     
     private void write(View marshalledEntity, HttpServletRequest req, HttpServletResponse resp) {

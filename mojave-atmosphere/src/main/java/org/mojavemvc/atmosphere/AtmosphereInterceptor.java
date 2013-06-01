@@ -257,15 +257,7 @@ public class AtmosphereInterceptor {
              * corresponding to the indicated content-type
              */
             //write entity to response outputstream
-            try {
-                
-                marshalledEntity.render(req, resp, appProperties);
-                resp.getOutputStream().flush();
-                
-            } catch (Exception e) {
-                // TODO 
-                logger.error("error scheduling", e);
-            }
+            write(marshalledEntity, req, resp);
             
             /*
              * TODO if the response is properly committed above, there is no
@@ -299,15 +291,7 @@ public class AtmosphereInterceptor {
              * see schedule() above
              */
             //write entity to response outputstream
-            try {
-                
-                marshalledEntity.render(req, resp, appProperties);
-                resp.getOutputStream().flush();
-                
-            } catch (Exception e) {
-                // TODO 
-                logger.error("error scheduling", e);
-            }
+            write(marshalledEntity, req, resp);
             view = new EmptyView();
         }
 
@@ -316,6 +300,21 @@ public class AtmosphereInterceptor {
         broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
         
         return view;
+    }
+    
+    private void write(View marshalledEntity, HttpServletRequest req, HttpServletResponse resp) {
+        
+        try {
+            
+            marshalledEntity.render(req, resp, appProperties);
+            if (!resp.isCommitted()) {
+                resp.getOutputStream().flush();
+            }
+            
+        } catch (Exception e) {
+            // TODO 
+            logger.error("error scheduling", e);
+        }
     }
     
     private void configureResumeOnBroadcast(Broadcaster b) {

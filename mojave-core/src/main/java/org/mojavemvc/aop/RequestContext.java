@@ -186,7 +186,7 @@ public class RequestContext {
      * @return the marshalled entity, or null if marshalling was 
      * not yet performed
      */
-    public View getMarshalledEntity() {
+    public View getMarshalledReturnValue() {
         
         return marshalledEntity;
     }

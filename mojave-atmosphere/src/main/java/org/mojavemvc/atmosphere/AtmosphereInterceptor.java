@@ -119,7 +119,7 @@ public class AtmosphereInterceptor {
         
         View view = null;
         Object entity = ctx.getActionReturnValue();
-        View marshalledEntity = ctx.getMarshalledEntity();
+        View marshalledEntity = ctx.getMarshalledReturnValue();
         
         if (SuspendResponse.class.isAssignableFrom(entity.getClass())) {
             suspendResponse();

@@ -15,7 +15,9 @@
  */
 package org.mojavemvc.atmosphere;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,12 +37,17 @@ import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResponse;
+import org.atmosphere.cpr.BroadcastFilter;
 import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterConfig;
+import org.atmosphere.cpr.ClusterBroadcastFilter;
 import org.atmosphere.cpr.FrameworkConfig;
+import org.atmosphere.di.InjectorProvider;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.initialization.AppProperties;
+import org.mojavemvc.views.EmptyView;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +68,9 @@ public class AtmosphereInterceptor {
     private static final String INSTALLATION_ERROR = 
             "The Atmosphere Framework is not installed properly " +
             "and unexpected results may occur.";
+    
+    private final static String SUSPENDED_RESOURCE = 
+            AtmosphereInterceptor.class.getName() + ".suspendedResource";
     
     @Inject
     AppProperties appProperties;
@@ -84,7 +94,7 @@ public class AtmosphereInterceptor {
     }
     
     @AfterAction
-    public void afterAction(RequestContext ctx) {
+    public View afterAction(RequestContext ctx) {
         
         HttpServletRequest req = ctx.getRequest();
         HttpServletResponse resp = ctx.getResponse();
@@ -116,6 +126,7 @@ public class AtmosphereInterceptor {
          * org.mojavemvc.atmosphere.SuspendResponse is a possible return value 
          */
         
+        View view = null;
         Object entity = ctx.getActionReturnValue();
         View marshalledEntity = ctx.getMarshalledReturnValue();
         
@@ -130,21 +141,35 @@ public class AtmosphereInterceptor {
              *    applies to that entity
              * --- the action invoker will marshall the embedded entity
              */
-            return;
+            return view;
         }
         
         Broadcast broadcastAnnotation = ctx.getActionAnnotation(Broadcast.class);
         if (broadcastAnnotation != null) {
-            if (broadcastAnnotation.resumeOnBroadcast()) {
-                resumeOnBroadcast();
-            } else {
-                broadcast();
-            }
+            
+            List<ClusterBroadcastFilter> clusterBroadcastFilters = 
+                    new ArrayList<ClusterBroadcastFilter>();
             
             Cluster clusterAnnotation = ctx.getActionAnnotation(Cluster.class);
             if (clusterAnnotation != null) {
-                //TODO handle Cluster
+                Class<? extends ClusterBroadcastFilter>[] clusterFilters = clusterAnnotation.value();
+                for (Class<? extends ClusterBroadcastFilter> c : clusterFilters) {
+                    try {
+                        ClusterBroadcastFilter cbf = c.newInstance();
+                        InjectorProvider.getInjector().inject(cbf);
+                        cbf.setUri(clusterAnnotation.name());
+                        clusterBroadcastFilters.add(cbf);
+                    } catch (Throwable t) {
+                        logger.warn("Invalid ClusterBroadcastFilter", t);
+                    }
+                }
             }
+            
+            view = broadcast(entity, req, config, clusterBroadcastFilters, 
+                    broadcastAnnotation.delay(), 0, 
+                    broadcastAnnotation.filters(), 
+                    broadcastAnnotation.writeEntity(), null, 
+                    broadcastAnnotation.resumeOnBroadcast());
         }
         
         Asynchronous asyncAnnotation = ctx.getActionAnnotation(Asynchronous.class);
@@ -168,7 +193,7 @@ public class AtmosphereInterceptor {
         
         Publish publishAnnotation = ctx.getActionAnnotation(Publish.class);
         if (publishAnnotation != null) {
-            publish();
+            view = publish(entity, req, config, publishAnnotation.value());
         }
         
         Resume resumeAnnotation = ctx.getActionAnnotation(Resume.class);
@@ -198,9 +223,129 @@ public class AtmosphereInterceptor {
          * need to return an EmptyView, as the action invoker will check
          * for a committed response and return an EmptyView itself
          */
-        //return view;
+        return view;
     }
+    
+    private View broadcast(Object entity, HttpServletRequest req, AtmosphereConfig config, 
+            List<ClusterBroadcastFilter> clusterBroadcastFilters,
+            long delay, int waitFor, 
+            Class<? extends BroadcastFilter>[] filters, 
+            boolean writeEntity, String topic, boolean resume) {
+        
+        View view = null;
+        AtmosphereResource resource = (AtmosphereResource) req.getAttribute(SUSPENDED_RESOURCE);
+        
+        Broadcaster broadcaster = resource.getBroadcaster();
+        Object msg = entity;
+        String returnMsg = null;
+        // Something went wrong if null.
+        if (entity instanceof Broadcastable) {
+            if (((Broadcastable) entity).getBroadcaster() != null) {
+                broadcaster = ((Broadcastable) entity).getBroadcaster();
+            }
+            msg = ((Broadcastable) entity).getMessage();
+            returnMsg = ((Broadcastable) entity).getResponseMessage().toString();
+        }
 
+        if (resume) {
+            configureResumeOnBroadcast(broadcaster);
+        }
+
+        if (entity != null) {
+            addFilter(broadcaster, filters, clusterBroadcastFilters);
+            /*
+             * TODO
+             * can we return two entities, in a sense, in the
+             * Broadcast? one: the return message, the other: the
+             * message itself?
+             * - perhaps limit the way Broadcast can be used: unlike
+             *   with Jersey, we cannot return a separate message 
+             *   to the requestor, different from the broadcast
+             *   message?
+             */
+            //containerResponse.setEntity(msg);
+            if (msg == null) return view;
+
+            if (delay == -1) {
+                broadcaster.broadcast(msg);
+                if (entity instanceof Broadcastable) {
+                    //TODO **
+                    //containerResponse.setEntity(returnMsg);
+                }
+            } else if (delay == 0) {
+                broadcaster.delayBroadcast(msg);
+            } else {
+                broadcaster.delayBroadcast(msg, delay, TimeUnit.SECONDS);
+            }
+        }
+        
+        if (!writeEntity) {
+            view = new EmptyView();
+        }
+        return view;
+    }
+    
+    private void addFilter(Broadcaster bc, Class<? extends BroadcastFilter>[] filters, 
+            List<ClusterBroadcastFilter> clusterBroadcastFilters) {
+        
+        configureFilter(bc, filters, clusterBroadcastFilters);
+    }
+    
+    private void configureFilter(Broadcaster bc, Class<? extends BroadcastFilter>[] filters, 
+            List<ClusterBroadcastFilter> clusterBroadcastFilters) {
+        
+        if (bc == null) throw new RuntimeException(new IllegalStateException("Broadcaster cannot be null"));
+
+        /**
+         * Here we can't predict if it's the same set of filter shared across all Broadcaster as
+         * Broadcaster can have their own BroadcasterConfig instance.
+         */
+        BroadcasterConfig c = bc.getBroadcasterConfig();
+        // Already configured
+        if (c.hasFilters()) {
+            return;
+        }
+
+        if (clusterBroadcastFilters != null) {
+            // Always the first one, before any transformation/filtering
+            for (ClusterBroadcastFilter cbf : clusterBroadcastFilters) {
+                cbf.setBroadcaster(bc);
+                c.addFilter(cbf);
+            }
+        }
+
+        BroadcastFilter f = null;
+        if (filters != null) {
+            for (Class<? extends BroadcastFilter> filter : filters) {
+                try {
+                    f = filter.newInstance();
+                    InjectorProvider.getInjector().inject(f);
+                } catch (Throwable t) {
+                    logger.warn("Invalid @BroadcastFilter: " + filter, t);
+                }
+                c.addFilter(f);
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private View publish(Object entity, HttpServletRequest req, AtmosphereConfig config, String topic) {
+        
+        AtmosphereResource resource = (AtmosphereResource) req.getAttribute(SUSPENDED_RESOURCE);
+
+        Class<Broadcaster> broadCasterClass = null;
+        try {
+            broadCasterClass = 
+                    (Class<Broadcaster>) Class.forName(
+                            (String) req.getAttribute(ApplicationConfig.BROADCASTER_CLASS));
+        } catch (Throwable e) {
+            throw new IllegalStateException(e.getMessage());
+        }
+        resource.setBroadcaster(config.getBroadcasterFactory().lookup(broadCasterClass, topic, true));
+        
+        return broadcast(entity, req, config, new ArrayList<ClusterBroadcastFilter>(), -1, -1, null, true, topic, false);
+    }
+    
     private void schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
             AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp, 
             boolean resume) {
@@ -277,10 +422,6 @@ public class AtmosphereInterceptor {
         // TODO Auto-generated method stub
     }
 
-    private void publish() {
-        // TODO Auto-generated method stub
-    }
-
     private void subscribe() {
         // TODO Auto-generated method stub
     }
@@ -294,14 +435,6 @@ public class AtmosphereInterceptor {
     }
 
     private void asynchronous() {
-        // TODO Auto-generated method stub
-    }
-
-    private void broadcast() {
-        // TODO Auto-generated method stub
-    }
-
-    private void resumeOnBroadcast() {
         // TODO Auto-generated method stub
     }
 

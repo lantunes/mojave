@@ -17,30 +17,85 @@ package org.mojavemvc.atmosphere;
 
 import org.atmosphere.cpr.Broadcaster;
 import org.mojavemvc.annotations.Marshall;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * This class is based on org.atmosphere.jersey.Broadcastable.
+ * 
  * @author Luis Antunes
+ */
+/*
+ * TODO rename to Broadcast
  */
 public class Broadcastable {
 
-    /*
-     * TODO
-     * see org.atmosphere.jersey.Broadcastable
-     */
+    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.atmosphere");
     
-    public Object getMessage() {
-        //TODO
+    private final Broadcaster broadcaster;
+    private final Object message;
+    private final Object callerMessage;
+
+    public Broadcastable(Broadcaster b) {
+        
+        this.broadcaster = b;
+        this.message = "";
+        this.callerMessage = "";
+    }
+
+    /**
+     * Broadcast the <b>message</b> to the set of suspended AtmosphereResource, and write back
+     * the <b>message</b> to the request which invoked the current resource method.
+     *
+     * @param message the message which will be broadcasted
+     * @param broadcaster the Broadcaster
+     */
+    public Broadcastable(Object message, Broadcaster broadcaster) {
+        
+        this.broadcaster = broadcaster;
+        this.message = message;
+        this.callerMessage = message;
+    }
+
+    /**
+     * Broadcast the <b>message</b> to the set of suspended AtmosphereResource, and write back
+     * the <b>callerMessage</b> to the request which invoked the current resource method.
+     *
+     * @param message the message which will be broadcasted
+     * @param callerMessage the message which will be sent back to the request.
+     * @param broadcaster the Broadcaster
+     */
+    public Broadcastable(Object message, Object callerMessage, Broadcaster broadcaster) {
+        
+        this.broadcaster = broadcaster;
+        this.message = message;
+        this.callerMessage = callerMessage;
+    }
+    
+    /**
+     * Broadcast the message.
+     *
+     * @return the transformed message (BroadcastFilter)
+     */
+    public Object broadcast() {
+        try {
+            return broadcaster.broadcast(message).get();
+        } catch (Exception ex) {
+            logger.error("failed to broadcast message: " + message, ex);
+        }
         return null;
     }
 
     public Broadcaster getBroadcaster() {
-        //TODO
-        return null;
+        return broadcaster;
+    }
+    
+    public Object getMessage() {
+        return message;
     }
 
     @Marshall
     public Object getResponseMessage() {
-        //TODO
-        return null;
+        return callerMessage;
     }
 }

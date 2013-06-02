@@ -20,6 +20,7 @@ import org.atmosphere.annotation.Suspend;
 import org.mojavemvc.annotations.GETAction;
 import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.POSTAction;
+import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.atmosphere.AtmosphereInterceptor;
@@ -50,7 +51,7 @@ public class AtmosphereController {
     @Broadcast(writeEntity = false)
     @POSTAction
     @Returns("text/plain")
-    public String broadcast(String message) {
+    public String broadcast(@Param("message") String message) {
         return message;
     }
 }

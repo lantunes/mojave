@@ -18,6 +18,8 @@ package org.mojavemvc.initialization;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.google.inject.Injector;
+
 /**
  * @author Luis Antunes
  */
@@ -26,4 +28,6 @@ public interface AppResources {
     String getRealPath(String path);
     
     URL getResource(String path) throws MalformedURLException;
+    
+    Injector getInjector();
 }

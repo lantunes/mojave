@@ -25,12 +25,12 @@
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-runtime</artifactId>
-            <version>1.0.13</version>
+            <version>1.1.0.RC3</version>
         </dependency>
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-annotations</artifactId>
-            <version>1.0.13</version>
+            <version>1.1.0.RC3</version>
         </dependency>
         
         <!-- provided dependencies -->        

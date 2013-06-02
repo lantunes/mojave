@@ -17,6 +17,7 @@ package org.mojavemvc.initialization.internal;
 
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.mojavemvc.atmosphere.AtmosphereInterceptor;
+import org.mojavemvc.atmosphere.GuiceInjector;
 import org.mojavemvc.atmosphere.MojaveAtmosphereHandler;
 import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
@@ -36,6 +37,9 @@ public class AtmosphereInitializer implements Initializer {
     public void initialize(InitParams initParams, AppResources resources, AppPropertyCollector collector) {
 
         logger.info("initializing Atmosphere framework...");
+        
+        /* ensure the Atmosphere framework uses the Mojave Guice injector */
+        GuiceInjector.INJECTOR = resources.getInjector();
         
         AtmosphereFramework framework = new AtmosphereFramework(false, true);
         

@@ -22,16 +22,20 @@ import javax.servlet.ServletContext;
 
 import org.mojavemvc.initialization.AppResources;
 
+import com.google.inject.Injector;
+
 /**
  * @author Luis Antunes
  */
 public class ServletAppResources implements AppResources {
 
     private final ServletContext ctx;
+    private final Injector injector;
     
-    public ServletAppResources(ServletContext ctx) {
+    public ServletAppResources(ServletContext ctx, Injector injector) {
         
         this.ctx = ctx;
+        this.injector = injector;
     }
     
     @Override
@@ -46,4 +50,9 @@ public class ServletAppResources implements AppResources {
         return ctx.getResource(path);
     }
 
+    @Override
+    public Injector getInjector() {
+        
+        return injector;
+    }
 }

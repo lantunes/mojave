@@ -17,7 +17,6 @@ package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.junit.Test;
-import org.mojavemvc.core.DefaultAppProperties;
 import org.mojavemvc.core.GuiceInitializer;
 import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.tests.controllers.IInjectableController;
@@ -88,7 +86,12 @@ public class TestGuiceInitializer {
     
     private AppProperties newAppProperties() {
         
-        return new DefaultAppProperties(new HashMap<String, Object>());
+        return new AppProperties() {
+            @Override
+            public Object getProperty(String name) {
+                return null;
+            }
+        };
     }
     
     private <T> void assertBindingExistsFor(Class<T> clazz, Map<Key<?>, Binding<?>> bindings) {

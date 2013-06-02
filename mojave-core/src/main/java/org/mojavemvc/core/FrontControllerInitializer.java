@@ -15,7 +15,6 @@
  */
 package org.mojavemvc.core;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -78,10 +77,35 @@ public class FrontControllerInitializer {
     public void performInitialization() {
 
         logger.debug("performing initialization...");
-        processInitializers();
         createGuiceInjector();
+        processInitializers();
         createControllerDatabase();
         createErrorHandlerFactory();
+    }
+    
+    private void createGuiceInjector() {
+
+        logger.debug("creating Guice Injector...");
+
+        try {
+
+            Set<Class<? extends Module>> moduleClasses = scanModuleClasses();
+            AppProperties appProps = new DefaultAppProperties();
+            context.setAttribute(AppProperties.KEY, appProps); 
+            GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, appProps);
+            Injector injector = guiceInitializer.initializeInjector();
+            context.setAttribute(GuiceInitializer.KEY, injector);
+
+        } catch (Throwable e) {
+            logger.error("error initializing Guice", e);
+        }
+    }
+    
+    private Set<Class<? extends Module>> scanModuleClasses() {
+
+        String guiceModulesNamespaces = servletConfig.getInitParameter(GUICE_MODULES);
+        List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);
+        return scanner.scanModules(packages);
     }
 
     private void processInitializers() {
@@ -90,14 +114,19 @@ public class FrontControllerInitializer {
         
         DefaultAppPropertyCollector collector = new DefaultAppPropertyCollector();
         InitParams params = newInitParams();
-        AppResources resources = new ServletAppResources(servletConfig.getServletContext());
+        AppResources resources = new ServletAppResources(servletConfig.getServletContext(), 
+                (Injector)context.getAttribute(GuiceInitializer.KEY));
         for (Class<? extends Initializer> initializerClass : initializers) {
             
             initialize(initializerClass, collector, resources, params);
         }
         
-        context.setAttribute(AppProperties.KEY, 
-                new DefaultAppProperties(collector.getProperties()));
+        /*
+         * we take this approach because the Injector needs to exist
+         * before we've had a chance to collect the app properties
+         */
+        ((DefaultAppProperties)context.getAttribute(AppProperties.KEY))
+            .setProperties(collector.getProperties());
     }
 
     private Set<Class<? extends Initializer>> scanInitializerClasses() {
@@ -133,11 +162,10 @@ public class FrontControllerInitializer {
     private void initialize(Class<? extends Initializer> initializerClass, 
             AppPropertyCollector collector, AppResources resources, InitParams params) {
         
+        Injector injector = (Injector)context.getAttribute(GuiceInitializer.KEY);
         try {
             
-            Constructor<? extends Initializer> constructor = 
-                    initializerClass.getConstructor();
-            Initializer init = constructor.newInstance();
+            Initializer init = injector.getInstance(initializerClass);
             init.initialize(params, resources, collector);
             
         } catch (Exception e) {
@@ -146,30 +174,6 @@ public class FrontControllerInitializer {
         }
     }
     
-    private void createGuiceInjector() {
-
-        logger.debug("creating Guice Injector...");
-
-        try {
-
-            Set<Class<? extends Module>> moduleClasses = scanModuleClasses();
-            AppProperties appProps = (AppProperties)context.getAttribute(AppProperties.KEY);
-            GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, appProps);
-            Injector injector = guiceInitializer.initializeInjector();
-            context.setAttribute(GuiceInitializer.KEY, injector);
-
-        } catch (Throwable e) {
-            logger.error("error initializing Guice", e);
-        }
-    }
-    
-    private Set<Class<? extends Module>> scanModuleClasses() {
-
-        String guiceModulesNamespaces = servletConfig.getInitParameter(GUICE_MODULES);
-        List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);
-        return scanner.scanModules(packages);
-    }
-
     private void createControllerDatabase() {
 
         logger.debug("creating ControllerDatabase...");
@@ -242,10 +246,10 @@ public class FrontControllerInitializer {
     private void addToEntityMarshallerMap(Class<? extends EntityMarshaller> customMarshaller, 
             Map<String, EntityMarshaller> marshallerMap) {
         
+        Injector injector = (Injector)context.getAttribute(GuiceInitializer.KEY);
         EntityMarshaller marshaller = null;
         try {
-            Constructor<? extends EntityMarshaller> constructor = customMarshaller.getConstructor();
-            marshaller = constructor.newInstance();
+            marshaller = injector.getInstance(customMarshaller);
         } catch (Exception e) {
             logger.error("error contructing entity marshaller " + customMarshaller.getName(), e);
         }

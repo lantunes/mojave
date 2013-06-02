@@ -26,12 +26,7 @@ import org.mojavemvc.initialization.AppProperties;
  */
 public class DefaultAppProperties implements AppProperties {
 
-    private final Map<String, Object> properties;
-    
-    public DefaultAppProperties(Map<String, Object> params) {
-        
-        this.properties = new HashMap<String, Object>(params);
-    }
+    private Map<String, Object> properties;
     
     /**
      * Return the value of the property, or null
@@ -43,5 +38,14 @@ public class DefaultAppProperties implements AppProperties {
      */
     public Object getProperty(String name) {
         return properties.get(name);
+    }
+    
+    /*
+     * this is package private to explicitly prevent
+     * external users from setting properties after
+     * application initialization
+     */
+    void setProperties(Map<String, Object> params) {
+        this.properties = new HashMap<String, Object>(params);
     }
 }

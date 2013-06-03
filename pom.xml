@@ -11,9 +11,10 @@
     <modules>
         <module>mojave-core</module>
         <module>mojave-freemarker</module>
-    <module>mojave-velocity</module>
-    <module>mojave-atmosphere</module>
-  </modules>
+        <module>mojave-velocity</module>
+        <module>mojave-atmosphere</module>
+        <module>mojave-mustache</module>
+    </modules>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>

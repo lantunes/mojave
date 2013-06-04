@@ -15,6 +15,8 @@
  */
 package org.mojavemvc.initialization.internal;
 
+import java.io.File;
+
 import org.mojavemvc.exception.DefaultMustacheErrorHandler;
 import org.mojavemvc.exception.DefaultMustacheErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
@@ -39,18 +41,15 @@ public class MustacheInitializer implements Initializer {
     private static final String MUSTACHE_PATH_INIT_PARAM = "mustache-path";
     private static final String MUSTACHE_ERROR_FILE_INIT_PARAM = "mustache-error-file";
     
+    private static final String CLASSPATH_PATH_PREFIX = "classpath:";
+    
     @Override
     public void initialize(InitParams initParams, AppResources resources, 
             AppPropertyCollector collector) {
         
         String mustachePath = getMustachePath(initParams);
 
-        //TODO use different constructor that sets the path
-        /*
-         * check if the mustachePath starts with classpath;
-         * if so, use different factory constructor, etc.
-         */
-        MustacheFactory mf = new DefaultMustacheFactory();
+        MustacheFactory mf = getMustacheFactory(mustachePath, resources);
         
         collector.addProperty(MustacheView.CONFIG_PROPERTY, mf);
         
@@ -66,6 +65,29 @@ public class MustacheInitializer implements Initializer {
         }
         logger.debug("setting " + MUSTACHE_PATH_INIT_PARAM + " to " + mustachePath);
         return mustachePath;
+    }
+    
+    private MustacheFactory getMustacheFactory(String path, AppResources resources) {
+        
+        if (path.startsWith(CLASSPATH_PATH_PREFIX)) {
+            
+            return new DefaultMustacheFactory(path.replaceFirst(CLASSPATH_PATH_PREFIX, ""));
+        }
+        
+        String realPath = resources.getRealPath(fixPath(path));
+        return new DefaultMustacheFactory(new File(realPath));
+    }
+    
+    private String fixPath(String path) {
+        
+        String fixedPath = path.replace('\\', '/');
+        if(!fixedPath.endsWith("/")) {
+            fixedPath += "/";
+        }
+        if (!fixedPath.startsWith("/")) {
+            fixedPath = "/" + fixedPath;
+        }
+        return fixedPath;
     }
     
     private void readMustacheErrorFile(InitParams initParams, AppPropertyCollector collector) {

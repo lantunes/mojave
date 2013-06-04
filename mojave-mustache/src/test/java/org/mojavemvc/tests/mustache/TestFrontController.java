@@ -15,23 +15,19 @@
  */
 package org.mojavemvc.tests.mustache;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import org.mojavemvc.tests.AbstractWebTest;
 
 /**
- * 
  * @author Luis Antunes
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestMustacheInitializer.class,
-    TestFrontController.class,
-    TestMultiClient.class
-})
-public class MojaveMVCMustacheTestSuite {
-    /*
-     *  the class remains completely empty,
-     *  being used only as a placeholder for 
-     *  the above annotations 
-     */
+public class TestFrontController extends AbstractWebTest {
+
+    @Test
+    public void basicRequest() throws Exception {
+
+        assertThatRequestFor("/mustache/basic/someValue")
+            .producesPage()
+            .withH1Tag(withContent("someValue"));
+    }
 }

@@ -15,9 +15,25 @@
  */
 package org.mojavemvc.core;
 
-public interface ControllerContext {
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-    void setAttribute(String name, Object object);
+/**
+ * And instance of this class is thread-safe. 
+ * 
+ * @author Luis Antunes
+ */
+public class FrameworkContext implements Context {
 
-    Object getAttribute(String name);
+    private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+
+    @Override
+    public Object getAttribute(String name) {
+        return attributes.get(name);
+    }
+
+    @Override
+    public void setAttribute(String name, Object object) {
+        attributes.put(name, object);
+    }
 }

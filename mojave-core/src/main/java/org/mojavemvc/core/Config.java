@@ -15,25 +15,18 @@
  */
 package org.mojavemvc.core;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Enumeration;
+
+import javax.servlet.ServletContext;
 
 /**
- * And instance of this class is thread-safe. 
- * 
  * @author Luis Antunes
  */
-public class FrontControllerContext implements ControllerContext {
+public interface Config {
 
-    private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+    ServletContext getServletContext();
+    
+    String getInitParameter(String name);
 
-    @Override
-    public Object getAttribute(String name) {
-        return attributes.get(name);
-    }
-
-    @Override
-    public void setAttribute(String name, Object object) {
-        attributes.put(name, object);
-    }
+    Enumeration<String> getInitParameterNames();
 }

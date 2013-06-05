@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
-
 import net.sf.cglib.reflect.FastClass;
 
 import org.mojavemvc.exception.ConfigurationException;
@@ -48,7 +46,7 @@ import com.google.inject.Module;
  * 
  * @author Luis Antunes
  */
-public class FrontControllerInitializer {
+public class FrameworkInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
@@ -62,14 +60,14 @@ public class FrontControllerInitializer {
     
     private static final String NAMESPACE_SEPARATOR = ",";
 
-    private final ServletConfig servletConfig;
-    private final ControllerContext context;
+    private final Config config;
+    private final Context context;
     private final ClasspathScanner scanner;
 
-    public FrontControllerInitializer(ServletConfig servletConfig, ControllerContext context, 
+    public FrameworkInitializer(Config config, Context context, 
             ClasspathScanner scanner) {
 
-        this.servletConfig = servletConfig;
+        this.config = config;
         this.context = context;
         this.scanner = scanner;
     }
@@ -103,7 +101,7 @@ public class FrontControllerInitializer {
     
     private Set<Class<? extends Module>> scanModuleClasses() {
 
-        String guiceModulesNamespaces = servletConfig.getInitParameter(GUICE_MODULES);
+        String guiceModulesNamespaces = config.getInitParameter(GUICE_MODULES);
         List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);
         return scanner.scanModules(packages);
     }
@@ -114,7 +112,7 @@ public class FrontControllerInitializer {
         
         DefaultAppPropertyCollector collector = new DefaultAppPropertyCollector();
         InitParams params = newInitParams();
-        AppResources resources = new ServletAppResources(servletConfig.getServletContext(), 
+        AppResources resources = new ServletAppResources(config.getServletContext(), 
                 (Injector)context.getAttribute(GuiceInitializer.KEY));
         for (Class<? extends Initializer> initializerClass : initializers) {
             
@@ -135,14 +133,13 @@ public class FrontControllerInitializer {
         return scanner.scanInitializers(packages);
     }
     
-    @SuppressWarnings("unchecked")
     private InitParams newInitParams() {
         
         Map<String, String> params = new HashMap<String, String>();
-        for (Enumeration<String> en = servletConfig.getInitParameterNames(); 
+        for (Enumeration<String> en = config.getInitParameterNames(); 
                 en.hasMoreElements();) {
             String name = en.nextElement();
-            params.put(name, servletConfig.getInitParameter(name));
+            params.put(name, config.getInitParameter(name));
         }
         return new ServletInitParams(params);
     }
@@ -152,7 +149,7 @@ public class FrontControllerInitializer {
         List<String> packages = new ArrayList<String>();
         packages.add(INTERNAL_INITIALIZER_PACKAGE);
         String initializerNamespaces = 
-                servletConfig.getInitParameter(INITIALIZERS);
+                config.getInitParameter(INITIALIZERS);
         if (!isEmpty(initializerNamespaces)) {
             addNamespaces(initializerNamespaces, packages);
         }
@@ -206,7 +203,7 @@ public class FrontControllerInitializer {
     private List<String> getControllerPackages() {
         
         String controllerClassNamespaces = 
-                servletConfig.getInitParameter(CONTROLLER_CLASSES);
+                config.getInitParameter(CONTROLLER_CLASSES);
         List<String> packages = getPackagesOrEntireClasspathIfEmpty(controllerClassNamespaces);
         return packages;
     }
@@ -221,7 +218,7 @@ public class FrontControllerInitializer {
         addToEntityMarshallerMap(new JSONEntityMarshaller(), marshallerMap);
         addToEntityMarshallerMap(new XMLEntityMarshaller(), marshallerMap);
         
-        String marshallersNamespaces = servletConfig.getInitParameter(ENTITY_MARSHALLERS);
+        String marshallersNamespaces = config.getInitParameter(ENTITY_MARSHALLERS);
         if (!isEmpty(marshallersNamespaces)) {
             List<String> packages = new ArrayList<String>();
             addNamespaces(marshallersNamespaces, packages);
@@ -280,7 +277,7 @@ public class FrontControllerInitializer {
     
     private String getErrorHandlerFactoryName() {
         
-        String errorHandlerFactory = servletConfig.getInitParameter(ERROR_HANDLER_FACTORY);
+        String errorHandlerFactory = config.getInitParameter(ERROR_HANDLER_FACTORY);
         if (isEmpty(errorHandlerFactory)) {
 
             logger.debug("no " + ERROR_HANDLER_FACTORY + " init-param specified, using default...");

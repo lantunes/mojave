@@ -38,7 +38,7 @@ public class HttpActionResolver implements ActionResolver {
 
     private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
-    private final ControllerContext context;
+    private final Context context;
     private final HttpServletRequest request;
     private final HttpMethod httpMethod;
     private final ControllerDatabase controllerDb;
@@ -48,7 +48,7 @@ public class HttpActionResolver implements ActionResolver {
     private ActionSignature actionSignature;
     private Class<?> controllerClass;
 
-    public HttpActionResolver(ControllerContext context, HttpServletRequest req, HttpMethod httpMethod,
+    public HttpActionResolver(Context context, HttpServletRequest req, HttpMethod httpMethod,
             ControllerDatabase controllerDb, Injector injector) {
 
         this.context = context;

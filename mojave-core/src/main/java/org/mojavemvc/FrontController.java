@@ -22,43 +22,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mojavemvc.core.ActionInvoker;
-import org.mojavemvc.core.ActionResolver;
-import org.mojavemvc.core.ControllerContext;
-import org.mojavemvc.core.ControllerDatabase;
-import org.mojavemvc.core.FrontControllerContext;
-import org.mojavemvc.core.FrontControllerInitializer;
-import org.mojavemvc.core.GuiceInitializer;
-import org.mojavemvc.core.HttpActionInvoker;
-import org.mojavemvc.core.HttpActionResolver;
 import org.mojavemvc.core.HttpMethod;
-import org.mojavemvc.core.HttpParameterMapSource;
-import org.mojavemvc.core.HttpRequestRouter;
-import org.mojavemvc.core.ReflectionsClasspathScanner;
-import org.mojavemvc.core.RequestProcessor;
-import org.mojavemvc.core.RequestRouter;
-import org.mojavemvc.core.RoutedRequest;
-import org.mojavemvc.core.ServletResourceModule;
-import org.mojavemvc.exception.ErrorHandler;
-import org.mojavemvc.exception.ErrorHandlerFactory;
-import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.views.View;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Injector;
+import org.mojavemvc.core.MojaveFramework;
 
 /**
- * The FrontController is the only servlet in the application, and handles all
- * requests that come in to the application.
+ * The FrontController uses the Mojave framework to handle
+ * requests. Either this servlet or the {@link RequestFilter} must
+ * be used in a Mojave Web MVC application, but not both.
  * 
  * @author Luis Antunes
  */
 @SuppressWarnings("serial")
 public final class FrontController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc");
 
-    private ControllerContext ctx;
+    private MojaveFramework framework;
 
     /**
      * The init method gets the values of the init params from the web.xml file.
@@ -66,16 +43,8 @@ public final class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
 
-        logger.info("initializing FrontController...");
-
-        ctx = new FrontControllerContext();
-
-        FrontControllerInitializer initializer = 
-                new FrontControllerInitializer(getServletConfig(), ctx, new ReflectionsClasspathScanner());
-
-        initializer.performInitialization();
-
-        initializer.createInitControllers();
+        framework = new MojaveFramework();
+        framework.init(getServletConfig());
     }
 
     /**
@@ -188,47 +157,6 @@ public final class FrontController extends HttpServlet {
     protected void processRequest(HttpServletRequest req, HttpServletResponse res, HttpMethod httpMethod)
             throws ServletException, IOException {
 
-        ControllerDatabase controllerDb = (ControllerDatabase) ctx.getAttribute(ControllerDatabase.KEY);
-
-        ErrorHandlerFactory errorHandlerFactory = (ErrorHandlerFactory) ctx.getAttribute(ErrorHandlerFactory.KEY);
-        ErrorHandler errorHandler = errorHandlerFactory.createErrorHandler();
-
-        Injector injector = (Injector) ctx.getAttribute(GuiceInitializer.KEY);
-        AppProperties properties = (AppProperties) ctx.getAttribute(AppProperties.KEY);
-
-        ServletResourceModule.set(req, res);
-
-        View view;
-        try {
-            
-            RequestRouter router = new HttpRequestRouter(req.getPathInfo(), 
-                    new HttpParameterMapSource(req), controllerDb.getRouteMap());
-            
-            RoutedRequest routed = router.route();
-            
-            ActionResolver resolver = new HttpActionResolver(ctx, req, httpMethod, controllerDb, injector);
-    
-            ActionInvoker invoker = new HttpActionInvoker(req, res, controllerDb, routed, injector);
-    
-            RequestProcessor requestProcessor = new RequestProcessor(resolver, invoker, errorHandler);
-            
-            view = requestProcessor.process(routed.getController(), routed.getAction(), properties);
-    
-            logger.debug("processed request for " + requestProcessor.getControllerClassName() + "; rendering...");
-
-            view.render(req, res, properties);
-
-        } catch (Throwable e) {
-
-            logger.error("error processing request: ", e);
-            view = errorHandler.handleError(e, properties);
-            if (view != null) {
-                /*
-                 * we're not catching any exceptions thrown from rendering the
-                 * error view
-                 */
-                view.render(req, res, properties);
-            }
-        }
+        framework.handleRequest(req, res, httpMethod, req.getPathInfo());
     }
 }

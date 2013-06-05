@@ -31,8 +31,9 @@ import org.mojavemvc.core.MojaveFramework;
 
 /**
  * The RequestFilter uses the Mojave framework to handle
- * requests. Either this filter or the {@link FrontController} must
- * be used in a Mojave Web MVC application, but not both.
+ * requests. Either this filter or the {@link FrontController} servlet must
+ * be used in a Mojave Web MVC application, but not both. This filter
+ * does <b>not</b> call the next filter in the filter chain.
  * 
  * @author Luis Antunes
  */
@@ -50,7 +51,7 @@ public class RequestFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) 
             throws IOException, ServletException {
-        
+
         HttpServletRequest servletReq = (HttpServletRequest) req;
         HttpServletResponse servletRes = (HttpServletResponse) res;
         
@@ -58,8 +59,6 @@ public class RequestFilter implements Filter {
         
         framework.handleRequest(servletReq, servletRes, httpMethod, 
                 servletReq.getServletPath());
-        
-        chain.doFilter(req, res);
     }
     
     private HttpMethod getHttpMethod(HttpServletRequest req) {

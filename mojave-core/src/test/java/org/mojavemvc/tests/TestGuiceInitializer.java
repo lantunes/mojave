@@ -79,7 +79,8 @@ public class TestGuiceInitializer {
         for (Class<? extends Module> module : modules) {
             moduleClasses.add(module);
         }
-        GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, newAppProperties());
+        GuiceInitializer guiceInitializer = 
+                new GuiceInitializer(moduleClasses, null, newAppProperties());
         Injector injector = guiceInitializer.initializeInjector();
         return injector;
     }

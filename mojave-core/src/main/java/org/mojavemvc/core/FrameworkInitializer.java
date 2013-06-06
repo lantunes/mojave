@@ -15,9 +15,11 @@
  */
 package org.mojavemvc.core;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +34,7 @@ import org.mojavemvc.initialization.AppPropertyCollector;
 import org.mojavemvc.initialization.AppResources;
 import org.mojavemvc.initialization.InitParams;
 import org.mojavemvc.initialization.Initializer;
+import org.mojavemvc.initialization.ModuleProvider;
 import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.marshalling.JSONEntityMarshaller;
 import org.mojavemvc.marshalling.PlainTextEntityMarshaller;
@@ -52,6 +55,7 @@ public class FrameworkInitializer {
 
     private static final String CONTROLLER_CLASSES = "controller-classes";
     private static final String GUICE_MODULES = "guice-modules";
+    private static final String GUICE_MODULE_PROVIDER = "guice-module-provider";
     private static final String ERROR_HANDLER_FACTORY = "error-handler-factory";
     private static final String ENTITY_MARSHALLERS = "entity-marshallers";
     private static final String INITIALIZERS = "initializers";
@@ -88,9 +92,11 @@ public class FrameworkInitializer {
         try {
 
             Set<Class<? extends Module>> moduleClasses = scanModuleClasses();
+            Set<Module> providedModules = getModulesFromProvider();
             AppProperties appProps = new DefaultAppProperties();
             context.setAttribute(AppProperties.KEY, appProps); 
-            GuiceInitializer guiceInitializer = new GuiceInitializer(moduleClasses, appProps);
+            GuiceInitializer guiceInitializer = 
+                    new GuiceInitializer(moduleClasses, providedModules, appProps);
             Injector injector = guiceInitializer.initializeInjector();
             context.setAttribute(GuiceInitializer.KEY, injector);
 
@@ -104,6 +110,30 @@ public class FrameworkInitializer {
         String guiceModulesNamespaces = config.getInitParameter(GUICE_MODULES);
         List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);
         return scanner.scanModules(packages);
+    }
+    
+    private Set<Module> getModulesFromProvider() {
+        
+        Set<Module> modules = new HashSet<Module>();
+        String moduleProviderName = config.getInitParameter(GUICE_MODULE_PROVIDER);
+        if (!isEmpty(moduleProviderName)) {
+            
+            try {
+                
+                Class<?> moduleProviderClass = Class.forName(moduleProviderName);
+                Constructor<?> moduleProviderConstructor = moduleProviderClass.getDeclaredConstructor();
+                ModuleProvider moduleProvider = (ModuleProvider)moduleProviderConstructor.newInstance();
+                
+                Set<Module> providedModules = moduleProvider.getModules();
+                if (providedModules != null) {
+                    modules.addAll(providedModules);
+                }
+                
+            } catch (Exception e) {
+                logger.error("error invoking module provider", e);
+            }
+        }
+        return modules;
     }
 
     private void processInitializers() {

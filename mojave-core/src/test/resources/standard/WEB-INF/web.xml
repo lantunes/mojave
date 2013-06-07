@@ -36,6 +36,10 @@
             <param-value>org.mojavemvc.tests.modules</param-value>
         </init-param>
         <init-param>
+            <param-name>guice-module-provider</param-name>
+            <param-value>org.mojavemvc.tests.modules.SomeModuleProvider</param-value>
+        </init-param>
+        <init-param>
             <param-name>entity-marshallers</param-name>
             <param-value>org.mojavemvc.tests.marshallers</param-value>
         </init-param>

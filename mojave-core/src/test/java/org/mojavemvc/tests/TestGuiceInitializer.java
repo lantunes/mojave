@@ -57,7 +57,7 @@ public class TestGuiceInitializer {
     }
 
     @Test
-    public void injectorHasBasicAndCustomBindings() throws Exception {
+    public void injectorHasBasicAndCustomModuleClassBindings() throws Exception {
 
         Injector injector = initializeInjector(SomeModule.class);
 
@@ -71,17 +71,58 @@ public class TestGuiceInitializer {
         assertBindingExistsFor(IInjectableController.class, bindings);
     }
     
+    @Test
+    public void injectorHasBasicAndCustomModuleBindings() throws Exception {
+
+        Injector injector = initializeInjector(new SomeModule());
+
+        Map<Key<?>, Binding<?>> bindings = injector.getAllBindings();
+
+        assertBindingExistsFor(HttpServletRequest.class, bindings);
+        assertBindingExistsFor(HttpServletResponse.class, bindings);
+        assertBindingExistsFor(HttpSession.class, bindings);
+        assertBindingExistsFor(AppProperties.class, bindings);
+        assertBindingExistsFor(SomeService.class, bindings);
+        assertBindingExistsFor(IInjectableController.class, bindings);
+    }
+    
     /*---------------------------------------------*/
     
-    private Injector initializeInjector(Class<? extends Module>...modules) throws Exception {
+    private Injector initializeInjector() throws Exception {
+        
+        return initializeInjector(null, null);
+    }
+    
+    private Injector initializeInjector(Class<? extends Module> moduleClass) 
+        throws Exception {
+        
+        return initializeInjector(null, moduleClass);
+    }
+    
+    private Injector initializeInjector(Module providedModule) 
+            throws Exception {
+            
+            return initializeInjector(providedModule, null);
+        }
+    
+    private Injector initializeInjector(Module providedModule, 
+            Class<? extends Module> moduleClass) throws Exception {
+        
+        Set<Module> providedModules = new HashSet<Module>();
+        if (providedModule != null) {
+            providedModules.add(providedModule);
+        }
         
         Set<Class<? extends Module>> moduleClasses = new HashSet<Class<? extends Module>>();
-        for (Class<? extends Module> module : modules) {
-            moduleClasses.add(module);
+        if (moduleClass != null) {
+            moduleClasses.add(moduleClass);
         }
+        
         GuiceInitializer guiceInitializer = 
-                new GuiceInitializer(moduleClasses, null, newAppProperties());
+                new GuiceInitializer(moduleClasses, providedModules, newAppProperties());
+        
         Injector injector = guiceInitializer.initializeInjector();
+        
         return injector;
     }
     

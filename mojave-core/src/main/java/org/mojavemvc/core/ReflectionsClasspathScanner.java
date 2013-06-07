@@ -15,6 +15,8 @@
  */
 package org.mojavemvc.core;
 
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +41,7 @@ public class ReflectionsClasspathScanner implements ClasspathScanner {
         Reflections reflections = new Reflections(packages.toArray());
         Set<Class<? extends Initializer>> initializers = 
                 reflections.getSubTypesOf(Initializer.class);
+        removeNonInstantiableClasses(initializers);
         return initializers;
     }
 
@@ -50,11 +53,15 @@ public class ReflectionsClasspathScanner implements ClasspathScanner {
         /* we have to check for AbstractModule explicitly because users may have either
          * implemented Module or sub-classed AbstractModule */
         modules.addAll(reflections.getSubTypesOf(AbstractModule.class));
+        
         /* make sure the framework's module is never included in the scan results */
         modules.remove(ServletResourceModule.class);
+        
+        removeNonInstantiableClasses(modules);
+        
         return modules;
     }
-
+    
     @Override
     public Set<Class<?>> scanControllers(List<String> packages) {
         
@@ -71,7 +78,36 @@ public class ReflectionsClasspathScanner implements ClasspathScanner {
         Reflections reflections = new Reflections(packages.toArray());
         Set<Class<? extends EntityMarshaller>> customMarshallers = 
                 reflections.getSubTypesOf(EntityMarshaller.class);
+        removeNonInstantiableClasses(customMarshallers);
         return customMarshallers;
     }
 
+    /* 
+     * remove any abstract classes, anonymous classes, and interfaces, as
+     * these won't be able to be instantiated 
+     */
+    private <T> void removeNonInstantiableClasses(Set<Class<? extends T>> classes) {
+        
+        for (Iterator<Class<? extends T>> itr = classes.iterator(); itr.hasNext();) {
+            
+            Class<? extends T> clazz = itr.next();
+            int classModifiers = clazz.getModifiers();
+            if (Modifier.isAbstract(classModifiers)  || 
+                    Modifier.isInterface(classModifiers) ||
+                    isAnonymous(clazz)) {
+                
+                itr.remove();
+            }
+        }
+    }
+    
+    /*
+     * This returns true if the class name ends with "$#",
+     * such as in "blah.MyType$1". This is clearly not an ideal
+     * way to check if a class is anonymous.
+     */
+    private boolean isAnonymous(Class<?> clazz) {
+        
+        return clazz.getName().matches("^.+?\\$\\d$");
+    }
 }

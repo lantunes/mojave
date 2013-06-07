@@ -33,6 +33,7 @@ import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.initialization.AppProperties;
+import org.mojavemvc.tests.services.SomeProvidedService;
 import org.mojavemvc.tests.services.SomeService;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.PlainText;
@@ -54,6 +55,9 @@ public class IndexController {
 
     @Inject
     private SomeService someService;
+    
+    @Inject
+    private SomeProvidedService someProvidedService;
 
     @Inject
     private IInjectableController injectedController;
@@ -115,6 +119,14 @@ public class IndexController {
         String answer = someService.answerRequest(getParameter("var"));
 
         return new JSP("some-service").withAttribute("var", answer);
+    }
+    
+    @Action("some-provided-service")
+    public View someProvidedServiceAction(@Param("var") String var) {
+        
+        String processed = someProvidedService.processRequest(var);
+        
+        return new JSP("param").withAttribute("var", processed);
     }
 
     @Action("test-annotation")

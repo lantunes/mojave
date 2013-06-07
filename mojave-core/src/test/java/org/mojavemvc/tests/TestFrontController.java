@@ -120,6 +120,14 @@ public class TestFrontController extends AbstractWebTest {
             .withH1Tag(withContent("This is the some-service.jsp file of the IndexController someServiceAction!"))
             .withH2Tag(withContent("answered hello"));
     }
+    
+    @Test
+    public void indexControllerSomeProvidedServiceAction() throws Exception {
+
+        assertThatRequestFor("/index/some-provided-service?var=hello")
+            .producesPage()
+            .withH2Tag(withContent("Hello from processed hello"));
+    }
 
     @Test
     public void indexControllerActionAnnotation() throws Exception {

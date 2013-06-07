@@ -15,7 +15,9 @@
  */
 package org.mojavemvc.core;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
@@ -59,26 +61,21 @@ public class GuiceInitializer {
 
     public Injector initializeInjector() throws Exception {
 
-        Module[] modules = new Module[providedModules.size() + moduleClasses.size() + 1];
+        List<Module> modules = new ArrayList<Module>();
 
         logger.debug("adding " + ServletResourceModule.class.getName() + " ...");
-        modules[0] = new ServletResourceModule(appProperties);
+        modules.add(new ServletResourceModule(appProperties));
 
-        int i = 1;
-        for (Class<?> moduleClass : moduleClasses) {
+        for (Class<? extends Module> moduleClass : moduleClasses) {
 
             logger.debug("found module class: " + moduleClass.getName());
-
-            modules[i] = (Module) FastClass.create(moduleClass).newInstance();
-            i++;
+            modules.add((Module) FastClass.create(moduleClass).newInstance());
         }
         
         for (Module module : providedModules) {
 
             logger.debug("found provided module: " + module.getClass().getName());
-
-            modules[i] = module;
-            i++;
+            modules.add(module);
         }
 
         return Guice.createInjector(modules);

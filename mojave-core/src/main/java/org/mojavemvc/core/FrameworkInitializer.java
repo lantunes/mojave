@@ -107,9 +107,15 @@ public class FrameworkInitializer {
     
     private Set<Class<? extends Module>> scanModuleClasses() {
 
+        Set<Class<? extends Module>> modules = new HashSet<Class<? extends Module>>();
         String guiceModulesNamespaces = config.getInitParameter(GUICE_MODULES);
-        List<String> packages = getPackagesOrEntireClasspathIfEmpty(guiceModulesNamespaces);
-        return scanner.scanModules(packages);
+        if (!isEmpty(guiceModulesNamespaces)) {
+            
+            List<String> packages = new ArrayList<String>();
+            addNamespaces(guiceModulesNamespaces, packages);
+            modules.addAll(scanner.scanModules(packages));
+        }
+        return modules;
     }
     
     private Set<Module> getModulesFromProvider() {

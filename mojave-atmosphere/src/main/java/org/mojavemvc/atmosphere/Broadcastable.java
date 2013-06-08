@@ -25,9 +25,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Luis Antunes
  */
-/*
- * TODO rename to Broadcast
- */
 public class Broadcastable {
 
     private static final Logger logger = LoggerFactory.getLogger("org.mojavemvc.atmosphere");
@@ -35,6 +32,7 @@ public class Broadcastable {
     private final Broadcaster broadcaster;
     private final Object message;
     private final Object callerMessage;
+    private int delay = -1;
 
     public Broadcastable(Broadcaster b) {
         
@@ -45,7 +43,7 @@ public class Broadcastable {
 
     /**
      * Broadcast the <b>message</b> to the set of suspended AtmosphereResource, and write back
-     * the <b>message</b> to the request which invoked the current resource method.
+     * the <b>message</b> to the request which invoked the current action method.
      *
      * @param message the message which will be broadcasted
      * @param broadcaster the Broadcaster
@@ -59,7 +57,7 @@ public class Broadcastable {
 
     /**
      * Broadcast the <b>message</b> to the set of suspended AtmosphereResource, and write back
-     * the <b>callerMessage</b> to the request which invoked the current resource method.
+     * the <b>callerMessage</b> to the request which invoked the current action method.
      *
      * @param message the message which will be broadcasted
      * @param callerMessage the message which will be sent back to the request.
@@ -73,6 +71,22 @@ public class Broadcastable {
     }
     
     /**
+     * Use this constructor if the delay is not -1. This will cause the <b>message</b>, as
+     * opposed to the <b>callerMessage</b>, to be written to the request which invoked the 
+     * current action method.
+     * 
+     * @param message the message which will be broadcasted
+     * @param callerMessage the message which will be sent back to the request.
+     * @param broadcaster the Broadcaster
+     * @param delay the delay if it is not -1
+     */
+    public Broadcastable(Object message, Object callerMessage, Broadcaster broadcaster, int delay) {
+        
+        this(message, callerMessage, broadcaster);
+        this.delay = delay;
+    }
+    
+    /**
      * Broadcast the message.
      *
      * @return the transformed message (BroadcastFilter)
@@ -80,8 +94,8 @@ public class Broadcastable {
     public Object broadcast() {
         try {
             return broadcaster.broadcast(message).get();
-        } catch (Exception ex) {
-            logger.error("failed to broadcast message: " + message, ex);
+        } catch (Exception e) {
+            logger.error("failed to broadcast message: " + message, e);
         }
         return null;
     }
@@ -96,6 +110,6 @@ public class Broadcastable {
 
     @Marshall
     public Object getResponseMessage() {
-        return callerMessage;
+        return (delay == -1) ? callerMessage : message;
     }
 }

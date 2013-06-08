@@ -15,9 +15,11 @@
  */
 package org.mojavemvc.atmosphere;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,12 +38,15 @@ import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceEventListener;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.BroadcastFilter;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterConfig;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.ClusterBroadcastFilter;
 import org.atmosphere.cpr.FrameworkConfig;
+import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.di.InjectorProvider;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
@@ -71,6 +76,15 @@ public class AtmosphereInterceptor {
     
     private final static String SUSPENDED_RESOURCE = 
             AtmosphereInterceptor.class.getName() + ".suspendedResource";
+    
+    private final static String INJECTED_BROADCASTER = 
+            AtmosphereInterceptor.class.getName() + "injectedBroadcaster";
+    
+    private final static String RESUME_UUID = 
+            AtmosphereInterceptor.class.getName() + ".uuid";
+    
+    private final static String RESUME_CANDIDATES = 
+            AtmosphereInterceptor.class.getName() + ".resumeCandidates";
     
     @Inject
     AppProperties appProperties;
@@ -106,6 +120,12 @@ public class AtmosphereInterceptor {
             throw new IllegalStateException(INSTALLATION_ERROR);
         }
         
+        boolean useResumeAnnotation = false;
+        if (Boolean.parseBoolean(
+                config.getInitParameter(ApplicationConfig.SUPPORT_LOCATION_HEADER))) {
+            useResumeAnnotation = true;
+        }
+        
         AtmosphereResource resource = (AtmosphereResource) req
                 .getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
         //TODO debugging
@@ -131,7 +151,7 @@ public class AtmosphereInterceptor {
         View marshalledEntity = ctx.getMarshalledReturnValue();
         
         if (SuspendResponse.class.isAssignableFrom(entity.getClass())) {
-            suspendResponse();
+            view = suspendResponse(entity, req, resp, resource, useResumeAnnotation);
             /* don't process any annotations */
             /*
              * what is the @Returns content-type on an action that
@@ -226,6 +246,202 @@ public class AtmosphereInterceptor {
         return view;
     }
     
+    //////////////////// start suspendResponse
+    
+    private View suspendResponse(Object entity, HttpServletRequest req, 
+            HttpServletResponse res, AtmosphereResource resource, 
+            boolean useResumeAnnotation) {
+        
+        View view = null;
+        SuspendResponse<?> s = SuspendResponse.class.cast(entity);
+        boolean resumeOnBroadcast = resumeOnBroadcast(s.resumeOnBroadcast(), req);
+
+        for (AtmosphereResourceEventListener el : s.listeners()) {
+            resource.addEventListener(el);
+        }
+
+        if (s.getEntity() == null) {
+            //https://github.com/Atmosphere/atmosphere/issues/423
+            view = new EmptyView();
+        }
+
+        Broadcaster bc = s.broadcaster();
+        if (bc == null && s.scope() != Suspend.SCOPE.REQUEST) {
+            /*
+             * TODO how does INJECTED_BROADCASTER get set?
+             */
+            bc = (Broadcaster) req.getAttribute(INJECTED_BROADCASTER);
+        }
+
+        suspend(s.getEntity(), resumeOnBroadcast,
+                translateTimeUnit(s.period().value(), s.period().timeUnit()), 
+                req, res, bc, resource, s.scope(), s.writeEntity(), 
+                useResumeAnnotation);
+        
+        return view;
+    }
+    
+    /*
+     * NOTE: this ultimately handles @Suspend as well
+     */
+    void suspend(Object entity, boolean resumeOnBroadcast,
+            long timeout,
+            HttpServletRequest req,
+            HttpServletResponse res,
+            Broadcaster bc,
+            AtmosphereResource r,
+            Suspend.SCOPE localScope,
+            boolean flushEntity,
+            boolean useResumeAnnotation) {
+
+       // Force the status code to 200 events independently of the value of the entity (null or not)
+       //TODO get current status
+       //HttpServletResponse response = ctx.getResponse();
+       //if (response.getStatus() == 204) {
+       //    response.setStatus(200);
+       //}
+    
+       BroadcasterFactory broadcasterFactory = 
+               (BroadcasterFactory) req.getAttribute(ApplicationConfig.BROADCASTER_FACTORY);
+    
+       boolean sessionSupported = (Boolean) req.getAttribute(FrameworkConfig.SUPPORT_SESSION);
+       URI location = null;
+       // Do not add location header if already there.
+       if (useResumeAnnotation && !sessionSupported && !resumeOnBroadcast && !res.containsHeader("Location")) {
+           String uuid = UUID.randomUUID().toString();
+    
+           //TODO uriInfo is a JAX-RS object
+           //location = uriInfo.getAbsolutePathBuilder().path(uuid).build("");
+    
+           //TODO resumeCandidates may be an application global map
+           //resumeCandidates.put(uuid, r);
+           
+           //TODO where are RESUME_UUID and RESUME_CANDIDATES read?
+           //req.setAttribute(RESUME_UUID, uuid);
+           //req.setAttribute(RESUME_CANDIDATES, resumeCandidates);
+       }
+    
+       if (bc == null && localScope != Suspend.SCOPE.REQUEST) {
+           bc = r.getBroadcaster();
+       }
+    
+       if (entity instanceof Broadcastable) {
+           Broadcastable b = (Broadcastable) entity;
+           bc = b.getBroadcaster();
+           //response.setEntity(b.getResponseMessage());
+       }
+    
+       if ((localScope == Suspend.SCOPE.REQUEST) && bc == null) {
+           if (bc == null) {
+               try {
+                   String id = req.getHeader(HeaderConfig.X_ATMOSPHERE_TRACKING_ID);
+                   if (id == null) {
+                       id = UUID.randomUUID().toString();
+                   }
+    
+                   bc = broadcasterFactory.get(id);
+                   bc.setScope(Broadcaster.SCOPE.REQUEST);
+               } catch (Exception ex) {
+                   logger.error("failed to instantiate broadcaster with factory: " + broadcasterFactory, ex);
+               }
+           } else {
+               bc.setScope(Broadcaster.SCOPE.REQUEST);
+           }
+       }
+       r.setBroadcaster(bc);
+    
+       if (resumeOnBroadcast) {
+           req.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, new Boolean(true));
+       }
+    
+       //TODO
+       //executeSuspend(r, timeout, resumeOnBroadcast, location, flushEntity);
+    
+    }
+    
+    /*
+     * TODO 
+    void executeSuspend(AtmosphereResource r, long timeout, boolean resumeOnBroadcast, 
+            URI location, HttpServletRequest req,
+            boolean flushEntity) {
+
+        req.setAttribute(FrameworkConfig.CONTAINER_RESPONSE, response);
+        boolean sessionSupported = (Boolean) req.getAttribute(FrameworkConfig.SUPPORT_SESSION);
+        configureFilter(r.getBroadcaster());
+        if (sessionSupported) {
+            req.getSession().setAttribute(SUSPENDED_RESOURCE, r);
+            req.getSession().setAttribute(FrameworkConfig.CONTAINER_RESPONSE, response);
+        }
+
+        req.setAttribute(SUSPENDED_RESOURCE, r);
+
+        // Set the content-type based on the returned entity.
+        try {
+            MediaType contentType = response.getMediaType();
+            if (contentType == null && response.getEntity() != null) {
+                LinkedList<MediaType> l = new LinkedList<MediaType>();
+                // Will retrun the first
+                l.add(request.getAcceptableMediaType(new LinkedList<MediaType>()));
+                contentType = response.getMessageBodyWorkers().getMessageBodyWriterMediaType(
+                        response.getEntity().getClass(), response.getEntityType(), response.getAnnotations(), l);
+
+                if (contentType == null || contentType.isWildcardType() || contentType.isWildcardSubtype())
+                    contentType = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+            }
+
+            Object entity = response.getEntity();
+
+            Response.ResponseBuilder b = Response.ok();
+            b = configureHeaders(b);
+
+            AtmosphereConfig config = (AtmosphereConfig) servletReq.getAttribute(ATMOSPHERE_CONFIG);
+
+            String defaultCT = config.getInitParameter(DEFAULT_CONTENT_TYPE);
+            if (defaultCT == null) {
+                defaultCT = "text/plain; charset=ISO-8859-1";
+            }
+
+            String ct = contentType == null ? defaultCT : contentType.toString();
+
+            if (defaultContentType != null) {
+                ct = defaultContentType;
+            }
+
+            if (entity != null) {
+                b = b.header("Content-Type", ct);
+            }
+            req.setAttribute(FrameworkConfig.EXPECTED_CONTENT_TYPE, ct);
+
+            if (entity != null && flushEntity) {
+                try {
+                    if (Callable.class.isAssignableFrom(entity.getClass())) {
+                        entity = Callable.class.cast(entity).call();
+                    }
+                } catch (Throwable t) {
+                    logger.error("Error executing callable {}", entity);
+                    entity = null;
+                }
+
+                if (location != null) {
+                    b = b.header(HttpHeaders.LOCATION, location);
+                }
+
+                synchronized (response) {
+                    response.setResponse(b.entity(entity).build());
+                    response.write();
+                }
+            }
+
+            response.setEntity(null);
+            r.suspend(timeout);
+        } catch (IOException ex) {
+            throw new WebApplicationException(ex);
+        }
+    }
+    */
+    
+    ///////////////////////////////////////////// end suspendResponse
+    
     private View broadcast(Object entity, HttpServletRequest req, AtmosphereConfig config, 
             List<ClusterBroadcastFilter> clusterBroadcastFilters,
             long delay, int waitFor, 
@@ -237,95 +453,32 @@ public class AtmosphereInterceptor {
         
         Broadcaster broadcaster = resource.getBroadcaster();
         Object msg = entity;
-        String returnMsg = null;
-        // Something went wrong if null.
         if (entity instanceof Broadcastable) {
             if (((Broadcastable) entity).getBroadcaster() != null) {
                 broadcaster = ((Broadcastable) entity).getBroadcaster();
             }
             msg = ((Broadcastable) entity).getMessage();
-            returnMsg = ((Broadcastable) entity).getResponseMessage().toString();
         }
 
         if (resume) {
             configureResumeOnBroadcast(broadcaster);
         }
 
-        if (entity != null) {
-            addFilter(broadcaster, filters, clusterBroadcastFilters);
-            /*
-             * TODO
-             * can we return two entities, in a sense, in the
-             * Broadcast? one: the return message, the other: the
-             * message itself?
-             * - perhaps limit the way Broadcast can be used: unlike
-             *   with Jersey, we cannot return a separate message 
-             *   to the requestor, different from the broadcast
-             *   message?
-             */
-            //containerResponse.setEntity(msg);
-            if (msg == null) return view;
+        addFilter(broadcaster, filters, clusterBroadcastFilters);
+        if (msg == null) return view;
 
-            if (delay == -1) {
-                broadcaster.broadcast(msg);
-                if (entity instanceof Broadcastable) {
-                    //TODO **
-                    //containerResponse.setEntity(returnMsg);
-                }
-            } else if (delay == 0) {
-                broadcaster.delayBroadcast(msg);
-            } else {
-                broadcaster.delayBroadcast(msg, delay, TimeUnit.SECONDS);
-            }
+        if (delay == -1) {
+            broadcaster.broadcast(msg);
+        } else if (delay == 0) {
+            broadcaster.delayBroadcast(msg);
+        } else {
+            broadcaster.delayBroadcast(msg, delay, TimeUnit.SECONDS);
         }
         
         if (!writeEntity) {
             view = new EmptyView();
         }
         return view;
-    }
-    
-    private void addFilter(Broadcaster bc, Class<? extends BroadcastFilter>[] filters, 
-            List<ClusterBroadcastFilter> clusterBroadcastFilters) {
-        
-        configureFilter(bc, filters, clusterBroadcastFilters);
-    }
-    
-    private void configureFilter(Broadcaster bc, Class<? extends BroadcastFilter>[] filters, 
-            List<ClusterBroadcastFilter> clusterBroadcastFilters) {
-        
-        if (bc == null) throw new RuntimeException(new IllegalStateException("Broadcaster cannot be null"));
-
-        /**
-         * Here we can't predict if it's the same set of filter shared across all Broadcaster as
-         * Broadcaster can have their own BroadcasterConfig instance.
-         */
-        BroadcasterConfig c = bc.getBroadcasterConfig();
-        // Already configured
-        if (c.hasFilters()) {
-            return;
-        }
-
-        if (clusterBroadcastFilters != null) {
-            // Always the first one, before any transformation/filtering
-            for (ClusterBroadcastFilter cbf : clusterBroadcastFilters) {
-                cbf.setBroadcaster(bc);
-                c.addFilter(cbf);
-            }
-        }
-
-        BroadcastFilter f = null;
-        if (filters != null) {
-            for (Class<? extends BroadcastFilter> filter : filters) {
-                try {
-                    f = filter.newInstance();
-                    InjectorProvider.getInjector().inject(f);
-                } catch (Throwable t) {
-                    logger.warn("Invalid @BroadcastFilter: " + filter, t);
-                }
-                c.addFilter(f);
-            }
-        }
     }
     
     @SuppressWarnings("unchecked")
@@ -394,6 +547,51 @@ public class AtmosphereInterceptor {
         broadcaster.scheduleFixedBroadcast(message, waitFor, timeout, TimeUnit.SECONDS);
     }
     
+    /*---------------------------------*/
+    
+    private void addFilter(Broadcaster bc, Class<? extends BroadcastFilter>[] filters, 
+            List<ClusterBroadcastFilter> clusterBroadcastFilters) {
+        
+        configureFilter(bc, filters, clusterBroadcastFilters);
+    }
+    
+    private void configureFilter(Broadcaster bc, Class<? extends BroadcastFilter>[] filters, 
+            List<ClusterBroadcastFilter> clusterBroadcastFilters) {
+        
+        if (bc == null) throw new RuntimeException(new IllegalStateException("Broadcaster cannot be null"));
+
+        /**
+         * Here we can't predict if it's the same set of filter shared across all Broadcaster as
+         * Broadcaster can have their own BroadcasterConfig instance.
+         */
+        BroadcasterConfig c = bc.getBroadcasterConfig();
+        // Already configured
+        if (c.hasFilters()) {
+            return;
+        }
+
+        if (clusterBroadcastFilters != null) {
+            // Always the first one, before any transformation/filtering
+            for (ClusterBroadcastFilter cbf : clusterBroadcastFilters) {
+                cbf.setBroadcaster(bc);
+                c.addFilter(cbf);
+            }
+        }
+
+        BroadcastFilter f = null;
+        if (filters != null) {
+            for (Class<? extends BroadcastFilter> filter : filters) {
+                try {
+                    f = filter.newInstance();
+                    InjectorProvider.getInjector().inject(f);
+                } catch (Throwable t) {
+                    logger.warn("Invalid @BroadcastFilter: " + filter, t);
+                }
+                c.addFilter(f);
+            }
+        }
+    }
+    
     private void write(View marshalledEntity, HttpServletRequest req, HttpServletResponse resp) {
         
         try {
@@ -417,6 +615,38 @@ public class AtmosphereInterceptor {
             r.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, true);
         }
     }
+    
+    private boolean resumeOnBroadcast(boolean resumeOnBroadcast, HttpServletRequest req) {
+        
+        String transport = req.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
+        if (transport != null && (transport.equals(HeaderConfig.JSONP_TRANSPORT) || 
+                transport.equals(HeaderConfig.LONG_POLLING_TRANSPORT))) {
+            return true;
+        }
+        return resumeOnBroadcast;
+    }
+    
+    private long translateTimeUnit(long period, TimeUnit tu) {
+        if (period == -1) return period;
+
+        switch (tu) {
+            case SECONDS:
+                return TimeUnit.MILLISECONDS.convert(period, TimeUnit.SECONDS);
+            case MINUTES:
+                return TimeUnit.MILLISECONDS.convert(period, TimeUnit.MINUTES);
+            case HOURS:
+                return TimeUnit.MILLISECONDS.convert(period, TimeUnit.HOURS);
+            case DAYS:
+                return TimeUnit.MILLISECONDS.convert(period, TimeUnit.DAYS);
+            case MILLISECONDS:
+                return period;
+            case MICROSECONDS:
+                return TimeUnit.MILLISECONDS.convert(period, TimeUnit.MICROSECONDS);
+            case NANOSECONDS:
+                return TimeUnit.MILLISECONDS.convert(period, TimeUnit.NANOSECONDS);
+        }
+        return period;
+    }
 
     private void resume() {
         // TODO Auto-generated method stub
@@ -435,10 +665,6 @@ public class AtmosphereInterceptor {
     }
 
     private void asynchronous() {
-        // TODO Auto-generated method stub
-    }
-
-    private void suspendResponse() {
         // TODO Auto-generated method stub
     }
 }

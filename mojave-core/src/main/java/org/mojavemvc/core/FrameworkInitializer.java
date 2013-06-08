@@ -16,6 +16,7 @@
 package org.mojavemvc.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,7 +124,7 @@ public class FrameworkInitializer {
                 ModuleProvider moduleProvider = 
                         (ModuleProvider)FastClass.create(moduleProviderClass).newInstance();
                 
-                Set<Module> providedModules = moduleProvider.getModules();
+                Collection<Module> providedModules = moduleProvider.getModules();
                 if (providedModules != null) {
                     modules.addAll(providedModules);
                 }

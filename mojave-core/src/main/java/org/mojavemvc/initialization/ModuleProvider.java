@@ -15,7 +15,7 @@
  */
 package org.mojavemvc.initialization;
 
-import java.util.Set;
+import java.util.Collection;
 
 import com.google.inject.Module;
 
@@ -30,5 +30,5 @@ import com.google.inject.Module;
  */
 public interface ModuleProvider {
 
-    Set<Module> getModules();
+    Collection<Module> getModules();
 }

@@ -122,7 +122,8 @@ public class AtmosphereInterceptor {
         
         boolean useResumeAnnotation = false;
         if (Boolean.parseBoolean(
-                config.getInitParameter(ApplicationConfig.SUPPORT_LOCATION_HEADER))) {
+                config.getInitParameter(ApplicationConfig.SUPPORT_LOCATION_HEADER)) || 
+                ctx.getActionAnnotation(Resume.class) != null) {
             useResumeAnnotation = true;
         }
         
@@ -151,7 +152,7 @@ public class AtmosphereInterceptor {
         View marshalledEntity = ctx.getMarshalledReturnValue();
         
         if (SuspendResponse.class.isAssignableFrom(entity.getClass())) {
-            view = suspendResponse(entity, req, resp, resource, useResumeAnnotation);
+            view = doSuspendResponse(entity, req, resp, resource, useResumeAnnotation);
             /* don't process any annotations */
             /*
              * what is the @Returns content-type on an action that
@@ -185,7 +186,7 @@ public class AtmosphereInterceptor {
                 }
             }
             
-            view = broadcast(entity, req, config, clusterBroadcastFilters, 
+            view = doBroadcast(entity, req, config, clusterBroadcastFilters, 
                     broadcastAnnotation.delay(), 0, 
                     broadcastAnnotation.filters(), 
                     broadcastAnnotation.writeEntity(), null, 
@@ -194,37 +195,59 @@ public class AtmosphereInterceptor {
         
         Asynchronous asyncAnnotation = ctx.getActionAnnotation(Asynchronous.class);
         if (asyncAnnotation != null) {
-            asynchronous();
+            doAsynchronous();
         }
         
         Suspend suspendAnnotation = ctx.getActionAnnotation(Suspend.class);
         if (suspendAnnotation != null) {
-            if (suspendAnnotation.resumeOnBroadcast()) {
-                suspendResume();
-            } else {
-                suspend();
-            }
+            
+            long suspendTimeout = suspendAnnotation.period();
+            TimeUnit tu = suspendAnnotation.timeUnit();
+            suspendTimeout = translateTimeUnit(suspendTimeout, tu);
+            
+            Suspend.SCOPE scope = suspendAnnotation.scope();
+            Class<? extends AtmosphereResourceEventListener>[] listeners = 
+                    suspendAnnotation.listeners();
+            String topic = null;
+            boolean writeEntity = true;
+            //TODO used eventually in executeSuspend()
+            String contentType = suspendAnnotation.contentType();
+            
+            doSuspend(entity, req, resp, resource, config, topic, suspendTimeout, scope, 
+                    writeEntity, listeners, false, suspendAnnotation.resumeOnBroadcast(), 
+                    useResumeAnnotation);
         }
         
         Subscribe subscribeAnnotation = ctx.getActionAnnotation(Subscribe.class);
         if (subscribeAnnotation != null) {
-            subscribe();
+            
+            int timeout = subscribeAnnotation.timeout();
+            Class<? extends AtmosphereResourceEventListener>[] listeners = 
+                    subscribeAnnotation.listeners();
+            Suspend.SCOPE scope = Suspend.SCOPE.APPLICATION;
+            String topic = subscribeAnnotation.value();
+            boolean writeEntity = subscribeAnnotation.writeEntity();
+            
+            doSuspend(entity, req, resp, resource, config, topic, timeout, scope, 
+                    writeEntity, listeners, true, false, useResumeAnnotation);
         }
         
         Publish publishAnnotation = ctx.getActionAnnotation(Publish.class);
         if (publishAnnotation != null) {
-            view = publish(entity, req, config, publishAnnotation.value());
+            view = doPublish(entity, req, config, publishAnnotation.value());
         }
         
         Resume resumeAnnotation = ctx.getActionAnnotation(Resume.class);
         if (resumeAnnotation != null) {
-            resume();
+            //TODO suspendTimeout not used
+            int suspendTimeout = resumeAnnotation.value();
+            doResume(marshalledEntity, req, resp, resource);
         }
         
         Schedule scheduleAnnotation = ctx.getActionAnnotation(Schedule.class);
         if (scheduleAnnotation != null) {
             
-            schedule(scheduleAnnotation.period(), 
+            doSchedule(scheduleAnnotation.period(), 
                     scheduleAnnotation.waitFor(), 
                     entity, marshalledEntity, resource, req, resp, 
                     scheduleAnnotation.resumeOnBroadcast());
@@ -246,9 +269,61 @@ public class AtmosphereInterceptor {
         return view;
     }
     
-    //////////////////// start suspendResponse
+    private void doResume(View marshalledEntity, HttpServletRequest req, HttpServletResponse res, AtmosphereResource r) {
+
+        write(marshalledEntity, req, res);
+
+        boolean sessionSupported = (Boolean) req.getAttribute(FrameworkConfig.SUPPORT_SESSION);
+        if (sessionSupported) {
+            r = (AtmosphereResource) req.getSession().getAttribute(SUSPENDED_RESOURCE);
+        } else {
+            //TODO resumeCandidates may be a global map
+            //String path = response.getContainerRequest().getPath();
+            //r = resumeCandidates.remove(path.substring(path.lastIndexOf("/") + 1));
+        }
+
+        if (r != null) {
+            resume(r);
+        } else {
+            throw new IllegalStateException("Unable to retrieve suspended Response. " +
+                            "Either session-support is not enabled in atmosphere.xml or the" +
+                            "path used to resume is invalid.");
+        }
+    }
     
-    private View suspendResponse(Object entity, HttpServletRequest req, 
+    private void doSuspend(Object entity, HttpServletRequest req, HttpServletResponse res, AtmosphereResource r, AtmosphereConfig config, String topic,
+            long timeout, Suspend.SCOPE scope, boolean writeEntity,
+            Class<? extends AtmosphereResourceEventListener>[] listeners, boolean subscribe, boolean resume, boolean useResumeAnnotation) {
+
+        boolean resumeOnBroadcast = resumeOnBroadcast(resume, req);
+
+        if (listeners != null) {
+            for (Class<? extends AtmosphereResourceEventListener> listener : listeners) {
+                try {
+                    AtmosphereResourceEventListener el = listener.newInstance();
+                    InjectorProvider.getInjector().inject(el);
+                    r.addEventListener(el);
+                } catch (Throwable t) {
+                    throw new IllegalStateException("Invalid AtmosphereResourceEventListener " + listener, t);
+                }
+            }
+        }
+
+        Broadcaster broadcaster = (Broadcaster) req.getAttribute(INJECTED_BROADCASTER);
+        if (subscribe) {
+            Class<Broadcaster> c = null;
+            try {
+                c = (Class<Broadcaster>) Class.forName((String) req.getAttribute(ApplicationConfig.BROADCASTER_CLASS));
+            } catch (Throwable e) {
+                throw new IllegalStateException(e.getMessage());
+            }
+            broadcaster = config.getBroadcasterFactory().lookup(c, topic, true);
+        }
+
+        suspend(entity, resumeOnBroadcast, timeout, req, res, broadcaster, r, scope, writeEntity, useResumeAnnotation);
+    }
+    
+    private View doSuspendResponse(Object entity, HttpServletRequest req, 
             HttpServletResponse res, AtmosphereResource resource, 
             boolean useResumeAnnotation) {
         
@@ -281,9 +356,8 @@ public class AtmosphereInterceptor {
         return view;
     }
     
-    /*
-     * NOTE: this ultimately handles @Suspend as well
-     */
+    /////////////////////////////////////////////// start suspend
+    
     void suspend(Object entity, boolean resumeOnBroadcast,
             long timeout,
             HttpServletRequest req,
@@ -440,9 +514,9 @@ public class AtmosphereInterceptor {
     }
     */
     
-    ///////////////////////////////////////////// end suspendResponse
+    ///////////////////////////////////////////// end suspend
     
-    private View broadcast(Object entity, HttpServletRequest req, AtmosphereConfig config, 
+    private View doBroadcast(Object entity, HttpServletRequest req, AtmosphereConfig config, 
             List<ClusterBroadcastFilter> clusterBroadcastFilters,
             long delay, int waitFor, 
             Class<? extends BroadcastFilter>[] filters, 
@@ -482,7 +556,7 @@ public class AtmosphereInterceptor {
     }
     
     @SuppressWarnings("unchecked")
-    private View publish(Object entity, HttpServletRequest req, AtmosphereConfig config, String topic) {
+    private View doPublish(Object entity, HttpServletRequest req, AtmosphereConfig config, String topic) {
         
         AtmosphereResource resource = (AtmosphereResource) req.getAttribute(SUSPENDED_RESOURCE);
 
@@ -496,10 +570,10 @@ public class AtmosphereInterceptor {
         }
         resource.setBroadcaster(config.getBroadcasterFactory().lookup(broadCasterClass, topic, true));
         
-        return broadcast(entity, req, config, new ArrayList<ClusterBroadcastFilter>(), -1, -1, null, true, topic, false);
+        return doBroadcast(entity, req, config, new ArrayList<ClusterBroadcastFilter>(), -1, -1, null, true, topic, false);
     }
     
-    private void schedule(int timeout, int waitFor, Object entity, View marshalledEntity,
+    private void doSchedule(int timeout, int waitFor, Object entity, View marshalledEntity,
             AtmosphereResource resource, HttpServletRequest req, HttpServletResponse resp, 
             boolean resume) {
         
@@ -647,24 +721,12 @@ public class AtmosphereInterceptor {
         }
         return period;
     }
-
-    private void resume() {
-        // TODO Auto-generated method stub
+    
+    private void resume(AtmosphereResource resource) {
+        resource.resume();
     }
 
-    private void subscribe() {
-        // TODO Auto-generated method stub
-    }
-
-    private void suspend() {
-        // TODO Auto-generated method stub
-    }
-
-    private void suspendResume() {
-        // TODO Auto-generated method stub
-    }
-
-    private void asynchronous() {
+    private void doAsynchronous() {
         // TODO Auto-generated method stub
     }
 }

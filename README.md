@@ -2,6 +2,8 @@
 
 ========================
 
+[![Continuous Integration status](https://secure.travis-ci.org/lantunes/mojave.png)](http://travis-ci.org/lantunes/mojave)
+
 Mojave (pronounced Mo-hav-ee) is an annotation-driven, POJO-based web application development framework for Java. 
 It borrows ideas from Spring Web MVC, JAX-RS and EJB 3.1, and incorporates Guice. It attempts to:
 
@@ -40,37 +42,26 @@ Or, add the following dependency to your pom.xml:
 ```
 
 Create a Java web application project, and add the downloaded jar to the WEB-INF/lib folder. Also,
-add the following web.xml:
+add the following servlet definition to your web.xml:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_ID" version="2.4" 
-xmlns="http://java.sun.com/xml/ns/j2ee" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
- 
-  <display-name>HelloWorld</display-name>
- 
-  <servlet>
-    <servlet-name>FrontController</servlet-name>
-    <servlet-class>org.mojavemvc.FrontController</servlet-class>
-    <init-param>
-      <param-name>controller-classes</param-name>
-      <param-value>helloworld.controllers</param-value>
-    </init-param>
-    <init-param>
-      <param-name>jsp-path</param-name>
-      <param-value>/WEB-INF/jsp/</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>FrontController</servlet-name>
-    <url-pattern>/serv/*</url-pattern>
-  </servlet-mapping>
-   
-</web-app>
+<servlet>
+  <servlet-name>FrontController</servlet-name>
+  <servlet-class>org.mojavemvc.FrontController</servlet-class>
+  <init-param>
+    <param-name>controller-classes</param-name>
+    <param-value>helloworld.controllers</param-value>
+  </init-param>
+  <init-param>
+    <param-name>jsp-path</param-name>
+    <param-value>/WEB-INF/jsp/</param-value>
+  </init-param>
+  <load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+  <servlet-name>FrontController</servlet-name>
+  <url-pattern>/serv/*</url-pattern>
+</servlet-mapping>
 ```
 
 Next, create a controller class:
@@ -133,7 +124,7 @@ import org.mojavemvc.views.View;
  
 import com.google.inject.Inject;
  
-@StatelessController
+@StatelessController("users")
 public class InjectedController {
  
   private final SomeService service;
@@ -144,7 +135,7 @@ public class InjectedController {
     this.service = service;
   }
  
-  @Action
+  @Action("register/user/:name<[A-Za-z]+>")
   public View registerName(@Param("name") String name) {
  
     service.register(name);
@@ -152,5 +143,9 @@ public class InjectedController {
   }
 }
 ```
+
+The above action can be invoked through:
+
+    http://localhost:8080/app/serv/users/register/user/Jane
 
 Learn more: http://mojavemvc.org/documentation

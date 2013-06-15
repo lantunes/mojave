@@ -217,10 +217,10 @@ public class TestMultiClient extends AbstractWebTest {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the param.jsp file of the IndexController withParamAction!", h1.getTextContent());
+                HtmlElement h2 = elements.get(0);
+                checkEquals("Hello from index ", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -242,10 +242,10 @@ public class TestMultiClient extends AbstractWebTest {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL + "/");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the param.jsp file of the IndexController withParamAction!", h1.getTextContent());
+                HtmlElement h2 = elements.get(0);
+                checkEquals("Hello from  ", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -270,7 +270,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
-                checkEquals("This is the test.jsp file of the IndexController testAction!", h1.getTextContent());
+                checkEquals("index/test", h1.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -292,14 +292,10 @@ public class TestMultiClient extends AbstractWebTest {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/with-param?var=hello");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the param.jsp file of the IndexController withParamAction!", h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from hello", h2.getTextContent());
+                checkEquals("Hello from index/with-param hello", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -321,14 +317,10 @@ public class TestMultiClient extends AbstractWebTest {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/another-param?var=hello");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the param.jsp file of the IndexController withParamAction!", h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from hello", h2.getTextContent());
+                checkEquals("Hello from index/another-param hello", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -350,15 +342,10 @@ public class TestMultiClient extends AbstractWebTest {
         public void run() {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/some-service?var=hello");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the some-service.jsp file of the IndexController someServiceAction!",
-                        h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("answered hello", h2.getTextContent());
+                checkEquals("index/some-service answered hello", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -381,14 +368,10 @@ public class TestMultiClient extends AbstractWebTest {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
                         + "/index/test-annotation?var=annotationTest");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the param.jsp file of the IndexController withParamAction!", h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from annotationTest", h2.getTextContent());
+                checkEquals("Hello from index/test-annotation annotationTest", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -411,15 +394,10 @@ public class TestMultiClient extends AbstractWebTest {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
                         + "/annot/some-action?var=contollerAnnotationTest");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the some-controller.jsp file of the SomeControllerClass doSomething action!",
-                        h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("contollerAnnotationTest", h2.getTextContent());
+                checkEquals("annot/some-action contollerAnnotationTest", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -442,15 +420,10 @@ public class TestMultiClient extends AbstractWebTest {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
                         + "/index/param-annotation-string?p1=param1");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the params.jsp file of the IndexController @Param test action!",
-                        h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from param1", h2.getTextContent());
+                checkEquals("Hello from index/param-annotation-string param1", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -473,15 +446,10 @@ public class TestMultiClient extends AbstractWebTest {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
                         + "/index/param-annotation-string?p1=param2");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the params.jsp file of the IndexController @Param test action!",
-                        h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from param2", h2.getTextContent());
+                checkEquals("Hello from index/param-annotation-string param2", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -504,15 +472,10 @@ public class TestMultiClient extends AbstractWebTest {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL
                         + "/index/param-annotation-string?p1=param3");
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the params.jsp file of the IndexController @Param test action!",
-                        h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from param3", h2.getTextContent());
+                checkEquals("Hello from index/param-annotation-string param3", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -538,7 +501,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
-                checkEquals("This is the stateful.jsp file of the SomeStatefulController someAction!",
+                checkEquals("some-stateful/set-var",
                         h1.getTextContent());
 
                 /* make a second request */
@@ -572,7 +535,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
                 checkEquals(1, elements.size());
                 HtmlElement h1 = elements.get(0);
-                checkEquals("This is the stateful.jsp file of the SomeStatefulController someAction!",
+                checkEquals("some-stateful/set-var",
                         h1.getTextContent());
 
                 /* make a second request */
@@ -602,15 +565,10 @@ public class TestMultiClient extends AbstractWebTest {
             try {
                 HtmlPage page = (HtmlPage) client.getPage(baseURL + "/index/param-annotation-string?p1="
                         + param);
-                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h1");
-                checkEquals(1, elements.size());
-                HtmlElement h1 = elements.get(0);
-                checkEquals("This is the params.jsp file of the IndexController @Param test action!",
-                        h1.getTextContent());
-                elements = page.getElementsByTagName("h2");
+                DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from " + param, h2.getTextContent());
+                checkEquals("Hello from index/param-annotation-string " + param, h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;

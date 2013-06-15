@@ -62,12 +62,6 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
-        </dependency>
         
         <!-- test dependencies -->
         <dependency>
@@ -106,12 +100,6 @@
             <version>1.2.16</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>jasper</artifactId>
-            <version>6.0.36</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <build>
         <testResources>
@@ -130,7 +118,6 @@
                 <configuration>
                     <classpathDependencyExcludes>
                         <classpathDependencyExclude>javax.servlet:servlet-api</classpathDependencyExclude>
-                        <classpathDependencyExclude>javax.servlet.jsp:jsp-api</classpathDependencyExclude>
                     </classpathDependencyExcludes>
                 </configuration>
             </plugin>

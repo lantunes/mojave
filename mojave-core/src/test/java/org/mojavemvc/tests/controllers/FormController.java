@@ -29,7 +29,8 @@ import org.mojavemvc.forms.UploadedFile;
 import org.mojavemvc.tests.forms.SomeForm;
 import org.mojavemvc.tests.forms.SomeFormWithBoolean;
 import org.mojavemvc.tests.forms.SubmittableForm;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLFormView;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 /**
@@ -41,32 +42,44 @@ public class FormController {
     @Action("process")
     public View processForm(@Model SomeForm form) {
 
-        return new JSP("form-result").withAttribute("username", form.getUserName()).withAttribute("password",
-                form.getPassword());
+        return new HTMLView()
+            .withParagraph("userName", form.getUserName())
+            .withParagraph("password", form.getPassword());
     }
 
     @Action("form2")
     public View form2() {
-        return new JSP("form2");
+        
+        return new HTMLFormView()
+            .withAction("form-controller/process2?p1=hello")
+            .withTextInput("userName", "userName")
+            .withPasswordInput();
     }
 
     @Action("process2")
     public View processForm2(@Model SomeForm form, @Param("p1") String p1) {
 
-        return new JSP("form-result2").withAttribute("username", form.getUserName())
-                .withAttribute("password", form.getPassword()).withAttribute("p1", p1);
+        return new HTMLView()
+            .withParagraph("userName", form.getUserName())
+            .withParagraph("password", form.getPassword())
+            .withParagraph("p1", p1);
     }
 
     @Action("form3")
     public View form3() {
-        return new JSP("form3");
+        
+        return new HTMLFormView()
+            .withAction("form-controller/process3")
+            .withTextInput("userName", "userName")
+            .withPasswordInput();
     }
 
     @Action("process3")
     public View processForm3(@Model SubmittableForm form) {
 
-        return new JSP("form-result3").withAttribute("username", form.getUserName()).withAttribute("password",
-                form.getPassword());
+        return new HTMLView()
+            .withParagraph("userName", form.getUserName())
+            .withParagraph("password", form.getPassword());
     }
 
     @Action("populated")
@@ -76,23 +89,35 @@ public class FormController {
         form.setPassword("pswd");
         form.setUserName("uname");
 
-        return new JSP("form").withModel(form);
+        return new HTMLFormView()
+            .withAction("form-controller/process")
+            .withTextInput("userName", "userName", "${userName}")
+            .withPasswordInput("${password}")
+            .withModel(form);
     }
 
     @Action("process4")
     public View processFormWithBoolean(@Model SomeFormWithBoolean form) {
 
-        return new JSP("form-result4").withAttribute("flag", form.isSomeFlag());
+        return new HTMLView()
+            .withParagraph("flag", String.valueOf(form.isSomeFlag()));
     }
 
     @Action("form4")
     public View form4() {
-        return new JSP("form4");
+        
+        return new HTMLFormView()
+            .withAction("form-controller/process4")
+            .withCheckboxInput("someFlag", true, "Flag");
     }
     
     @Action("form5")
     public View form5() {
-        return new JSP("form5");
+        
+        return new HTMLFormView()
+            .withAction("form-controller/upload?p1=someVal")
+            .withFileInput()
+            .withTextInput("userName", "userName");
     }
     
     @Action("upload")
@@ -127,20 +152,23 @@ public class FormController {
             }
         }
         
-        return new JSP("form-result5")
-            .withAttribute("file-name", fileName)
-            .withAttribute("file-size", file.getSize())
-            .withAttribute("file-contenttype", file.getContentType())
-            .withAttribute("file-inmemory", file.isInMemory())
-            .withAttribute("file-username", userName)
-            .withAttribute("file-content", content)
-            .withAttribute("query-param", p1);
+        return new HTMLView()
+            .withParagraph("file-name", fileName)
+            .withParagraph("file-size", String.valueOf(file.getSize()))
+            .withParagraph("file-contenttype", file.getContentType())
+            .withParagraph("file-inmemory", String.valueOf(file.isInMemory()))
+            .withParagraph("file-username", userName)
+            .withParagraph("file-content", content)
+            .withParagraph("query-param", p1);
     }
 
     @DefaultAction
     public View someDefaultAction() {
 
-        return new JSP("form");
+        return new HTMLFormView()
+            .withAction("form-controller/process")
+            .withTextInput("userName", "userName", "${userName}")
+            .withPasswordInput("${password}");
     }
 
 }

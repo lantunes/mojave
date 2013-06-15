@@ -15,14 +15,10 @@
  */
 package org.mojavemvc.tests.controllers;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterConstruct;
@@ -32,10 +28,9 @@ import org.mojavemvc.annotations.DefaultController;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
-import org.mojavemvc.initialization.AppProperties;
 import org.mojavemvc.tests.services.SomeProvidedService;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.PlainText;
 import org.mojavemvc.views.Response;
 import org.mojavemvc.views.View;
@@ -88,29 +83,37 @@ public class IndexController {
 
     @Action("test-init")
     public View testInitAction() {
-        return new JSP("param").withAttribute("var", initVal);
+        
+        return new HTMLView()
+            .withH2Content("Hello from " + "index/test-init " + initVal);
     }
 
     @DefaultAction
     public View defaultActn() {
-        return new JSP("param").withAttribute("var", reqCtxCntrl + " " + reqCtxActn);
+        
+        return new HTMLView()
+            .withH2Content("Hello from " + reqCtxCntrl + " " + reqCtxActn);
     }
 
     @Action("test")
     public View testAction() {
-        return new JSP("test");
+        
+        return new HTMLView()
+            .withH1Content("index/test");
     }
 
     @Action("with-param")
     public View withParamAction() {
         
-        return new JSP("param", new String[] { "var" }, new Object[] { getParameter("var") });
+        return new HTMLView()
+            .withH2Content("Hello from " + "index/with-param " + getParameter("var"));
     }
 
     @Action("another-param")
     public View anotherParamAction() {
         
-        return new JSP("param").withAttribute("var", getParameter("var"));
+        return new HTMLView()
+            .withH2Content("Hello from " + "index/another-param " + getParameter("var"));
     }
 
     @Action("some-service")
@@ -118,7 +121,8 @@ public class IndexController {
         
         String answer = someService.answerRequest(getParameter("var"));
 
-        return new JSP("some-service").withAttribute("var", answer);
+        return new HTMLView()
+            .withH2Content("index/some-service " + answer);
     }
     
     @Action("some-provided-service")
@@ -126,142 +130,145 @@ public class IndexController {
         
         String processed = someProvidedService.processRequest(var);
         
-        return new JSP("param").withAttribute("var", processed);
+        return new HTMLView()
+            .withH2Content("Hello from " + processed);
     }
 
     @Action("test-annotation")
     public View doAnnotationTest() {
         
-        return new JSP("param").withAttribute("var", getParameter("var"));
+        return new HTMLView()
+            .withH2Content("Hello from " + "index/test-annotation " + getParameter("var"));
     }
 
     @Action("param-annotation-string")
     public View paramAnnotationTest(@Param("p1") String p1) {
 
-        return new JSP("params").withAttribute("p1", p1 == null ? "null" : p1);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-string " + (p1 == null ? "null" : p1));
     }
 
     @Action("param-annotation-string2")
     public View paramAnnotationTest2(@Param("p1") String p1, @Param("p2") String p2) {
 
-        return new JSP("params2").withAttribute("p1", p1).withAttribute("p2", p2);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-string2 " + p1 + ", " + p2);
     }
 
     @Action("param-annotation-int")
     public View paramAnnotationTest3(@Param("p1") int p1) {
 
-        return new JSP("params").withAttribute("p1", p1);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-int " + p1);
     }
 
     @Action("param-annotation-double")
     public View paramAnnotationTest4(@Param("p1") double p1) {
 
-        return new JSP("params").withAttribute("p1", p1);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-double " + p1);
     }
     
     @Action("param-annotation-bigdecimal")
     public View paramAnnotationTestBigDecimal(@Param("p1") BigDecimal p1) {
 
-        return new JSP("params").withAttribute("p1", p1);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-bigdecimal " + p1);
     }
 
     @Action("param-annotation-date")
     public View paramAnnotationTest5(@Param("p1") Date p1) {
 
-        return new JSP("params").withAttribute("p1", p1 == null ? "null" : p1.toString());
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-date " + (p1 == null ? "null" : p1.toString()));
     }
 
     @Action("param-annotation-all")
     public View paramAnnotationTest6(@Param("p1") Date p1, @Param("p2") String p2, @Param("p3") int p3,
             @Param("p4") double p4) {
 
-        return new JSP("params3").withAttribute("p1", p1.toString()).withAttribute("p2", p2)
-                .withAttribute("p3", p3).withAttribute("p4", p4);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-all " + 
+                    p1.toString() + ", " + p2 + ", " + p3 + ", " + p4);
     }
 
     @Action("param-annotation-bool")
     public View paramAnnotationTest7(@Param("p1") boolean p1) {
 
-        return new JSP("params").withAttribute("p1", p1);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-bool " + p1);
     }
 
     @Action("param-annotation-ints")
     public View paramAnnotationTest8(@Param("p1") int[] p1) {
 
-        return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
-                .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-ints " + 
+                    p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("param-annotation-strings")
     public View paramAnnotationTest9(@Param("p1") String[] p1) {
 
-        return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
-                .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-strings " + 
+                    p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("param-annotation-doubles")
     public View paramAnnotationTest10(@Param("p1") double[] p1) {
 
-        return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
-                .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-doubles " + 
+                    p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
     
     @Action("param-annotation-bigdecimals")
     public View paramAnnotationTestBigDecimals(@Param("p1") BigDecimal[] p1) {
 
-        return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
-                .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-bigdecimals " + 
+                    p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("param-annotation-dates")
     public View paramAnnotationTest11(@Param("p1") Date[] p1) {
 
-        return new JSP("params3").withAttribute("p1", p1[0].toString()).withAttribute("p2", p1[1].toString())
-                .withAttribute("p3", p1[2].toString()).withAttribute("p4", p1[3].toString());
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-dates " + 
+                    p1[0].toString() + ", " + p1[1].toString() + 
+                    ", " + p1[2].toString() + ", " + p1[3].toString());
     }
 
     @Action("param-annotation-bools")
     public View paramAnnotationTest12(@Param("p1") boolean[] p1) {
 
-        return new JSP("params3").withAttribute("p1", p1[0]).withAttribute("p2", p1[1])
-                .withAttribute("p3", p1[2]).withAttribute("p4", p1[3]);
+        return new HTMLView()
+            .withH2Content("Hello from index/param-annotation-bools " + 
+                    p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("injected")
     public View injectedAction() {
 
         String var = injectedController.process("index");
-        return new JSP("param").withAttribute("var", var);
+        return new HTMLView()
+            .withH2Content("Hello from " + "index/injected " + var);
     }
 
     @Action("plain-text")
     public PlainText getText() {
+        
         return new PlainText("hello");
     }
     
     @Action("status-ok")
     public View statusOK() {
+        
         return new Response.OK()
             .withContent("it's ok")
             .withContentType("text/plain")
             .withLanguage("English");
-    }
-    
-    @Action("include")
-    public View include() {
-        return new View() {
-            @Override
-            public void render(HttpServletRequest request, 
-                    HttpServletResponse response, 
-                    AppProperties properties) throws ServletException,
-                    IOException {
-                
-                String jspPath = (String)properties.getProperty(JSP.PATH_PROPERTY);
-                RequestDispatcher dispatcher = 
-                        request.getRequestDispatcher(jspPath + "include.jsp");
-                dispatcher.include(request, response);
-            }
-        };
     }
     
     public String getParameter(String key) {

@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -51,49 +51,61 @@ public class SomeStatefulController {
 
     @Action("test-init")
     public View testInitAction() {
-        return new JSP("param").withAttribute("var", "init-called: " + initVal);
+        return new HTMLView()
+            .withH2Content("Hello from " + "init-called: " + initVal);
     }
 
     @DefaultAction
     public View defaultAction() {
-        return new JSP("index");
+        return new HTMLView()
+            .withH1Content("some-stateful/default");
     }
 
     @Action("some-action")
     public View someAction() {
-        return new JSP("stateful");
+        return new HTMLView()
+            .withH1Content("some-stateful/some-action");
     }
 
     @Action("set-var")
     public View setVarAction(@Param("var") String var) {
 
         someStatefulVar = var;
-        return new JSP("stateful");
+        return new HTMLView()
+            .withH1Content("some-stateful/set-var");
     }
 
     @Action("get-var")
     public View getVarAction() {
 
-        return new JSP("param").withAttribute("var", someStatefulVar);
+        return new HTMLView()
+            .withH2Content("Hello from " + someStatefulVar);
     }
-
+    
     @Action("get-req")
     public View getReqAction() {
 
-        return newParamViewWithHexHashcodeOf(request);
+        /*
+         * it appears that some servlet containers may
+         * recycle request objects, so we can't determine if
+         * the request was re-injected by looking at object
+         * identity; set an attribute on the request instead,
+         * and if it's the same request, it will have the same
+         * attribute
+         */
+        Long ts = (Long)request.getAttribute("ts");
+        if (ts == null) {
+            ts = System.currentTimeMillis();
+            request.setAttribute("ts", ts);
+        }
+        return new HTMLView()
+            .withH2Content("Hello from " + String.valueOf(ts));
     }
 
     @Action("get-inj")
     public View getInjAction() {
 
-        return newParamViewWithHexHashcodeOf(someService);
-    }
-
-    private View newParamViewWithHexHashcodeOf(Object object) {
-
-        String objectName = object.toString();
-        String hexHashcode = objectName.substring(objectName.indexOf('@') + 1);
-
-        return new JSP("param").withAttribute("var", hexHashcode);
+        return new HTMLView()
+            .withH2Content("Hello from " + Integer.toHexString(System.identityHashCode(someService)));
     }
 }

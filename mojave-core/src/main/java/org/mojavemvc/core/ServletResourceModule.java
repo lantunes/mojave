@@ -81,7 +81,16 @@ public class ServletResourceModule extends AbstractModule {
 
     public static void set(HttpServletRequest req, HttpServletResponse resp) {
 
+        if (threadRequest.get() != null || threadResponse.get() != null) {
+            throw new IllegalStateException("attempting to re-handle request");
+        }
         threadRequest.set(req);
         threadResponse.set(resp);
+    }
+    
+    public static void unset() {
+        
+        threadRequest.remove();
+        threadResponse.remove();
     }
 }

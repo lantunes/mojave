@@ -14,7 +14,8 @@
         <module>mojave-velocity</module>
         <module>mojave-atmosphere</module>
         <module>mojave-mustache</module>
-    </modules>
+        <module>mojave-jsp</module>
+  </modules>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>

@@ -18,7 +18,7 @@ package org.mojavemvc.tests.othercontrollers;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.PUTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 /**
@@ -31,12 +31,14 @@ public class HttpMethodController3 {
     @DefaultAction
     public View defaultAction() {
 
-        return new JSP("param").withAttribute("var", "default");
+        return new HTMLView()
+            .withH2Content("Hello from " + "default");
     }
 
     @PUTAction
     public View doPutAction() {
 
-        return new JSP("param").withAttribute("var", "put");
+        return new HTMLView()
+            .withH2Content("Hello from " + "put");
     }
 }

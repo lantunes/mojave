@@ -25,7 +25,7 @@ import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.marshalling.Marshallable;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 /**
@@ -44,25 +44,29 @@ public class MarshallingController {
     @Action("expects/plaintext/string")
     @Expects("text/plain")
     public View expectPlainTextWithString(@Entity String name) {
-        return new JSP("param").withAttribute("var", name);
+        return new HTMLView()
+            .withH2Content("Hello from " + name);
     }
     
     @Action("expects/plaintext/pojo")
     @Expects("text/plain")
     public View expectPlainTextWithPojo(@Entity SimplePojo pojo) {
-        return new JSP("param").withAttribute("var", pojo.getVal());
+        return new HTMLView()
+            .withH2Content("Hello from " + pojo.getVal());
     }
     
     @Action("expects/json")
     @Expects("application/json")
     public View expectJSON(@Entity SimplePojo pojo) {
-        return new JSP("param").withAttribute("var", pojo.getVal());
+        return new HTMLView()
+            .withH2Content("Hello from " + pojo.getVal());
     }
     
     @Action("expects/xml")
     @Expects("application/xml")
     public View expectXML(@Entity SimplePojo pojo) {
-        return new JSP("param").withAttribute("var", pojo.getVal());
+        return new HTMLView()
+            .withH2Content("Hello from " + pojo.getVal());
     }
     
     /*
@@ -79,7 +83,8 @@ public class MarshallingController {
             if (i+1 < vals.length) sb.append(",");
         }
         
-        return new JSP("param").withAttribute("var", sb.toString());
+        return new HTMLView()
+            .withH2Content("Hello from " + sb.toString());
     }
     
     @Action("returns/plaintext/string")
@@ -118,9 +123,8 @@ public class MarshallingController {
     @Expects("text/plain")
     public View expectPlainTextWithPojoWithParams(@Entity SimplePojo pojo, 
             @Param("p1") String p1) {
-        return new JSP("params2")
-            .withAttribute("p1", p1)
-            .withAttribute("p2", pojo.getVal());
+        return new HTMLView()
+            .withH2Content("Hello from " + p1 + ", " + pojo.getVal());
     }
     
     /* marshalling an embedded entity */

@@ -28,7 +28,7 @@ import org.mojavemvc.tests.interceptors.Interceptor5;
 import org.mojavemvc.tests.interceptors.Interceptor6;
 import org.mojavemvc.tests.interceptors.Interceptor7;
 import org.mojavemvc.tests.interceptors.Interceptor8;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 @StatelessController("intercepted12")
@@ -41,7 +41,8 @@ public class InterceptedController12 {
     public View someAction() {
 
         invocationList.add("someAction");
-        return new JSP("param").withAttribute("var", "someAction");
+        return new HTMLView()
+            .withH2Content("Hello from " + "someAction");
     }
 
     @Action("some-action2")
@@ -49,7 +50,8 @@ public class InterceptedController12 {
     public View someAction2() {
 
         invocationList.add("someAction2");
-        return new JSP("param").withAttribute("var", "someAction2");
+        return new HTMLView()
+            .withH2Content("Hello from " + "someAction2");
     }
 
     @Action("param")
@@ -57,14 +59,16 @@ public class InterceptedController12 {
     public View someAction(@Param("p1") String name) {
 
         invocationList.add("param");
-        return new JSP("param").withAttribute("var", name);
+        return new HTMLView()
+            .withH2Content("Hello from " + name);
     }
 
     @Action("intercepted-before")
     @InterceptedBy(Interceptor5.class)
     public View interceptedBefore() {
 
-        return new JSP("param").withAttribute("var", "interceptedBefore");
+        return new HTMLView()
+            .withH2Content("Hello from " + "interceptedBefore");
     }
 
     @Action("intercepted-before2")
@@ -72,14 +76,16 @@ public class InterceptedController12 {
     public View interceptedBefore2() {
 
         invocationList.add("interceptedBefore2");
-        return new JSP("param").withAttribute("var", "interceptedBefore2");
+        return new HTMLView()
+            .withH2Content("Hello from " + "interceptedBefore2");
     }
 
     @Action("intercepted-after")
     @InterceptedBy(Interceptor7.class)
     public View interceptedAfter() {
 
-        return new JSP("param").withAttribute("var", "interceptedAfter");
+        return new HTMLView()
+            .withH2Content("Hello from " + "interceptedAfter");
     }
 
     @Action("intercepted-after2")
@@ -87,6 +93,7 @@ public class InterceptedController12 {
     public View interceptedAfter2() {
 
         invocationList.add("interceptedAfter2");
-        return new JSP("param").withAttribute("var", "interceptedAfter2");
+        return new HTMLView()
+            .withH2Content("Hello from " + "interceptedAfter2");
     }
 }

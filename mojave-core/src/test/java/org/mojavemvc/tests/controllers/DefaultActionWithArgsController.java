@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 @StatelessController("default-args")
@@ -27,6 +27,7 @@ public class DefaultActionWithArgsController {
     @DefaultAction
     public View defaultAction(@Param("p1") String name) {
 
-        return new JSP("param").withAttribute("var", name);
+        return new HTMLView()
+            .withH2Content("Hello from " + name);
     }
 }

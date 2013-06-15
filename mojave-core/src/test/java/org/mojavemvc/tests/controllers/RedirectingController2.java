@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,7 @@ public class RedirectingController2 {
     @Action
     public View doSomething() {
 
-        return new JSP("param").withAttribute("var", "redirecting2");
+        return new HTMLView()
+            .withH2Content("Hello from " + "redirecting2");
     }
 }

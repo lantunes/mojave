@@ -11,7 +11,7 @@
         OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
         the specific language governing permissions and limitations under the License. -->
 
-    <display-name>VelocityTest</display-name>
+    <display-name>MustacheTest</display-name>
 
     <servlet>
         <servlet-name>FrontController</servlet-name>

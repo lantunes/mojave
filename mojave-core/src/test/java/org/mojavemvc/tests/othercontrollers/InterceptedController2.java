@@ -27,7 +27,7 @@ import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -57,7 +57,8 @@ public class InterceptedController2 {
     public View someAction() {
 
         invocationList.add("someAction");
-        return new JSP("param").withAttribute("var", "someAction");
+        return new HTMLView()
+            .withH2Content("Hello from " + "someAction");
     }
 
     @DefaultAction
@@ -65,7 +66,8 @@ public class InterceptedController2 {
     public View defaultAction() {
 
         invocationList.add("defaultAction");
-        return new JSP("param").withAttribute("var", "defaultAction");
+        return new HTMLView()
+            .withH2Content("Hello from " + "defaultAction");
     }
 
     public HttpServletRequest getRequest() {

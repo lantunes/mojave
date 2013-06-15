@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 @StatelessController("beforectx")
@@ -56,13 +56,14 @@ public class BeforeWithContextController {
             throw new RuntimeException("controller incorrect");
         }
 
-        return new JSP("param").withAttribute("var", parameters[0]);
+        return new HTMLView()
+            .withH2Content("Hello from " + parameters[0]);
     }
 
     @Action("index")
     public View someAction(@Param("p1") String name) {
 
-        return new JSP("index");
+        return new HTMLView();
     }
 
 }

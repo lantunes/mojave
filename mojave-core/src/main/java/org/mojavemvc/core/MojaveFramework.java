@@ -116,6 +116,10 @@ public class MojaveFramework {
                  */
                 view.render(req, res, properties);
             }
+            
+        } finally {
+            
+            ServletResourceModule.unset();
         }
     }
 }

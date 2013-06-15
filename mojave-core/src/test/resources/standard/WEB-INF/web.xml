@@ -24,12 +24,8 @@
             </param-value>
         </init-param>
         <init-param>
-            <param-name>jsp-path</param-name>
-            <param-value>/WEB-INF/jsp/</param-value>
-        </init-param>
-        <init-param>
-            <param-name>jsp-error-file</param-name>
-            <param-value>error.jsp</param-value>
+            <param-name>error-handler-factory</param-name>
+            <param-value>org.mojavemvc.tests.exception.HTMLErrorHandlerFactory</param-value>
         </init-param>
         <init-param>
             <param-name>guice-modules</param-name>

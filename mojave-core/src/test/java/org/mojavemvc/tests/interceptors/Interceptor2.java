@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.views.JSP;
+import org.mojavemvc.tests.views.HTMLView;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -57,7 +57,8 @@ public class Interceptor2 {
         sb.append(sess != null ? ":sess" : ":null");
         sb.append(someService != null ? ":someService" : ":null");
 
-        return new JSP("param").withAttribute("var", "interceptor2-beforeAction" + sb.toString());
+        return new HTMLView()
+            .withH2Content("Hello from " + "interceptor2-beforeAction" + sb.toString());
     }
 
     @AfterAction

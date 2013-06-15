@@ -91,7 +91,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/test")
             .producesPage()
-            .withH1Tag(withContent("This is the test.jsp file of the IndexController testAction!"));
+            .withH1Tag(withContent("index/test"));
     }
 
     @Test
@@ -99,8 +99,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/with-param?var=hello")
             .producesPage()
-            .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
-            .withH2Tag(withContent("Hello from hello"));
+            .withH2Tag(withContent("Hello from index/with-param hello"));
     }
 
     @Test
@@ -108,8 +107,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/another-param?var=hello")
             .producesPage()
-            .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
-            .withH2Tag(withContent("Hello from hello"));
+            .withH2Tag(withContent("Hello from index/another-param hello"));
     }
 
     @Test
@@ -117,8 +115,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/some-service?var=hello")
             .producesPage()
-            .withH1Tag(withContent("This is the some-service.jsp file of the IndexController someServiceAction!"))
-            .withH2Tag(withContent("answered hello"));
+            .withH2Tag(withContent("index/some-service answered hello"));
     }
     
     @Test
@@ -134,8 +131,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/test-annotation?var=annotationTest")
             .producesPage()
-            .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
-            .withH2Tag(withContent("Hello from annotationTest"));
+            .withH2Tag(withContent("Hello from index/test-annotation annotationTest"));
     }
 
     @Test
@@ -143,8 +139,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/annot/some-action?var=contollerAnnotationTest")
             .producesPage()
-            .withH1Tag(withContent("This is the some-controller.jsp file of the SomeControllerClass doSomething action!"))
-            .withH2Tag(withContent("contollerAnnotationTest"));
+            .withH2Tag(withContent("annot/some-action contollerAnnotationTest"));
     }
 
     @Test
@@ -152,8 +147,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string?p1=param1")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from param1"));
+            .withH2Tag(withContent("Hello from index/param-annotation-string param1"));
     }
 
     @Test
@@ -161,8 +155,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from null"));
+            .withH2Tag(withContent("Hello from index/param-annotation-string null"));
     }
 
     @Test
@@ -170,8 +163,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string2?p1=param1&p2=param2")
             .producesPage()
-            .withH1Tag(withContent("This is the params2.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from param1, param2"));
+            .withH2Tag(withContent("Hello from index/param-annotation-string2 param1, param2"));
     }
 
     @Test
@@ -179,8 +171,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string2?p2=param2")
             .producesPage()
-            .withH1Tag(withContent("This is the params2.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from null, param2"));
+            .withH2Tag(withContent("Hello from index/param-annotation-string2 null, param2"));
     }
 
     @Test
@@ -188,8 +179,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-int?p1=123456")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 123456"));
+            .withH2Tag(withContent("Hello from index/param-annotation-int 123456"));
     }
 
     @Test
@@ -197,8 +187,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-int")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 0"));
+            .withH2Tag(withContent("Hello from index/param-annotation-int 0"));
     }
 
     @Test
@@ -212,8 +201,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-double?p1=123.456")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 123.456"));
+            .withH2Tag(withContent("Hello from index/param-annotation-double 123.456"));
     }
 
     @Test
@@ -221,8 +209,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-double")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 0.0"));
+            .withH2Tag(withContent("Hello from index/param-annotation-double 0.0"));
     }
 
     @Test
@@ -236,8 +223,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-date?p1=2011-03-01")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 2011-03-01"));
+            .withH2Tag(withContent("Hello from index/param-annotation-date 2011-03-01"));
     }
 
     @Test
@@ -245,8 +231,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-date")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from null"));
+            .withH2Tag(withContent("Hello from index/param-annotation-date null"));
     }
 
     @Test
@@ -260,8 +245,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-all?p1=2011-03-01&p2=hello&p3=123&p4=1.45")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 2011-03-01, hello, 123, 1.45"));
+            .withH2Tag(withContent("Hello from index/param-annotation-all 2011-03-01, hello, 123, 1.45"));
     }
 
     @Test
@@ -269,8 +253,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=true")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from true"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool true"));
     }
 
     @Test
@@ -278,8 +261,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=false")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from false"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
     }
 
     @Test
@@ -287,8 +269,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=t")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from true"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool true"));
     }
 
     @Test
@@ -296,8 +277,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=f")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from false"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
     }
 
     @Test
@@ -305,8 +285,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=1")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from true"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool true"));
     }
 
     @Test
@@ -314,8 +293,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=0")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from false"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
     }
 
     @Test
@@ -329,8 +307,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from false"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
     }
     
     @Test
@@ -338,8 +315,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bigdecimal?p1=123.456")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 123.456"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bigdecimal 123.456"));
     }
 
     @Test
@@ -347,8 +323,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bigdecimal")
             .producesPage()
-            .withH1Tag(withContent("This is the params.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 0"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bigdecimal 0"));
     }
 
     @Test
@@ -362,8 +337,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-ints?p1=123&p1=456&p1=789&p1=321")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 123, 456, 789, 321"));
+            .withH2Tag(withContent("Hello from index/param-annotation-ints 123, 456, 789, 321"));
     }
 
     @Test
@@ -371,8 +345,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-strings?p1=abc&p1=def&p1=ghi&p1=jkl")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from abc, def, ghi, jkl"));
+            .withH2Tag(withContent("Hello from index/param-annotation-strings abc, def, ghi, jkl"));
     }
 
     @Test
@@ -380,8 +353,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-doubles?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 1.1, 2.2, 3.3, 4.4"));
+            .withH2Tag(withContent("Hello from index/param-annotation-doubles 1.1, 2.2, 3.3, 4.4"));
     }
     
     @Test
@@ -389,8 +361,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bigdecimals?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 1.1, 2.2, 3.3, 4.4"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bigdecimals 1.1, 2.2, 3.3, 4.4"));
     }
 
     @Test
@@ -399,8 +370,8 @@ public class TestFrontController extends AbstractWebTest {
         assertThatRequestFor("/index/param-annotation-dates?"
                 + "p1=2011-03-01&p1=2010-02-09&p1=2009-11-23&p1=2008-05-03")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from 2011-03-01, 2010-02-09, 2009-11-23, 2008-05-03"));
+            .withH2Tag(withContent("Hello from index/param-annotation-dates " +
+                    "2011-03-01, 2010-02-09, 2009-11-23, 2008-05-03"));
     }
 
     @Test
@@ -408,8 +379,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bools?p1=t&p1=false&p1=f&p1=1")
             .producesPage()
-            .withH1Tag(withContent("This is the params3.jsp file of the IndexController @Param test action!"))
-            .withH2Tag(withContent("Hello from true, false, false, true"));
+            .withH2Tag(withContent("Hello from index/param-annotation-bools true, false, false, true"));
     }
 
     @Test
@@ -417,8 +387,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/injected")
             .producesPage()
-            .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
-            .withH2Tag(withContent("Hello from injected-index"));
+            .withH2Tag(withContent("Hello from index/injected injected-index"));
     }
 
     @Test
@@ -426,8 +395,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/test-init")
             .producesPage()
-            .withH1Tag(withContent("This is the param.jsp file of the IndexController withParamAction!"))
-            .withH2Tag(withContent("Hello from init-called"));
+            .withH2Tag(withContent("Hello from index/test-init init-called"));
     }
 
     @Test
@@ -564,19 +532,11 @@ public class TestFrontController extends AbstractWebTest {
     }
 
     @Test
-    public void dispatchingController() throws Exception {
-
-        assertThatRequestFor("/dispatching/doSomething")
-            .producesPage()
-            .withH2Tag(withContent("Hello from dispatched"));
-    }
-
-    @Test
     public void someStatefulControllerDefaultAction() throws Exception {
 
         assertThatRequestFor("/some-stateful")
             .producesPage()
-            .withH1Tag(withContent("This is the index.jsp file of the IndexController defaultAction!"));
+            .withH1Tag(withContent("some-stateful/default"));
     }
 
     @Test
@@ -584,7 +544,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-stateful/some-action")
             .producesPage()
-            .withH1Tag(withContent("This is the stateful.jsp file of the SomeStatefulController someAction!"));
+            .withH1Tag(withContent("some-stateful/some-action"));
     }
 
     @Test
@@ -592,7 +552,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-stateful/set-var?var=statetest")
             .producesPage()
-            .withH1Tag(withContent("This is the stateful.jsp file of the SomeStatefulController someAction!"));
+            .withH1Tag(withContent("some-stateful/set-var"));
 
         /* make a second request */
         assertThatRequestFor("/some-stateful/get-var")
@@ -605,7 +565,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-stateful/set-var?var=statetest")
             .producesPage()
-            .withH1Tag(withContent("This is the stateful.jsp file of the SomeStatefulController someAction!"));
+            .withH1Tag(withContent("some-stateful/set-var"));
 
         /* make a second request with a new client, creating a new session */
         newWebClient();
@@ -618,27 +578,24 @@ public class TestFrontController extends AbstractWebTest {
     public void someStatefulControllerReqAction() throws Exception {
 
         /*
-         * Test that the injected HttpServletRequests are different, by
-         * examining the hex hashcode that is part of the object name obtained
-         * by calling toString() in the request instance.
+         * Test that the injected HttpServletRequests are different
          */
 
-        String hexHashcode1 = makeRequestFor("/some-stateful/get-req").andGetH2TagContent();
+        String req1Identifier = makeRequestFor("/some-stateful/get-req").andGetH2TagContent();
 
         /* make a second request */
-        String hexHashcode2 = makeRequestFor("/some-stateful/get-req").andGetH2TagContent();
+        String req2Identifier = makeRequestFor("/some-stateful/get-req").andGetH2TagContent();
 
         /* check that a new servlet resource was injected */
-        assertFalse(hexHashcode1.equals(hexHashcode2));
+        assertFalse(req1Identifier.equals(req2Identifier));
     }
 
     @Test
     public void someStatefulControllerInjAction() throws Exception {
 
         /*
-         * Test that the @Injected resources are different, by examining the hex
-         * hashcode that is part of the object name obtained by calling
-         * toString() in the request instance.
+         * Test that the @Injected resources are different, by examining 
+         * the identity hash codes
          */
 
         String hexHashcode1 = makeRequestFor("/some-stateful/get-inj").andGetH2TagContent();
@@ -671,7 +628,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/injectable/test?var=inj")
             .producesPage()
-            .withH1Tag(withContent("This is the injectable.jsp file of the InjectableController testAction!"))
+            .withH1Tag(withContent("injectable/test"))
             .withH2Tag(withContent("injected-inj"));
     }
 
@@ -680,7 +637,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-singleton/some-action")
             .producesPage()
-            .withH1Tag(withContent("This is the singleton.jsp file of the SomeSingletonController someAction!"));
+            .withH1Tag(withContent("some-singleton/some-action"));
     }
 
     @Test
@@ -688,7 +645,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-singleton/set-var?var=statetest")
             .producesPage()
-            .withH1Tag(withContent("This is the singleton.jsp file of the SomeSingletonController someAction!"));
+            .withH1Tag(withContent("some-singleton/set-var"));
 
         /* make a second request */
         assertThatRequestFor("/some-singleton/get-var")
@@ -701,7 +658,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-singleton/set-var?var=statetest")
             .producesPage()
-            .withH1Tag(withContent("This is the singleton.jsp file of the SomeSingletonController someAction!"));
+            .withH1Tag(withContent("some-singleton/set-var"));
 
         /* make a second request with a new client */
         newWebClient();
@@ -714,27 +671,24 @@ public class TestFrontController extends AbstractWebTest {
     public void someSingletonControllerReqAction() throws Exception {
 
         /*
-         * Test that the injected HttpServletRequests are different, by
-         * examining the hex hashcode that is part of the object name obtained
-         * by calling toString() in the request instance.
+         * Test that the injected HttpServletRequests are different
          */
 
-        String hexHashcode1 = makeRequestFor("/some-singleton/get-req").andGetH2TagContent();
+        String req1Identifier = makeRequestFor("/some-singleton/get-req").andGetH2TagContent();
 
         /* make a second request */
-        String hexHashcode2 = makeRequestFor("/some-singleton/get-req").andGetH2TagContent();
+        String req2Identifier = makeRequestFor("/some-singleton/get-req").andGetH2TagContent();
 
         /* check that a new servlet resource was injected */
-        assertFalse(hexHashcode1.equals(hexHashcode2));
+        assertFalse(req1Identifier.equals(req2Identifier));
     }
 
     @Test
     public void someSingletonControllerInjAction() throws Exception {
 
         /*
-         * Test that the @Injected resources are different, by examining the hex
-         * hashcode that is part of the object name obtained by calling
-         * toString() in the request instance.
+         * Test that the @Injected resources are different, by examining
+         * the identity hash code
          */
 
         String hexHashcode1 = makeRequestFor("/some-singleton/get-inj").andGetH2TagContent();
@@ -763,7 +717,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/before/index")
             .producesPage()
-            .withH1Tag(withContent("This is the before.jsp file of the BeforeController beforeAction!"));
+            .withH1Tag(withContent("before/index"));
     }
 
     @Test
@@ -771,7 +725,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/after/index")
             .producesPage()
-            .withH1Tag(withContent("This is the after.jsp file of the AfterController afterAction!"));
+            .withH1Tag(withContent("after/index"));
     }
 
     @Test
@@ -1874,14 +1828,6 @@ public class TestFrontController extends AbstractWebTest {
             .producesResponse()
             .withContentType("application/xml")
             .withContent("<SimplePojo><val>marshalledXML</val></SimplePojo>");
-    }
-    
-    @Test
-    public void include() throws Exception {
-        
-        assertThatRequestFor("/index/include")
-            .producesPage()
-            .withH1Tag(withContent("Included"));
     }
     
     @Test

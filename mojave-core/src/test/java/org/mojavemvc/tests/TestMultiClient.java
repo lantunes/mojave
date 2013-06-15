@@ -195,7 +195,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from default", h2.getTextContent());
+                checkEquals("default", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -220,7 +220,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index ", h2.getTextContent());
+                checkEquals("index:", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -245,7 +245,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from  ", h2.getTextContent());
+                checkEquals(":", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -295,7 +295,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/with-param hello", h2.getTextContent());
+                checkEquals("index/with-param hello", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -320,7 +320,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/another-param hello", h2.getTextContent());
+                checkEquals("index/another-param hello", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -371,7 +371,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/test-annotation annotationTest", h2.getTextContent());
+                checkEquals("index/test-annotation annotationTest", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -423,7 +423,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/param-annotation-string param1", h2.getTextContent());
+                checkEquals("index/param-annotation-string param1", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -449,7 +449,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/param-annotation-string param2", h2.getTextContent());
+                checkEquals("index/param-annotation-string param2", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -475,7 +475,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/param-annotation-string param3", h2.getTextContent());
+                checkEquals("index/param-annotation-string param3", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -509,7 +509,7 @@ public class TestMultiClient extends AbstractWebTest {
                 elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from statetest1", h2.getTextContent());
+                checkEquals("statetest1", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -543,7 +543,7 @@ public class TestMultiClient extends AbstractWebTest {
                 elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from statetest2", h2.getTextContent());
+                checkEquals("statetest2", h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;
@@ -568,7 +568,7 @@ public class TestMultiClient extends AbstractWebTest {
                 DomNodeList<HtmlElement> elements = page.getElementsByTagName("h2");
                 checkEquals(1, elements.size());
                 HtmlElement h2 = elements.get(0);
-                checkEquals("Hello from index/param-annotation-string " + param, h2.getTextContent());
+                checkEquals("index/param-annotation-string " + param, h2.getTextContent());
             } catch (Exception e) {
                 logger.error("error", e);
                 error = true;

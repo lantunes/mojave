@@ -24,7 +24,7 @@ import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -52,8 +52,8 @@ public class SomeStatelessController {
     @Action("do-something")
     public View doSomething() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "test");
+        return new HTMLPage()
+            .withH2Content("test");
     }
 
     @AfterAction
@@ -63,8 +63,8 @@ public class SomeStatelessController {
 
     @DefaultAction
     public View defaultAction() {
-        return new HTMLView()
-            .withH2Content("Hello from " + "default");
+        return new HTMLPage()
+            .withH2Content("default");
     }
 
     /*

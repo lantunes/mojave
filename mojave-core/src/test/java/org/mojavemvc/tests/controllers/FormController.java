@@ -29,8 +29,8 @@ import org.mojavemvc.forms.UploadedFile;
 import org.mojavemvc.tests.forms.SomeForm;
 import org.mojavemvc.tests.forms.SomeFormWithBoolean;
 import org.mojavemvc.tests.forms.SubmittableForm;
-import org.mojavemvc.tests.views.HTMLFormView;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLForm;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -42,7 +42,7 @@ public class FormController {
     @Action("process")
     public View processForm(@Model SomeForm form) {
 
-        return new HTMLView()
+        return new HTMLPage()
             .withParagraph("userName", form.getUserName())
             .withParagraph("password", form.getPassword());
     }
@@ -50,7 +50,7 @@ public class FormController {
     @Action("form2")
     public View form2() {
         
-        return new HTMLFormView()
+        return new HTMLForm()
             .withAction("form-controller/process2?p1=hello")
             .withTextInput("userName", "userName")
             .withPasswordInput();
@@ -59,7 +59,7 @@ public class FormController {
     @Action("process2")
     public View processForm2(@Model SomeForm form, @Param("p1") String p1) {
 
-        return new HTMLView()
+        return new HTMLPage()
             .withParagraph("userName", form.getUserName())
             .withParagraph("password", form.getPassword())
             .withParagraph("p1", p1);
@@ -68,7 +68,7 @@ public class FormController {
     @Action("form3")
     public View form3() {
         
-        return new HTMLFormView()
+        return new HTMLForm()
             .withAction("form-controller/process3")
             .withTextInput("userName", "userName")
             .withPasswordInput();
@@ -77,7 +77,7 @@ public class FormController {
     @Action("process3")
     public View processForm3(@Model SubmittableForm form) {
 
-        return new HTMLView()
+        return new HTMLPage()
             .withParagraph("userName", form.getUserName())
             .withParagraph("password", form.getPassword());
     }
@@ -89,7 +89,7 @@ public class FormController {
         form.setPassword("pswd");
         form.setUserName("uname");
 
-        return new HTMLFormView()
+        return new HTMLForm()
             .withAction("form-controller/process")
             .withTextInput("userName", "userName", "${userName}")
             .withPasswordInput("${password}")
@@ -99,14 +99,14 @@ public class FormController {
     @Action("process4")
     public View processFormWithBoolean(@Model SomeFormWithBoolean form) {
 
-        return new HTMLView()
+        return new HTMLPage()
             .withParagraph("flag", String.valueOf(form.isSomeFlag()));
     }
 
     @Action("form4")
     public View form4() {
         
-        return new HTMLFormView()
+        return new HTMLForm()
             .withAction("form-controller/process4")
             .withCheckboxInput("someFlag", true, "Flag");
     }
@@ -114,7 +114,7 @@ public class FormController {
     @Action("form5")
     public View form5() {
         
-        return new HTMLFormView()
+        return new HTMLForm()
             .withAction("form-controller/upload?p1=someVal")
             .withFileInput()
             .withTextInput("userName", "userName");
@@ -152,7 +152,7 @@ public class FormController {
             }
         }
         
-        return new HTMLView()
+        return new HTMLPage()
             .withParagraph("file-name", fileName)
             .withParagraph("file-size", String.valueOf(file.getSize()))
             .withParagraph("file-contenttype", file.getContentType())
@@ -165,7 +165,7 @@ public class FormController {
     @DefaultAction
     public View someDefaultAction() {
 
-        return new HTMLFormView()
+        return new HTMLForm()
             .withAction("form-controller/process")
             .withTextInput("userName", "userName", "${userName}")
             .withPasswordInput("${password}");

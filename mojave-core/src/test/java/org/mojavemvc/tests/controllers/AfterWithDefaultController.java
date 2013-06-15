@@ -22,7 +22,7 @@ import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("afterctx2")
@@ -31,7 +31,7 @@ public class AfterWithDefaultController {
     @DefaultAction
     public View someAction() {
 
-        return new HTMLView();
+        return new HTMLPage();
     }
 
     @AfterAction
@@ -58,7 +58,7 @@ public class AfterWithDefaultController {
             throw new RuntimeException("controller incorrect");
         }
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "default");
+        return new HTMLPage()
+            .withH2Content("default");
     }
 }

@@ -30,7 +30,7 @@ import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.tests.services.SomeProvidedService;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.PlainText;
 import org.mojavemvc.views.Response;
 import org.mojavemvc.views.View;
@@ -84,36 +84,36 @@ public class IndexController {
     @Action("test-init")
     public View testInitAction() {
         
-        return new HTMLView()
-            .withH2Content("Hello from " + "index/test-init " + initVal);
+        return new HTMLPage()
+            .withH2Content("index/test-init " + initVal);
     }
 
     @DefaultAction
     public View defaultActn() {
         
-        return new HTMLView()
-            .withH2Content("Hello from " + reqCtxCntrl + " " + reqCtxActn);
+        return new HTMLPage()
+            .withH2Content(reqCtxCntrl + ":" + reqCtxActn);
     }
 
     @Action("test")
     public View testAction() {
         
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("index/test");
     }
 
     @Action("with-param")
     public View withParamAction() {
         
-        return new HTMLView()
-            .withH2Content("Hello from " + "index/with-param " + getParameter("var"));
+        return new HTMLPage()
+            .withH2Content("index/with-param " + getParameter("var"));
     }
 
     @Action("another-param")
     public View anotherParamAction() {
         
-        return new HTMLView()
-            .withH2Content("Hello from " + "index/another-param " + getParameter("var"));
+        return new HTMLPage()
+            .withH2Content("index/another-param " + getParameter("var"));
     }
 
     @Action("some-service")
@@ -121,7 +121,7 @@ public class IndexController {
         
         String answer = someService.answerRequest(getParameter("var"));
 
-        return new HTMLView()
+        return new HTMLPage()
             .withH2Content("index/some-service " + answer);
     }
     
@@ -130,112 +130,112 @@ public class IndexController {
         
         String processed = someProvidedService.processRequest(var);
         
-        return new HTMLView()
-            .withH2Content("Hello from " + processed);
+        return new HTMLPage()
+            .withH2Content(processed);
     }
 
     @Action("test-annotation")
     public View doAnnotationTest() {
         
-        return new HTMLView()
-            .withH2Content("Hello from " + "index/test-annotation " + getParameter("var"));
+        return new HTMLPage()
+            .withH2Content("index/test-annotation " + getParameter("var"));
     }
 
     @Action("param-annotation-string")
     public View paramAnnotationTest(@Param("p1") String p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-string " + (p1 == null ? "null" : p1));
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-string " + (p1 == null ? "null" : p1));
     }
 
     @Action("param-annotation-string2")
     public View paramAnnotationTest2(@Param("p1") String p1, @Param("p2") String p2) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-string2 " + p1 + ", " + p2);
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-string2 " + p1 + ", " + p2);
     }
 
     @Action("param-annotation-int")
     public View paramAnnotationTest3(@Param("p1") int p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-int " + p1);
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-int " + p1);
     }
 
     @Action("param-annotation-double")
     public View paramAnnotationTest4(@Param("p1") double p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-double " + p1);
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-double " + p1);
     }
     
     @Action("param-annotation-bigdecimal")
     public View paramAnnotationTestBigDecimal(@Param("p1") BigDecimal p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-bigdecimal " + p1);
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-bigdecimal " + p1);
     }
 
     @Action("param-annotation-date")
     public View paramAnnotationTest5(@Param("p1") Date p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-date " + (p1 == null ? "null" : p1.toString()));
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-date " + (p1 == null ? "null" : p1.toString()));
     }
 
     @Action("param-annotation-all")
     public View paramAnnotationTest6(@Param("p1") Date p1, @Param("p2") String p2, @Param("p3") int p3,
             @Param("p4") double p4) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-all " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-all " + 
                     p1.toString() + ", " + p2 + ", " + p3 + ", " + p4);
     }
 
     @Action("param-annotation-bool")
     public View paramAnnotationTest7(@Param("p1") boolean p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-bool " + p1);
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-bool " + p1);
     }
 
     @Action("param-annotation-ints")
     public View paramAnnotationTest8(@Param("p1") int[] p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-ints " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-ints " + 
                     p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("param-annotation-strings")
     public View paramAnnotationTest9(@Param("p1") String[] p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-strings " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-strings " + 
                     p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("param-annotation-doubles")
     public View paramAnnotationTest10(@Param("p1") double[] p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-doubles " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-doubles " + 
                     p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
     
     @Action("param-annotation-bigdecimals")
     public View paramAnnotationTestBigDecimals(@Param("p1") BigDecimal[] p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-bigdecimals " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-bigdecimals " + 
                     p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
     @Action("param-annotation-dates")
     public View paramAnnotationTest11(@Param("p1") Date[] p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-dates " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-dates " + 
                     p1[0].toString() + ", " + p1[1].toString() + 
                     ", " + p1[2].toString() + ", " + p1[3].toString());
     }
@@ -243,8 +243,8 @@ public class IndexController {
     @Action("param-annotation-bools")
     public View paramAnnotationTest12(@Param("p1") boolean[] p1) {
 
-        return new HTMLView()
-            .withH2Content("Hello from index/param-annotation-bools " + 
+        return new HTMLPage()
+            .withH2Content("index/param-annotation-bools " + 
                     p1[0] + ", " + p1[1] + ", " + p1[2] + ", " + p1[3]);
     }
 
@@ -252,8 +252,8 @@ public class IndexController {
     public View injectedAction() {
 
         String var = injectedController.process("index");
-        return new HTMLView()
-            .withH2Content("Hello from " + "index/injected " + var);
+        return new HTMLPage()
+            .withH2Content("index/injected " + var);
     }
 
     @Action("plain-text")

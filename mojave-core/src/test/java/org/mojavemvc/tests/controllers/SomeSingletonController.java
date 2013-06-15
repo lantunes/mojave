@@ -22,7 +22,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.SingletonController;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -40,12 +40,12 @@ public class SomeSingletonController {
 
     @DefaultAction
     public View defaultAction() {
-        return new HTMLView();
+        return new HTMLPage();
     }
 
     @Action("some-action")
     public View someAction() {
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("some-singleton/some-action");
     }
 
@@ -53,15 +53,15 @@ public class SomeSingletonController {
     public View setVarAction(@Param("var") String var) {
 
         someStatefulVar = var;
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("some-singleton/set-var");
     }
 
     @Action("get-var")
     public View getVarAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + someStatefulVar);
+        return new HTMLPage()
+            .withH2Content(someStatefulVar);
     }
 
     @Action("get-req")
@@ -80,14 +80,14 @@ public class SomeSingletonController {
             ts = System.currentTimeMillis();
             request.setAttribute("ts", ts);
         }
-        return new HTMLView()
-            .withH2Content("Hello from " + String.valueOf(ts));
+        return new HTMLPage()
+            .withH2Content(String.valueOf(ts));
     }
 
     @Action("get-inj")
     public View getInjAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + Integer.toHexString(System.identityHashCode(someService)));
+        return new HTMLPage()
+            .withH2Content(Integer.toHexString(System.identityHashCode(someService)));
     }
 }

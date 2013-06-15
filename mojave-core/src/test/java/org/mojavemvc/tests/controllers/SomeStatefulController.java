@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatefulController;
 import org.mojavemvc.tests.services.SomeService;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -51,19 +51,19 @@ public class SomeStatefulController {
 
     @Action("test-init")
     public View testInitAction() {
-        return new HTMLView()
-            .withH2Content("Hello from " + "init-called: " + initVal);
+        return new HTMLPage()
+            .withH2Content("init-called: " + initVal);
     }
 
     @DefaultAction
     public View defaultAction() {
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("some-stateful/default");
     }
 
     @Action("some-action")
     public View someAction() {
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("some-stateful/some-action");
     }
 
@@ -71,15 +71,15 @@ public class SomeStatefulController {
     public View setVarAction(@Param("var") String var) {
 
         someStatefulVar = var;
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("some-stateful/set-var");
     }
 
     @Action("get-var")
     public View getVarAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + someStatefulVar);
+        return new HTMLPage()
+            .withH2Content(someStatefulVar != null ? someStatefulVar : "null");
     }
     
     @Action("get-req")
@@ -98,14 +98,14 @@ public class SomeStatefulController {
             ts = System.currentTimeMillis();
             request.setAttribute("ts", ts);
         }
-        return new HTMLView()
-            .withH2Content("Hello from " + String.valueOf(ts));
+        return new HTMLPage()
+            .withH2Content(String.valueOf(ts));
     }
 
     @Action("get-inj")
     public View getInjAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + Integer.toHexString(System.identityHashCode(someService)));
+        return new HTMLPage()
+            .withH2Content(Integer.toHexString(System.identityHashCode(someService)));
     }
 }

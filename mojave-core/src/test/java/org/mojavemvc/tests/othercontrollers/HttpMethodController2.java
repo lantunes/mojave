@@ -18,7 +18,7 @@ package org.mojavemvc.tests.othercontrollers;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -31,14 +31,14 @@ public class HttpMethodController2 {
     @DefaultAction
     public View defaultAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "default");
+        return new HTMLPage()
+            .withH2Content("default");
     }
 
     @POSTAction
     public View doPostAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "post");
+        return new HTMLPage()
+            .withH2Content("post");
     }
 }

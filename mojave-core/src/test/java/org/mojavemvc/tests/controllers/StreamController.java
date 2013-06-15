@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.JSON;
 import org.mojavemvc.views.View;
 import org.mojavemvc.views.XML;
@@ -48,6 +48,6 @@ public class StreamController {
 
     @DefaultAction
     public View defaultAction() {
-        return new HTMLView();
+        return new HTMLPage();
     }
 }

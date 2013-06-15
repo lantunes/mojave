@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.Redirect;
 import org.mojavemvc.views.View;
 
@@ -35,6 +35,6 @@ public class RedirectingController {
 
     @DefaultAction
     public View defAction() {
-        return new HTMLView().withH1Content("redirected!");
+        return new HTMLPage().withH1Content("redirected!");
     }
 }

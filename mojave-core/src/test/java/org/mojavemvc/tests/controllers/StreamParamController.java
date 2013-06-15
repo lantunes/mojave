@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.Resource;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("stream-param")
@@ -32,14 +32,14 @@ public class StreamParamController {
     @Action
     public View inputStreamAlone(@Resource InputStream in) {
         String inputStreamClassName = getInputStreamClassName(in);
-        return new HTMLView()
+        return new HTMLPage()
             .withH2Content(inputStreamClassName);
     }
     
     @Action
     public View inputStreamWithParam(@Param("p1") String p1, @Resource InputStream in) {
         String inputStreamClassName = getInputStreamClassName(in);
-        return new HTMLView()
+        return new HTMLPage()
             .withH2Content(p1 + "-" + inputStreamClassName);
     }
     

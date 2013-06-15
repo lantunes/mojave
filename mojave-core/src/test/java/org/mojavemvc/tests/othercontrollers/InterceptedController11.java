@@ -21,7 +21,7 @@ import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.InterceptedBy;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor9;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("intercepted11")
@@ -34,7 +34,7 @@ public class InterceptedController11 {
     public View someAction() {
 
         invocationList.add("someAction");
-        return new HTMLView()
-            .withH2Content("Hello from " + "someAction");
+        return new HTMLPage()
+            .withH2Content("someAction");
     }
 }

@@ -25,7 +25,7 @@ import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.Returns;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.marshalling.Marshallable;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -44,29 +44,29 @@ public class MarshallingController {
     @Action("expects/plaintext/string")
     @Expects("text/plain")
     public View expectPlainTextWithString(@Entity String name) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name);
+        return new HTMLPage()
+            .withH2Content(name);
     }
     
     @Action("expects/plaintext/pojo")
     @Expects("text/plain")
     public View expectPlainTextWithPojo(@Entity SimplePojo pojo) {
-        return new HTMLView()
-            .withH2Content("Hello from " + pojo.getVal());
+        return new HTMLPage()
+            .withH2Content(pojo.getVal());
     }
     
     @Action("expects/json")
     @Expects("application/json")
     public View expectJSON(@Entity SimplePojo pojo) {
-        return new HTMLView()
-            .withH2Content("Hello from " + pojo.getVal());
+        return new HTMLPage()
+            .withH2Content(pojo.getVal());
     }
     
     @Action("expects/xml")
     @Expects("application/xml")
     public View expectXML(@Entity SimplePojo pojo) {
-        return new HTMLView()
-            .withH2Content("Hello from " + pojo.getVal());
+        return new HTMLPage()
+            .withH2Content(pojo.getVal());
     }
     
     /*
@@ -83,8 +83,8 @@ public class MarshallingController {
             if (i+1 < vals.length) sb.append(",");
         }
         
-        return new HTMLView()
-            .withH2Content("Hello from " + sb.toString());
+        return new HTMLPage()
+            .withH2Content(sb.toString());
     }
     
     @Action("returns/plaintext/string")
@@ -123,8 +123,8 @@ public class MarshallingController {
     @Expects("text/plain")
     public View expectPlainTextWithPojoWithParams(@Entity SimplePojo pojo, 
             @Param("p1") String p1) {
-        return new HTMLView()
-            .withH2Content("Hello from " + p1 + ", " + pojo.getVal());
+        return new HTMLPage()
+            .withH2Content(p1 + ", " + pojo.getVal());
     }
     
     /* marshalling an embedded entity */

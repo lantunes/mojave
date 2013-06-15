@@ -75,7 +75,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index")
             .producesPage()
-            .withH2Tag(withContent("Hello from index "));
+            .withH2Tag(withContent("index:"));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/")
             .producesPage()
-            .withH2Tag(withContent("Hello from  "));
+            .withH2Tag(withContent(":"));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/with-param?var=hello")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/with-param hello"));
+            .withH2Tag(withContent("index/with-param hello"));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/another-param?var=hello")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/another-param hello"));
+            .withH2Tag(withContent("index/another-param hello"));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/some-provided-service?var=hello")
             .producesPage()
-            .withH2Tag(withContent("Hello from processed hello"));
+            .withH2Tag(withContent("processed hello"));
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/test-annotation?var=annotationTest")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/test-annotation annotationTest"));
+            .withH2Tag(withContent("index/test-annotation annotationTest"));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string?p1=param1")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-string param1"));
+            .withH2Tag(withContent("index/param-annotation-string param1"));
     }
 
     @Test
@@ -155,7 +155,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-string null"));
+            .withH2Tag(withContent("index/param-annotation-string null"));
     }
 
     @Test
@@ -163,7 +163,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string2?p1=param1&p2=param2")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-string2 param1, param2"));
+            .withH2Tag(withContent("index/param-annotation-string2 param1, param2"));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-string2?p2=param2")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-string2 null, param2"));
+            .withH2Tag(withContent("index/param-annotation-string2 null, param2"));
     }
 
     @Test
@@ -179,7 +179,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-int?p1=123456")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-int 123456"));
+            .withH2Tag(withContent("index/param-annotation-int 123456"));
     }
 
     @Test
@@ -187,7 +187,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-int")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-int 0"));
+            .withH2Tag(withContent("index/param-annotation-int 0"));
     }
 
     @Test
@@ -201,7 +201,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-double?p1=123.456")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-double 123.456"));
+            .withH2Tag(withContent("index/param-annotation-double 123.456"));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-double")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-double 0.0"));
+            .withH2Tag(withContent("index/param-annotation-double 0.0"));
     }
 
     @Test
@@ -223,7 +223,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-date?p1=2011-03-01")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-date 2011-03-01"));
+            .withH2Tag(withContent("index/param-annotation-date 2011-03-01"));
     }
 
     @Test
@@ -231,7 +231,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-date")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-date null"));
+            .withH2Tag(withContent("index/param-annotation-date null"));
     }
 
     @Test
@@ -245,7 +245,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-all?p1=2011-03-01&p2=hello&p3=123&p4=1.45")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-all 2011-03-01, hello, 123, 1.45"));
+            .withH2Tag(withContent("index/param-annotation-all 2011-03-01, hello, 123, 1.45"));
     }
 
     @Test
@@ -253,7 +253,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=true")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool true"));
+            .withH2Tag(withContent("index/param-annotation-bool true"));
     }
 
     @Test
@@ -261,7 +261,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=false")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
+            .withH2Tag(withContent("index/param-annotation-bool false"));
     }
 
     @Test
@@ -269,7 +269,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=t")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool true"));
+            .withH2Tag(withContent("index/param-annotation-bool true"));
     }
 
     @Test
@@ -277,7 +277,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=f")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
+            .withH2Tag(withContent("index/param-annotation-bool false"));
     }
 
     @Test
@@ -285,7 +285,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=1")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool true"));
+            .withH2Tag(withContent("index/param-annotation-bool true"));
     }
 
     @Test
@@ -293,7 +293,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool?p1=0")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
+            .withH2Tag(withContent("index/param-annotation-bool false"));
     }
 
     @Test
@@ -307,7 +307,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bool")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bool false"));
+            .withH2Tag(withContent("index/param-annotation-bool false"));
     }
     
     @Test
@@ -315,7 +315,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bigdecimal?p1=123.456")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bigdecimal 123.456"));
+            .withH2Tag(withContent("index/param-annotation-bigdecimal 123.456"));
     }
 
     @Test
@@ -323,7 +323,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bigdecimal")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bigdecimal 0"));
+            .withH2Tag(withContent("index/param-annotation-bigdecimal 0"));
     }
 
     @Test
@@ -337,7 +337,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-ints?p1=123&p1=456&p1=789&p1=321")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-ints 123, 456, 789, 321"));
+            .withH2Tag(withContent("index/param-annotation-ints 123, 456, 789, 321"));
     }
 
     @Test
@@ -345,7 +345,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-strings?p1=abc&p1=def&p1=ghi&p1=jkl")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-strings abc, def, ghi, jkl"));
+            .withH2Tag(withContent("index/param-annotation-strings abc, def, ghi, jkl"));
     }
 
     @Test
@@ -353,7 +353,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-doubles?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-doubles 1.1, 2.2, 3.3, 4.4"));
+            .withH2Tag(withContent("index/param-annotation-doubles 1.1, 2.2, 3.3, 4.4"));
     }
     
     @Test
@@ -361,7 +361,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bigdecimals?p1=1.1&p1=2.2&p1=3.3&p1=4.4")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bigdecimals 1.1, 2.2, 3.3, 4.4"));
+            .withH2Tag(withContent("index/param-annotation-bigdecimals 1.1, 2.2, 3.3, 4.4"));
     }
 
     @Test
@@ -370,7 +370,7 @@ public class TestFrontController extends AbstractWebTest {
         assertThatRequestFor("/index/param-annotation-dates?"
                 + "p1=2011-03-01&p1=2010-02-09&p1=2009-11-23&p1=2008-05-03")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-dates " +
+            .withH2Tag(withContent("index/param-annotation-dates " +
                     "2011-03-01, 2010-02-09, 2009-11-23, 2008-05-03"));
     }
 
@@ -379,7 +379,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/param-annotation-bools?p1=t&p1=false&p1=f&p1=1")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/param-annotation-bools true, false, false, true"));
+            .withH2Tag(withContent("index/param-annotation-bools true, false, false, true"));
     }
 
     @Test
@@ -387,7 +387,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/injected")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/injected injected-index"));
+            .withH2Tag(withContent("index/injected injected-index"));
     }
 
     @Test
@@ -395,7 +395,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/index/test-init")
             .producesPage()
-            .withH2Tag(withContent("Hello from index/test-init init-called"));
+            .withH2Tag(withContent("index/test-init init-called"));
     }
 
     @Test
@@ -557,7 +557,7 @@ public class TestFrontController extends AbstractWebTest {
         /* make a second request */
         assertThatRequestFor("/some-stateful/get-var")
             .producesPage()
-            .withH2Tag(withContent("Hello from statetest"));
+            .withH2Tag(withContent("statetest"));
     }
 
     @Test
@@ -571,7 +571,7 @@ public class TestFrontController extends AbstractWebTest {
         newWebClient();
         assertThatRequestFor("/some-stateful/get-var")
             .producesPage()
-            .withH2Tag(withContent("Hello from null")); /* no state stored */
+            .withH2Tag(withContent("null")); /* no state stored */
     }
 
     @Test
@@ -612,7 +612,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/some-stateful/test-init")
             .producesPage()
-            .withH2Tag(withContent("Hello from init-called: 1"));
+            .withH2Tag(withContent("init-called: 1"));
 
         /*
          * test that init() is called only once after construction, and not per
@@ -620,7 +620,7 @@ public class TestFrontController extends AbstractWebTest {
          */
         assertThatRequestFor("/some-stateful/test-init")
             .producesPage()
-            .withH2Tag(withContent("Hello from init-called: 1"));
+            .withH2Tag(withContent("init-called: 1"));
     }
 
     @Test
@@ -650,7 +650,7 @@ public class TestFrontController extends AbstractWebTest {
         /* make a second request */
         assertThatRequestFor("/some-singleton/get-var")
             .producesPage()
-            .withH2Tag(withContent("Hello from statetest"));
+            .withH2Tag(withContent("statetest"));
     }
 
     @Test
@@ -664,7 +664,7 @@ public class TestFrontController extends AbstractWebTest {
         newWebClient();
         assertThatRequestFor("/some-singleton/get-var")
             .producesPage()
-            .withH2Tag(withContent("Hello from statetest"));
+            .withH2Tag(withContent("statetest"));
     }
 
     @Test
@@ -733,7 +733,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/beforectx/index?p1=testctx")
             .producesPage()
-            .withH2Tag(withContent("Hello from testctx"));
+            .withH2Tag(withContent("testctx"));
     }
 
     @Test
@@ -741,7 +741,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/afterctx/index?p1=testctx")
             .producesPage()
-            .withH2Tag(withContent("Hello from testctx"));
+            .withH2Tag(withContent("testctx"));
     }
 
     @Test
@@ -749,7 +749,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/afterctx2")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -757,7 +757,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/beforectx2/index?userName=john&password=doe")
             .producesPage()
-            .withH2Tag(withContent("Hello from john doe"));
+            .withH2Tag(withContent("john doe"));
     }
 
     @Test
@@ -769,7 +769,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted1/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -786,7 +786,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted2/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -803,7 +803,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted2")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -821,7 +821,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted3/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -841,7 +841,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted4/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -861,7 +861,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted4")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -880,7 +880,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted1")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(3, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -898,7 +898,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted3")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -918,7 +918,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted5")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -938,7 +938,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted5/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -957,7 +957,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/intercepted6")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(1, invocationList.size());
         assertEquals("defaultAction", invocationList.get(0));
@@ -972,7 +972,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted7/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(1, invocationList.size());
         assertEquals("someAction", invocationList.get(0));
@@ -990,7 +990,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted8")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(9, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1016,7 +1016,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted8/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(9, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1042,7 +1042,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted9")
             .producesPage()
-            .withH2Tag(withContent("Hello from defaultAction"));
+            .withH2Tag(withContent("defaultAction"));
 
         assertEquals(11, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1070,7 +1070,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted9/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(11, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1095,7 +1095,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted10/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(2, invocationList.size());
         assertEquals("interceptor4-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1111,7 +1111,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted11/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from someAction"));
+            .withH2Tag(withContent("someAction"));
 
         assertEquals(2, invocationList.size());
         assertEquals("someAction", invocationList.get(0));
@@ -1123,7 +1123,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/intercepted-before")
             .producesPage()
-            .withH2Tag(withContent("Hello from interceptor5-beforeAction:req:resp:sess:someService"));
+            .withH2Tag(withContent("interceptor5-beforeAction:req:resp:sess:someService"));
     }
 
     @Test
@@ -1131,7 +1131,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/intercepted-after")
             .producesPage()
-            .withH2Tag(withContent("Hello from interceptor7-afterAction:req:resp:sess:someService"));
+            .withH2Tag(withContent("interceptor7-afterAction:req:resp:sess:someService"));
     }
 
     @Test
@@ -1143,7 +1143,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/intercepted-before2")
             .producesPage()
-            .withH2Tag(withContent("Hello from interceptedBefore2"));
+            .withH2Tag(withContent("interceptedBefore2"));
 
         assertEquals(2, invocationList.size());
         assertEquals("interceptor6-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1159,7 +1159,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/intercepted-after2")
             .producesPage()
-            .withH2Tag(withContent("Hello from interceptedAfter2"));
+            .withH2Tag(withContent("interceptedAfter2"));
 
         assertEquals(2, invocationList.size());
         assertEquals("interceptedAfter2", invocationList.get(0));
@@ -1175,7 +1175,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/some-action")
             .producesPage()
-            .withH2Tag(withContent("Hello from interceptor2-beforeAction:req:resp:sess:someService"));
+            .withH2Tag(withContent("interceptor2-beforeAction:req:resp:sess:someService"));
 
         assertEquals(0, invocationList.size());
     }
@@ -1189,7 +1189,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/some-action2")
             .producesPage()
-            .withH2Tag(withContent("Hello from interceptor3-afterAction:req:resp:sess:someService"));
+            .withH2Tag(withContent("interceptor3-afterAction:req:resp:sess:someService"));
 
         assertEquals(2, invocationList.size());
         assertEquals("interceptor3-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1205,7 +1205,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted12/param?p1=test")
             .producesPage()
-            .withH2Tag(withContent("Hello from test"));
+            .withH2Tag(withContent("test"));
 
         assertEquals(3, invocationList.size());
         assertEquals("interceptor10-beforeAction", invocationList.get(0));
@@ -1218,7 +1218,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/default-args?p1=test")
             .producesPage()
-            .withH2Tag(withContent("Hello from test"));
+            .withH2Tag(withContent("test"));
     }
 
     @Test
@@ -1226,7 +1226,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/ClassNameController/sayHello?name=John")
             .producesPage()
-            .withH2Tag(withContent("Hello from classNameControllerAction:John"));
+            .withH2Tag(withContent("classNameControllerAction:John"));
     }
 
     @Test
@@ -1234,7 +1234,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatPOSTRequestFor("/httpmethod1")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1242,7 +1242,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatGETRequestFor("/httpmethod1")
             .producesPage()
-            .withH2Tag(withContent("Hello from get"));
+            .withH2Tag(withContent("get"));
     }
 
     @Test
@@ -1262,7 +1262,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatGETRequestFor("/httpmethod2")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1270,7 +1270,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatPOSTRequestFor("/httpmethod2")
             .producesPage()
-            .withH2Tag(withContent("Hello from post"));
+            .withH2Tag(withContent("post"));
     }
 
     @Test
@@ -1284,7 +1284,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/httpmethod3")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1292,7 +1292,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatPUTRequestFor("/httpmethod3")
             .producesPage()
-            .withH2Tag(withContent("Hello from put"));
+            .withH2Tag(withContent("put"));
     }
 
     @Test
@@ -1306,7 +1306,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/httpmethod4")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1326,7 +1326,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/httpmethod5")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1340,7 +1340,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/httpmethod6")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1348,7 +1348,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatDELETERequestFor("/httpmethod6")
             .producesPage()
-            .withH2Tag(withContent("Hello from delete"));
+            .withH2Tag(withContent("delete"));
     }
 
     @Test
@@ -1362,7 +1362,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/httpmethod7")
             .producesPage()
-            .withH2Tag(withContent("Hello from default"));
+            .withH2Tag(withContent("default"));
     }
 
     @Test
@@ -1370,7 +1370,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatOPTIONSRequestFor("/httpmethod7")
             .producesPage()
-            .withH2Tag(withContent("Hello from options"));
+            .withH2Tag(withContent("options"));
     }
 
     @Test
@@ -1384,7 +1384,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatGETRequestFor("/httpmethod8")
             .producesPage()
-            .withH2Tag(withContent("Hello from multi"));
+            .withH2Tag(withContent("multi"));
     }
 
     @Test
@@ -1392,7 +1392,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatPOSTRequestFor("/httpmethod8")
             .producesPage()
-            .withH2Tag(withContent("Hello from multi"));
+            .withH2Tag(withContent("multi"));
     }
 
     @Test
@@ -1400,7 +1400,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatGETRequestFor("/httpmethod8/sayHello")
             .producesPage()
-            .withH2Tag(withContent("Hello from sayHello"));
+            .withH2Tag(withContent("sayHello"));
     }
 
     @Test
@@ -1408,7 +1408,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatPOSTRequestFor("/httpmethod8/sayHello")
             .producesPage()
-            .withH2Tag(withContent("Hello from sayHello"));
+            .withH2Tag(withContent("sayHello"));
     }
 
     @Test
@@ -1427,7 +1427,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatPOSTRequestFor("/intercepted13")
             .producesPage()
-            .withH2Tag(withContent("Hello from postAction"));
+            .withH2Tag(withContent("postAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1453,7 +1453,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatRequestFor("/intercepted14")
             .producesPage()
-            .withH2Tag(withContent("Hello from getAction"));
+            .withH2Tag(withContent("getAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1479,7 +1479,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatPUTRequestFor("/intercepted15")
             .producesPage()
-            .withH2Tag(withContent("Hello from putAction"));
+            .withH2Tag(withContent("putAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1535,7 +1535,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatOPTIONSRequestFor("/intercepted18")
             .producesPage()
-            .withH2Tag(withContent("Hello from optionsAction"));
+            .withH2Tag(withContent("optionsAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1561,7 +1561,7 @@ public class TestFrontController extends AbstractWebTest {
 
         assertThatDELETERequestFor("/intercepted19")
             .producesPage()
-            .withH2Tag(withContent("Hello from deleteAction"));
+            .withH2Tag(withContent("deleteAction"));
 
         assertEquals(5, invocationList.size());
         assertEquals("interceptor1-beforeAction:req:resp:sess:someService", invocationList.get(0));
@@ -1576,7 +1576,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/parampath/say/John")
             .producesPage()
-            .withH2Tag(withContent("Hello from John"));
+            .withH2Tag(withContent("John"));
     }
     
     @Test
@@ -1590,7 +1590,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/parampath/regex/john")
             .producesPage()
-            .withH2Tag(withContent("Hello from john"));
+            .withH2Tag(withContent("john"));
     }
     
     @Test
@@ -1598,7 +1598,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/parampath/multi/John/123")
             .producesPage()
-            .withH2Tag(withContent("Hello from John, 123"));
+            .withH2Tag(withContent("John, 123"));
     }
     
     @Test
@@ -1606,7 +1606,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/parampath/encoded/a%2Bb/John/123")
             .producesPage()
-            .withH2Tag(withContent("Hello from John, 123"));
+            .withH2Tag(withContent("John, 123"));
     }
     
     @Test
@@ -1614,7 +1614,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatGETRequestFor("/parampath-http/say/John")
             .producesPage()
-            .withH2Tag(withContent("Hello from John, GET"));
+            .withH2Tag(withContent("John, GET"));
     }
     
     @Test
@@ -1622,7 +1622,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatPOSTRequestFor("/parampath-http/say/John")
             .producesPage()
-            .withH2Tag(withContent("Hello from John, POST"));
+            .withH2Tag(withContent("John, POST"));
     }
     
     @Test
@@ -1630,7 +1630,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatDELETERequestFor("/parampath-http/say/John")
             .producesPage()
-            .withH2Tag(withContent("Hello from John, DELETE"));
+            .withH2Tag(withContent("John, DELETE"));
     }
     
     @Test
@@ -1670,7 +1670,7 @@ public class TestFrontController extends AbstractWebTest {
         
         assertThatRequestFor("/inheritance/test")
             .producesPage()
-            .withH2Tag(withContent("Hello from inherited"));
+            .withH2Tag(withContent("inherited"));
     }
     
     @Test
@@ -1690,7 +1690,7 @@ public class TestFrontController extends AbstractWebTest {
                 withBody("marshallingController"), 
                 withContentType("text/plain"))
             .producesPage()
-            .withH2Tag(withContent("Hello from marshallingController"));
+            .withH2Tag(withContent("marshallingController"));
     }
     
     @Test
@@ -1700,7 +1700,7 @@ public class TestFrontController extends AbstractWebTest {
                 withBody("marshallingController"), 
                 withContentType("text/plain"))
             .producesPage()
-            .withH2Tag(withContent("Hello from marshallingController"));
+            .withH2Tag(withContent("marshallingController"));
     }
     
     @Test
@@ -1710,7 +1710,7 @@ public class TestFrontController extends AbstractWebTest {
                 withBody("{\"val\":\"marshallingController\"}"), 
                 withContentType("application/json"))
             .producesPage()
-            .withH2Tag(withContent("Hello from marshallingController"));
+            .withH2Tag(withContent("marshallingController"));
     }
     
     @Test
@@ -1720,7 +1720,7 @@ public class TestFrontController extends AbstractWebTest {
                 withBody("<SimplePojo><val>marshallingController</val></SimplePojo>"), 
                 withContentType("application/xml"))
             .producesPage()
-            .withH2Tag(withContent("Hello from marshallingController"));
+            .withH2Tag(withContent("marshallingController"));
     }
     
     @Test
@@ -1731,7 +1731,7 @@ public class TestFrontController extends AbstractWebTest {
                 withBody("marshalling,controller"), 
                 withContentType("text/csv"))
             .producesPage()
-            .withH2Tag(withContent("Hello from marshalling,controller"));
+            .withH2Tag(withContent("marshalling,controller"));
     }
 
     @Test
@@ -1800,7 +1800,7 @@ public class TestFrontController extends AbstractWebTest {
                 withBody("param2"), 
                 withContentType("text/plain"))
             .producesPage()
-            .withH2Tag(withContent("Hello from param1, param2"));
+            .withH2Tag(withContent("param1, param2"));
     }
     
     @Test

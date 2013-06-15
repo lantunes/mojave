@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Inject;
@@ -37,12 +37,12 @@ public class SomeControllerClass {
 
     @DefaultAction
     public View defaultAction() {
-        return new HTMLView();
+        return new HTMLPage();
     }
 
     @Action("some-action")
     public View doSomething() {
-        return new HTMLView()
+        return new HTMLPage()
             .withH2Content("annot/some-action " + getParameter("var"));
     }
 

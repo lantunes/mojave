@@ -30,49 +30,49 @@ import org.mojavemvc.views.DataModelView;
 /**
  * @author Luis Antunes
  */
-public class HTMLFormView extends DataModelView<HTMLFormView> {
+public class HTMLForm extends DataModelView<HTMLForm> {
 
     private String action;
     private boolean multipart;
     private final List<Input> inputs = new ArrayList<Input>();
     
-    public HTMLFormView withAction(String action) {
+    public HTMLForm withAction(String action) {
         this.action = action;
         return this;
     }
     
-    public HTMLFormView withMultiPart() {
+    public HTMLForm withMultiPart() {
         this.multipart = true;
         return this;
     }
     
-    public HTMLFormView withFileInput() {
+    public HTMLForm withFileInput() {
         this.inputs.add(new FileInput());
         withMultiPart();
         return this;
     }
     
-    public HTMLFormView withCheckboxInput(String name, boolean value, String label) {
+    public HTMLForm withCheckboxInput(String name, boolean value, String label) {
         this.inputs.add(new CheckboxInput(name, value, label));
         return this;
     }
     
-    public HTMLFormView withTextInput(String id, String name, String value) {
+    public HTMLForm withTextInput(String id, String name, String value) {
         this.inputs.add(new TextInput(id, name, value));
         return this;
     }
     
-    public HTMLFormView withTextInput(String id, String name) {
+    public HTMLForm withTextInput(String id, String name) {
         this.inputs.add(new TextInput(id, name, null));
         return this;
     }
     
-    public HTMLFormView withPasswordInput(String value) {
+    public HTMLForm withPasswordInput(String value) {
         this.inputs.add(new PasswordInput(value));
         return this;
     }
     
-    public HTMLFormView withPasswordInput() {
+    public HTMLForm withPasswordInput() {
         this.inputs.add(new PasswordInput(null));
         return this;
     }

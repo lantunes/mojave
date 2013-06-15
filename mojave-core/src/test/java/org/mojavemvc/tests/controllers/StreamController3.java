@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class StreamController3 {
     @Action
     public View doSomething() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "streaming3");
+        return new HTMLPage()
+            .withH2Content("streaming3");
     }
 }

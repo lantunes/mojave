@@ -20,7 +20,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("parampath")
@@ -29,29 +29,29 @@ public class ParamPathController {
     @DefaultAction
     @ParamPath("say/:name")
     public View defaultAction(@Param("name") String name) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name);
+        return new HTMLPage()
+            .withH2Content(name);
     }
     
     @Action("regex")
     @ParamPath(":name<[a-z]+>")
     public View regexAction(@Param("name") String name) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name);        
+        return new HTMLPage()
+            .withH2Content(name);        
     }
     
     @Action("multi")
     @ParamPath(":name/:id<[0-9]+>")
     public View multiParamAction(@Param("name") String name, @Param("id") int id) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name + ", " + id);
+        return new HTMLPage()
+            .withH2Content(name + ", " + id);
         
     }
     
     @Action("encoded")
     @ParamPath("a+b/:name/:id<[0-9]+>")
     public View encodedAction(@Param("name") String name, @Param("id") int id) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name + ", " + id);        
+        return new HTMLPage()
+            .withH2Content(name + ", " + id);        
     }
 }

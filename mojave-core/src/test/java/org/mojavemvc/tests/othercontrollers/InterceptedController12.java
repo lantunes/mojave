@@ -28,7 +28,7 @@ import org.mojavemvc.tests.interceptors.Interceptor5;
 import org.mojavemvc.tests.interceptors.Interceptor6;
 import org.mojavemvc.tests.interceptors.Interceptor7;
 import org.mojavemvc.tests.interceptors.Interceptor8;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("intercepted12")
@@ -41,8 +41,8 @@ public class InterceptedController12 {
     public View someAction() {
 
         invocationList.add("someAction");
-        return new HTMLView()
-            .withH2Content("Hello from " + "someAction");
+        return new HTMLPage()
+            .withH2Content("someAction");
     }
 
     @Action("some-action2")
@@ -50,8 +50,8 @@ public class InterceptedController12 {
     public View someAction2() {
 
         invocationList.add("someAction2");
-        return new HTMLView()
-            .withH2Content("Hello from " + "someAction2");
+        return new HTMLPage()
+            .withH2Content("someAction2");
     }
 
     @Action("param")
@@ -59,16 +59,16 @@ public class InterceptedController12 {
     public View someAction(@Param("p1") String name) {
 
         invocationList.add("param");
-        return new HTMLView()
-            .withH2Content("Hello from " + name);
+        return new HTMLPage()
+            .withH2Content(name);
     }
 
     @Action("intercepted-before")
     @InterceptedBy(Interceptor5.class)
     public View interceptedBefore() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "interceptedBefore");
+        return new HTMLPage()
+            .withH2Content("interceptedBefore");
     }
 
     @Action("intercepted-before2")
@@ -76,16 +76,16 @@ public class InterceptedController12 {
     public View interceptedBefore2() {
 
         invocationList.add("interceptedBefore2");
-        return new HTMLView()
-            .withH2Content("Hello from " + "interceptedBefore2");
+        return new HTMLPage()
+            .withH2Content("interceptedBefore2");
     }
 
     @Action("intercepted-after")
     @InterceptedBy(Interceptor7.class)
     public View interceptedAfter() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "interceptedAfter");
+        return new HTMLPage()
+            .withH2Content("interceptedAfter");
     }
 
     @Action("intercepted-after2")
@@ -93,7 +93,7 @@ public class InterceptedController12 {
     public View interceptedAfter2() {
 
         invocationList.add("interceptedAfter2");
-        return new HTMLView()
-            .withH2Content("Hello from " + "interceptedAfter2");
+        return new HTMLPage()
+            .withH2Content("interceptedAfter2");
     }
 }

@@ -18,7 +18,7 @@ package org.mojavemvc.tests.othercontrollers;
 import org.mojavemvc.annotations.DELETEAction;
 import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -31,14 +31,14 @@ public class HttpMethodController6 {
     @DefaultAction
     public View defaultAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "default");
+        return new HTMLPage()
+            .withH2Content("default");
     }
 
     @DELETEAction
     public View doDeleteAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "delete");
+        return new HTMLPage()
+            .withH2Content("delete");
     }
 }

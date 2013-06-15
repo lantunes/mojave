@@ -55,7 +55,7 @@ import org.mojavemvc.core.Route;
 import org.mojavemvc.core.RouteMap;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.marshalling.EntityMarshaller;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 import org.mojavemvc.views.XML;
 
@@ -1483,37 +1483,37 @@ public class TestMappedControllerDatabase {
 
         @GETAction
         public View getAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @POSTAction
         public View postAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @PUTAction
         public View putAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @DELETEAction
         public View deleteAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @OPTIONSAction
         public View optionsAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @TRACEAction
         public View traceAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @HEADAction
         public View headAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
     }
 
@@ -1523,7 +1523,7 @@ public class TestMappedControllerDatabase {
 
         @Action("test")
         public View testAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
     }
 
@@ -1535,7 +1535,7 @@ public class TestMappedControllerDatabase {
 
         @Action("test")
         public View testAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
     }
 
@@ -1901,12 +1901,12 @@ public class TestMappedControllerDatabase {
 
         @DefaultAction
         public View defaultAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @Action("test")
         public View testAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
     }
 
@@ -1932,12 +1932,12 @@ public class TestMappedControllerDatabase {
 
         @DefaultAction
         public View defaultAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @Action("test1")
         public View testAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         public void mockMethod() {
@@ -1945,22 +1945,22 @@ public class TestMappedControllerDatabase {
 
         @Action("with-param")
         public View withParamAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @Action("another-param")
         public View anotherParamAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @Action("some-service")
         public View someServiceAction() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @Action("test-annotation")
         public View doAnnotationTest() {
-            return new HTMLView();
+            return new HTMLPage();
         }
 
         @BeforeAction

@@ -24,7 +24,7 @@ import org.mojavemvc.annotations.Model;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.aop.RequestContext;
 import org.mojavemvc.tests.forms.SomeForm;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("beforectx2")
@@ -58,14 +58,14 @@ public class BeforeWithModelController {
         }
 
         SomeForm form = (SomeForm) parameters[0];
-        return new HTMLView()
-            .withH2Content("Hello from " + form.getUserName() + " " + form.getPassword());
+        return new HTMLPage()
+            .withH2Content(form.getUserName() + " " + form.getPassword());
     }
 
     @Action("index")
     public View someAction(@Model SomeForm form) {
 
-        return new HTMLView();
+        return new HTMLPage();
     }
 
 }

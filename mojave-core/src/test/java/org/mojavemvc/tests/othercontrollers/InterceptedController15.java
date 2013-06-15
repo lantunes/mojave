@@ -22,7 +22,7 @@ import org.mojavemvc.annotations.PUTAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.interceptors.Interceptor1b;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -40,7 +40,7 @@ public class InterceptedController15 {
     public View someAction() {
 
         invocationList.add("putAction");
-        return new HTMLView()
-            .withH2Content("Hello from " + "putAction");
+        return new HTMLPage()
+            .withH2Content("putAction");
     }
 }

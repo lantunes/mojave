@@ -30,18 +30,18 @@ import org.mojavemvc.views.DataModelView;
 /**
  * @author Luis Antunes
  */
-public class HTMLView extends DataModelView<HTMLView> {
+public class HTMLPage extends DataModelView<HTMLPage> {
 
     private String h1Content;
     private String h2Content;
     private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
     
-    public HTMLView withH1Content(String h1Content) {
+    public HTMLPage withH1Content(String h1Content) {
         this.h1Content = h1Content;
         return this;
     }
     
-    public HTMLView withH2Content(String h2Content) {
+    public HTMLPage withH2Content(String h2Content) {
         this.h2Content = h2Content;
         return this;
     }
@@ -54,7 +54,7 @@ public class HTMLView extends DataModelView<HTMLView> {
         return h2Content;
     }
     
-    public HTMLView withParagraph(String id, String content) {
+    public HTMLPage withParagraph(String id, String content) {
         this.paragraphs.add(new Paragraph(id, content));
         return this;
     }

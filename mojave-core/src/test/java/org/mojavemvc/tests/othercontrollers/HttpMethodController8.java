@@ -20,7 +20,7 @@ import org.mojavemvc.annotations.DefaultAction;
 import org.mojavemvc.annotations.GETAction;
 import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -33,22 +33,22 @@ public class HttpMethodController8 {
     @DefaultAction
     public View defaultAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "default");
+        return new HTMLPage()
+            .withH2Content("default");
     }
 
     @POSTAction
     @GETAction
     public View doMultiAction() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "multi");
+        return new HTMLPage()
+            .withH2Content("multi");
     }
 
     @Action
     public View sayHello() {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "sayHello");
+        return new HTMLPage()
+            .withH2Content("sayHello");
     }
 }

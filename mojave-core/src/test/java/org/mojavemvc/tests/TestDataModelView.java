@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 
 /**
  * @author Luis Antunes
@@ -34,7 +34,7 @@ public class TestDataModelView {
         model.setName("John");
         model.setNum(21);
 
-        HTMLView view = new HTMLView();
+        HTMLPage view = new HTMLPage();
         view.setModel(model);
 
         Map<String, Object> attributes = view.getAttributes();
@@ -51,7 +51,7 @@ public class TestDataModelView {
         model.setName("John");
         model.setNum(21);
 
-        HTMLView view = new HTMLView().withModel(model);
+        HTMLPage view = new HTMLPage().withModel(model);
 
         Map<String, Object> attributes = view.getAttributes();
         assertNotNull(attributes);
@@ -67,7 +67,7 @@ public class TestDataModelView {
         model.setName("John");
         model.setNum(21);
 
-        HTMLView view = new HTMLView().withModel(model);
+        HTMLPage view = new HTMLPage().withModel(model);
 
         SomeModel model2 = view.getModel(SomeModel.class);
 
@@ -79,7 +79,7 @@ public class TestDataModelView {
     @Test
     public void testView_getModelNoAttributes() throws Exception {
 
-        HTMLView view = new HTMLView();
+        HTMLPage view = new HTMLPage();
         SomeModel model2 = view.getModel(SomeModel.class);
 
         assertNotNull(model2);
@@ -90,7 +90,7 @@ public class TestDataModelView {
     @Test
     public void testView_setAttributesFromPairs() throws Exception {
 
-        HTMLView view = new HTMLView();
+        HTMLPage view = new HTMLPage();
         view.setAttributesFromPairs(new String[] { "name", "num" }, new Object[] { "John", 21 });
 
         Map<String, Object> attributes = view.getAttributes();
@@ -103,7 +103,7 @@ public class TestDataModelView {
     @Test
     public void testView_withAttributesFromPairs() throws Exception {
 
-        HTMLView view = new HTMLView().withAttributesFromPairs(
+        HTMLPage view = new HTMLPage().withAttributesFromPairs(
                 new String[] { "name", "num" }, 
                 new Object[] { "John", 21 });
 
@@ -117,7 +117,7 @@ public class TestDataModelView {
     @Test
     public void testView_setAttribute() throws Exception {
 
-        HTMLView view = new HTMLView();
+        HTMLPage view = new HTMLPage();
         view.setAttribute("name", "John");
         view.setAttribute("num", 21);
 
@@ -131,7 +131,7 @@ public class TestDataModelView {
     @Test
     public void testView_withAttribute() throws Exception {
 
-        HTMLView view = new HTMLView().withAttribute("name", "John").withAttribute("num", 21);
+        HTMLPage view = new HTMLPage().withAttribute("name", "John").withAttribute("num", 21);
 
         Map<String, Object> attributes = view.getAttributes();
         assertNotNull(attributes);
@@ -143,7 +143,7 @@ public class TestDataModelView {
     @Test
     public void testView_getAttribute() throws Exception {
 
-        HTMLView view = new HTMLView().withAttribute("name", "John").withAttribute("num", 21);
+        HTMLPage view = new HTMLPage().withAttribute("name", "John").withAttribute("num", 21);
 
         assertEquals("John", view.getAttribute("name"));
         assertEquals(21, view.getAttribute("num"));

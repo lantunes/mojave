@@ -21,7 +21,7 @@ import org.mojavemvc.annotations.POSTAction;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.ParamPath;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController("parampath-http")
@@ -30,21 +30,21 @@ public class ParamPathHttpMethodController {
     @GETAction
     @ParamPath("say/:name")
     public View getAction(@Param("name") String name) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name + ", " + "GET");
+        return new HTMLPage()
+            .withH2Content(name + ", " + "GET");
     }
     
     @POSTAction
     @ParamPath("say/:name")
     public View postAction(@Param("name") String name) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name + ", " + "POST");
+        return new HTMLPage()
+            .withH2Content(name + ", " + "POST");
     }
     
     @DELETEAction
     @ParamPath("say/:name")
     public View deleteAction(@Param("name") String name) {
-        return new HTMLView()
-            .withH2Content("Hello from " + name + ", " + "DELETE");
+        return new HTMLPage()
+            .withH2Content(name + ", " + "DELETE");
     }
 }

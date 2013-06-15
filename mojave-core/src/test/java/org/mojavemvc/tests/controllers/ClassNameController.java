@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 @StatelessController
@@ -27,7 +27,7 @@ public class ClassNameController {
     @Action
     public View sayHello(@Param("name") String name) {
 
-        return new HTMLView()
-            .withH2Content("Hello from " + "classNameControllerAction:" + name);
+        return new HTMLPage()
+            .withH2Content("classNameControllerAction:" + name);
     }
 }

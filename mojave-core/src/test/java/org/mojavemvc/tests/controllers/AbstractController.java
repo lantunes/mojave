@@ -16,7 +16,7 @@
 package org.mojavemvc.tests.controllers;
 
 import org.mojavemvc.annotations.Action;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -27,8 +27,8 @@ public abstract class AbstractController {
 
     @Action("test")
     public View testInitAction() {
-        return new HTMLView()
-            .withH2Content("Hello from " + getVal());
+        return new HTMLPage()
+            .withH2Content(getVal());
     }
     
     protected abstract String getVal();

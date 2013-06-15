@@ -23,7 +23,7 @@ import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.BeforeAction;
 import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.JSP;
 import org.mojavemvc.views.View;
 import org.slf4j.Logger;
@@ -67,6 +67,6 @@ public class DispatchingController {
     @Action
     public View doSomething() {
 
-        return new HTMLView();
+        return new HTMLPage();
     }
 }

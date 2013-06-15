@@ -22,7 +22,7 @@ import org.mojavemvc.annotations.StatelessController;
 import org.mojavemvc.annotations.TRACEAction;
 import org.mojavemvc.tests.interceptors.Interceptor1;
 import org.mojavemvc.tests.interceptors.Interceptor1b;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -40,7 +40,7 @@ public class InterceptedController16 {
     public View someAction() {
 
         invocationList.add("traceAction");
-        return new HTMLView()
-            .withH2Content("Hello from " + "traceAction");
+        return new HTMLPage()
+            .withH2Content("traceAction");
     }
 }

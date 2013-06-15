@@ -18,7 +18,7 @@ package org.mojavemvc.tests.exception;
 import org.mojavemvc.exception.ErrorHandler;
 import org.mojavemvc.exception.ErrorHandlerFactory;
 import org.mojavemvc.initialization.AppProperties;
-import org.mojavemvc.tests.views.HTMLErrorView;
+import org.mojavemvc.tests.views.HTMLErrorPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -31,7 +31,7 @@ public class HTMLErrorHandlerFactory implements ErrorHandlerFactory {
         return new ErrorHandler() {
             @Override
             public View handleError(Throwable e, AppProperties properties) {
-                return new HTMLErrorView();
+                return new HTMLErrorPage();
             }
         };
     }

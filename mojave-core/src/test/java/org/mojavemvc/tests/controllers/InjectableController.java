@@ -18,7 +18,7 @@ package org.mojavemvc.tests.controllers;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.Param;
 import org.mojavemvc.annotations.StatelessController;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 /**
@@ -46,7 +46,7 @@ public class InjectableController implements IInjectableController {
     public View testAction(@Param("var") String var) {
 
         String processed = process(var);
-        return new HTMLView()
+        return new HTMLPage()
             .withH1Content("injectable/test")
             .withH2Content(processed);
     }

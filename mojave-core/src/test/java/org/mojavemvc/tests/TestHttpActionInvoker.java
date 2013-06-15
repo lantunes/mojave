@@ -63,7 +63,7 @@ import org.mojavemvc.tests.othercontrollers.InterceptedController6;
 import org.mojavemvc.tests.othercontrollers.InterceptedController7;
 import org.mojavemvc.tests.othercontrollers.InterceptedController8;
 import org.mojavemvc.tests.othercontrollers.InterceptedController9;
-import org.mojavemvc.tests.views.HTMLView;
+import org.mojavemvc.tests.views.HTMLPage;
 import org.mojavemvc.views.View;
 
 import com.google.inject.Guice;
@@ -120,11 +120,11 @@ public class TestHttpActionInvoker {
                 setUp(SomeStatelessController.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "test", h2);
+        assertEquals("test", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -141,11 +141,11 @@ public class TestHttpActionInvoker {
                 setUp(SomeStatelessController.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "default", h2);
+        assertEquals("default", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -166,11 +166,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController1.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -197,11 +197,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController2.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -225,11 +225,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController2.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -254,11 +254,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController3.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -288,11 +288,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController4.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -322,11 +322,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController4.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -352,11 +352,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController1.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -381,11 +381,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController3.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -412,11 +412,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController5.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -446,11 +446,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController5.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -476,11 +476,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController6.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -505,11 +505,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController7.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -534,11 +534,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController8.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -574,11 +574,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController8.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -611,11 +611,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController9.class, methodName);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "defaultAction", h2);
+        assertEquals("defaultAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());
@@ -653,11 +653,11 @@ public class TestHttpActionInvoker {
                 setUp(InterceptedController9.class, methodName, action);
         ActionInvoker invoker = new HttpActionInvoker(req, res, setup.db, routed, injector);
 
-        HTMLView view = (HTMLView) invoker.invokeAction(setup.controller, setup.signature);
+        HTMLPage view = (HTMLPage) invoker.invokeAction(setup.controller, setup.signature);
 
         assertNotNull(view);
         String h2 = view.getH2Content();
-        assertEquals("Hello from " + "someAction", h2);
+        assertEquals("someAction", h2);
         assertEquals(req, setup.controller.getRequest());
         assertEquals(res, setup.controller.getResponse());
         assertEquals(sess, setup.controller.getSession());

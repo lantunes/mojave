@@ -28,7 +28,7 @@ import org.mojavemvc.views.View;
 /**
  * @author Luis Antunes
  */
-public class HTMLErrorView implements View {
+public class HTMLErrorPage implements View {
 
     @Override
     public void render(HttpServletRequest request, HttpServletResponse response, 

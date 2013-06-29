@@ -1,6 +1,5 @@
-## Mojave MVC Web Framework
-
-========================
+# Mojave MVC Web Framework
+--------------------------
 
 [![Continuous Integration status](https://secure.travis-ci.org/lantunes/mojave.png)](http://travis-ci.org/lantunes/mojave)
 
@@ -24,8 +23,8 @@ be configured with injectable dependencies, through use of the standard @Inject 
 Injection is configured through user-supplied Guice Modules, using only idiomatic Java. Mojave also works 
 out-of-the-box on Google App Engine and AWS Elastic Beanstalk.
 
-# Getting Started
-===================
+## Getting Started
+------------------
 
 Download the Mojave jar, which includes all dependencies:
 

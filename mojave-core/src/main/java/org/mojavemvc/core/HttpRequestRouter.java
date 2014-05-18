@@ -15,13 +15,13 @@
  */
 package org.mojavemvc.core;
 
-import static org.mojavemvc.util.RouteHelper.PATH_ELEMENT_SEPARATOR;
-import static org.mojavemvc.util.RouteHelper.getPathElements;
+import static org.bigtesting.routd.RouteHelper.*;
 
 import java.util.List;
 import java.util.Map;
 
-import org.mojavemvc.core.Route.PathParameterElement;
+import org.bigtesting.routd.PathParameterElement;
+import org.bigtesting.routd.RouteMap;
 import org.mojavemvc.exception.NoMatchingRouteException;
 
 /**
@@ -49,7 +49,7 @@ public class HttpRequestRouter implements RequestRouter {
         
         if (path != null && path.startsWith(PATH_ELEMENT_SEPARATOR)) {
             
-            Route route = routeMap.getRoute(path);
+            MojaveRoute route = (MojaveRoute)routeMap.getRoute(path);
             
             if (route == null) {
                 throw new NoMatchingRouteException(
@@ -65,7 +65,7 @@ public class HttpRequestRouter implements RequestRouter {
     }
 
     private void handleParameters(String path, 
-            Map<String, Object> paramMap, Route route) {
+            Map<String, Object> paramMap, MojaveRoute route) {
         
         List<PathParameterElement> paramElements = 
                 route.pathParameterElements();

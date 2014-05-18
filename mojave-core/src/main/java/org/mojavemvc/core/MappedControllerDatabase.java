@@ -29,6 +29,7 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
+import org.bigtesting.routd.RouteMap;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.AfterConstruct;
@@ -877,11 +878,11 @@ public class MappedControllerDatabase implements ControllerDatabase {
         
         String paramPath = getParamPathIfExists(method, controllerClassName);
         
-        Route route = new Route(controllerVariable, actionVariable, paramPath);
+        MojaveRoute route = new MojaveRoute(controllerVariable, actionVariable, paramPath);
         logger.debug("adding route " + route);
         routeMap.add(route);
         if (isDefaultController) {
-            route = new Route(null, actionVariable, paramPath);
+            route = new MojaveRoute(null, actionVariable, paramPath);
             logger.debug("adding route " + route);
             routeMap.add(route);
         }

@@ -15,31 +15,29 @@
  */
 package org.mojavemvc.core;
 
-import static org.mojavemvc.util.RouteHelper.*;
+import static org.bigtesting.routd.RouteHelper.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.bigtesting.routd.Route;
 
 /**
  * @author Luis Antunes
  */
-public class Route {
+public class MojaveRoute extends Route {
     
     private final String controller;
     private final String action;
     private final String paramPath;
-    private final String routeString;
-    private final List<PathParameterElement> pathParamElements;
     
-    public Route(String controller, String action, String paramPath) {
+    public MojaveRoute(String controller, String action, String paramPath) {
+        
+        super(toRouteString(controller, action, paramPath));
         this.controller = controller;
         this.action = action;
         this.paramPath = paramPath;
-        this.routeString = toRouteString();
-        this.pathParamElements = extractPathParamElements();
     }
     
-    private String toRouteString() {
+    private static String toRouteString(String controller, String action, String paramPath) {
+        
         StringBuilder sb = new StringBuilder(PATH_ELEMENT_SEPARATOR);
         int appended = 0;
         appended = append(controller, sb, appended);
@@ -48,27 +46,13 @@ public class Route {
         return sb.toString();
     }
     
-    private int append(String s, StringBuilder sb, int appended) {
+    private static int append(String s, StringBuilder sb, int appended) {
         if (s != null && s.trim().length() > 0) {
             if (appended > 0) sb.append(PATH_ELEMENT_SEPARATOR);
             sb.append(s);
             appended++;
         }
         return appended;
-    }
-    
-    private List<PathParameterElement> extractPathParamElements() {
-        List<PathParameterElement> elements = new ArrayList<PathParameterElement>();
-        String path = CUSTOM_REGEX_PATTERN.matcher(routeString).replaceAll("");
-        String[] pathElements = getPathElements(path);
-        for (int i = 0; i < pathElements.length; i++) {
-            String currentElement = pathElements[i];
-            if (currentElement.startsWith(PARAM_PREFIX)) {
-                currentElement = currentElement.substring(1);
-                elements.add(new PathParameterElement(currentElement, i));
-            }
-        }
-        return elements;
     }
     
     public String getController() {
@@ -83,14 +67,6 @@ public class Route {
         return paramPath;
     }
     
-    public String toString() {
-        return routeString;
-    }
-    
-    public List<PathParameterElement> pathParameterElements() {
-        return pathParamElements;            
-    }
-    
     public int hashCode() {
         int hash = 1;
         hash = hash * 17 + (controller == null ? 0 : controller.hashCode());
@@ -102,8 +78,8 @@ public class Route {
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
-        if (!(o instanceof Route)) return false;
-        Route that = (Route)o;
+        if (!(o instanceof MojaveRoute)) return false;
+        MojaveRoute that = (MojaveRoute)o;
         return 
                 (this.controller == null ? that.controller == null : 
                     this.controller.equals(that.controller)) && 
@@ -111,23 +87,5 @@ public class Route {
                     this.action.equals(that.action)) && 
                 (this.paramPath == null ? that.paramPath == null : 
                     this.paramPath.equals(that.paramPath));
-    }
-    
-    public static class PathParameterElement {
-        private final String name;
-        private final int index;
-        
-        public PathParameterElement(String name, int index) {
-            this.name = name;
-            this.index = index;
-        }
-        
-        public String name() {
-            return name;
-        }
-        
-        public int index() {
-            return index;
-        }
     }
 }

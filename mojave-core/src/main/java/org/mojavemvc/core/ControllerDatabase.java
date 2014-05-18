@@ -20,6 +20,8 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
+import org.bigtesting.routd.RouteMap;
+
 /**
  * @author Luis Antunes
  */

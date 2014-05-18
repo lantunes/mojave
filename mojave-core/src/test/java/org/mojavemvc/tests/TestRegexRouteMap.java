@@ -15,8 +15,8 @@
  */
 package org.mojavemvc.tests;
 
-import org.mojavemvc.core.RegexRouteMap;
-import org.mojavemvc.core.RouteMap;
+import org.bigtesting.routd.RegexRouteMap;
+import org.bigtesting.routd.RouteMap;
 
 /**
  * 

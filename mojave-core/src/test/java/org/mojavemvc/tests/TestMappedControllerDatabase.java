@@ -24,6 +24,8 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
+import org.bigtesting.routd.Route;
+import org.bigtesting.routd.RouteMap;
 import org.junit.Test;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterAction;
@@ -51,8 +53,7 @@ import org.mojavemvc.core.DefaultActionSignature;
 import org.mojavemvc.core.HttpMethod;
 import org.mojavemvc.core.HttpMethodActionSignature;
 import org.mojavemvc.core.MappedControllerDatabase;
-import org.mojavemvc.core.Route;
-import org.mojavemvc.core.RouteMap;
+import org.mojavemvc.core.MojaveRoute;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.marshalling.EntityMarshaller;
 import org.mojavemvc.tests.views.HTMLPage;
@@ -125,18 +126,18 @@ public class TestMappedControllerDatabase {
         assertEquals(TestStartupController.class, initControllers.iterator().next());
         
         assertEquals(12, rm.size());
-        assertTrue(rm.contains(new Route(null, null, null)));
-        assertTrue(rm.contains(new Route("test", null, null)));
-        assertTrue(rm.contains(new Route("test", "test1", null)));
-        assertTrue(rm.contains(new Route("test", "with-param", null)));
-        assertTrue(rm.contains(new Route("test", "another-param", null)));
-        assertTrue(rm.contains(new Route("test", "some-service", null)));
-        assertTrue(rm.contains(new Route("test", "test-annotation", null)));
-        assertTrue(rm.contains(new Route(null, "test1", null)));
-        assertTrue(rm.contains(new Route(null, "with-param", null)));
-        assertTrue(rm.contains(new Route(null, "another-param", null)));
-        assertTrue(rm.contains(new Route(null, "some-service", null)));
-        assertTrue(rm.contains(new Route(null, "test-annotation", null)));
+        assertTrue(rm.contains(new MojaveRoute(null, null, null)));
+        assertTrue(rm.contains(new MojaveRoute("test", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("test", "test1", null)));
+        assertTrue(rm.contains(new MojaveRoute("test", "with-param", null)));
+        assertTrue(rm.contains(new MojaveRoute("test", "another-param", null)));
+        assertTrue(rm.contains(new MojaveRoute("test", "some-service", null)));
+        assertTrue(rm.contains(new MojaveRoute("test", "test-annotation", null)));
+        assertTrue(rm.contains(new MojaveRoute(null, "test1", null)));
+        assertTrue(rm.contains(new MojaveRoute(null, "with-param", null)));
+        assertTrue(rm.contains(new MojaveRoute(null, "another-param", null)));
+        assertTrue(rm.contains(new MojaveRoute(null, "some-service", null)));
+        assertTrue(rm.contains(new MojaveRoute(null, "test-annotation", null)));
     }
 
     @Test
@@ -182,7 +183,7 @@ public class TestMappedControllerDatabase {
         assertEquals("before", beforeActionMethod.methodName());
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("interceptor4", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor4", "someAction", null)));
     }
 
     @Test
@@ -296,7 +297,7 @@ public class TestMappedControllerDatabase {
         assertEquals("after", afterActionMethod.methodName());
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("interceptor1", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor1", "someAction", null)));
     }
 
     @Test
@@ -342,7 +343,7 @@ public class TestMappedControllerDatabase {
         assertEquals("after2", afterActionMethod.methodName());
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("interceptor2", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor2", "someAction", null)));
     }
 
     @Test
@@ -398,8 +399,8 @@ public class TestMappedControllerDatabase {
         assertEquals("after2", afterActionMethod.methodName());
         
         assertEquals(2, rm.size());
-        assertTrue(rm.contains(new Route("interceptor1", "someAction", null)));
-        assertTrue(rm.contains(new Route("interceptor2", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor1", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor2", "someAction", null)));
     }
 
     @Test
@@ -455,8 +456,8 @@ public class TestMappedControllerDatabase {
         assertEquals("after", afterActionMethod.methodName());
         
         assertEquals(2, rm.size());
-        assertTrue(rm.contains(new Route("method-interceptor1", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor1", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor1", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor1", "someAction", null)));
     }
 
     @Test
@@ -502,7 +503,7 @@ public class TestMappedControllerDatabase {
         assertEquals("after2", afterActionMethod.methodName());
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("method-interceptor2", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor2", "someAction", null)));
     }
 
     @Test
@@ -570,8 +571,8 @@ public class TestMappedControllerDatabase {
         assertEquals("after2", afterActionMethod.methodName());
         
         assertEquals(2, rm.size());
-        assertTrue(rm.contains(new Route("method-interceptor4", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor4", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor4", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor4", "someAction", null)));
     }
 
     @Test
@@ -629,8 +630,8 @@ public class TestMappedControllerDatabase {
         assertEquals("after2", afterActionMethod.methodName());
         
         assertEquals(2, rm.size());
-        assertTrue(rm.contains(new Route("method-interceptor5", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor5", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor5", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor5", "someAction", null)));
     }
 
     @Test
@@ -699,8 +700,8 @@ public class TestMappedControllerDatabase {
         assertEquals("after3", afterActionMethod.methodName());
         
         assertEquals(2, rm.size());
-        assertTrue(rm.contains(new Route("method-interceptor6", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor6", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor6", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor6", "someAction", null)));
     }
 
     @Test
@@ -857,17 +858,17 @@ public class TestMappedControllerDatabase {
         assertEquals("after3", afterActionMethod.methodName());
         
         assertEquals(11, rm.size());
-        assertTrue(rm.contains(new Route("interceptor1", "someAction", null)));
-        assertTrue(rm.contains(new Route("interceptor2", "someAction", null)));
-        assertTrue(rm.contains(new Route("method-interceptor1", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor1", "someAction", null)));
-        assertTrue(rm.contains(new Route("method-interceptor2", "someAction", null)));
-        assertTrue(rm.contains(new Route("method-interceptor4", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor4", "someAction", null)));
-        assertTrue(rm.contains(new Route("method-interceptor5", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor5", "someAction", null)));
-        assertTrue(rm.contains(new Route("method-interceptor6", null, null)));
-        assertTrue(rm.contains(new Route("method-interceptor6", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor1", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("interceptor2", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor1", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor1", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor2", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor4", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor4", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor5", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor5", "someAction", null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor6", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("method-interceptor6", "someAction", null)));
     }
 
     @Test
@@ -1071,7 +1072,7 @@ public class TestMappedControllerDatabase {
         assertEquals("traceAction", sig.methodName());
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestHttpMethodController", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("TestHttpMethodController", null, null)));
     }
 
     @Test
@@ -1107,7 +1108,7 @@ public class TestMappedControllerDatabase {
         assertEquals(Interceptor2.class, interceptors.get(1));
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestHttpMethodController2", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("TestHttpMethodController2", null, null)));
     }
 
     @Test
@@ -1156,7 +1157,7 @@ public class TestMappedControllerDatabase {
         assertEquals(Interceptor2.class, interceptors.get(1));
         
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestHttpMethodController3", null, null)));
+        assertTrue(rm.contains(new MojaveRoute("TestHttpMethodController3", null, null)));
     }
 
     @Test
@@ -1186,7 +1187,7 @@ public class TestMappedControllerDatabase {
         
         assertEquals(TestParamPathController1.class, db.getControllerClass("TestParamPathController1"));
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestParamPathController1", "getAction", "to/:name")));
+        assertTrue(rm.contains(new MojaveRoute("TestParamPathController1", "getAction", "to/:name")));
     }
     
     @Test
@@ -1200,7 +1201,7 @@ public class TestMappedControllerDatabase {
         
         assertEquals(TestParamPathController2.class, db.getControllerClass("TestParamPathController2"));
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestParamPathController2", "getAction", ":name/:location<[a-z]+>")));
+        assertTrue(rm.contains(new MojaveRoute("TestParamPathController2", "getAction", ":name/:location<[a-z]+>")));
     }
     
     @Test
@@ -1214,7 +1215,7 @@ public class TestMappedControllerDatabase {
         
         assertEquals(TestParamPathController3.class, db.getControllerClass("TestParamPathController3"));
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestParamPathController3", null, ":name")));
+        assertTrue(rm.contains(new MojaveRoute("TestParamPathController3", null, ":name")));
     }
     
     @Test
@@ -1228,7 +1229,7 @@ public class TestMappedControllerDatabase {
         
         assertEquals(TestParamPathController4.class, db.getControllerClass("TestParamPathController4"));
         assertEquals(1, rm.size());
-        assertTrue(rm.contains(new Route("TestParamPathController4", null, ":name")));
+        assertTrue(rm.contains(new MojaveRoute("TestParamPathController4", null, ":name")));
     }
     
     @Test
@@ -1322,8 +1323,8 @@ public class TestMappedControllerDatabase {
         
         assertEquals(TestParamPathAndHttpMethodController.class, db.getControllerClass("param-and-http"));
         assertEquals(2, rm.size());
-        assertTrue(rm.contains(new Route("param-and-http", null, "client/all")));
-        assertTrue(rm.contains(new Route("param-and-http", null, "client/:id")));
+        assertTrue(rm.contains(new MojaveRoute("param-and-http", null, "client/all")));
+        assertTrue(rm.contains(new MojaveRoute("param-and-http", null, "client/:id")));
     }
     
     /*-----------------------------------------------------------------*/
@@ -1983,7 +1984,7 @@ public class TestMappedControllerDatabase {
             routes.add(route);
         }
 
-        public boolean contains(Route route) {
+        public boolean contains(MojaveRoute route) {
             return routes.contains(route);
         }
         
@@ -1992,7 +1993,7 @@ public class TestMappedControllerDatabase {
         }
         
         @Override
-        public Route getRoute(String path) {
+        public MojaveRoute getRoute(String path) {
             return null;
         }
     }

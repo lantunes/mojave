@@ -17,10 +17,10 @@ package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
 
+import org.bigtesting.routd.RouteMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.mojavemvc.core.Route;
-import org.mojavemvc.core.RouteMap;
+import org.mojavemvc.core.MojaveRoute;
 
 /**
  * 
@@ -39,15 +39,15 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_Root() {
-        Route r1 = new Route(null, null, null);
+        MojaveRoute r1 = new MojaveRoute(null, null, null);
         rm.add(r1);
         assertEquals(r1, rm.getRoute("/"));
     }
     
     @Test
     public void getRoute_SimilarMatchesConstant() {
-        Route r1 = new Route(null, null, "clients/all");
-        Route r2 = new Route(null, null, "clients/:id");
+        MojaveRoute r1 = new MojaveRoute(null, null, "clients/all");
+        MojaveRoute r2 = new MojaveRoute(null, null, "clients/:id");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r1, rm.getRoute("/clients/all"));
@@ -55,8 +55,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_SimilarMatchesParam() {
-        Route r1 = new Route(null, null, "clients/all");
-        Route r2 = new Route(null, null, "clients/:id");
+        MojaveRoute r1 = new MojaveRoute(null, null, "clients/all");
+        MojaveRoute r2 = new MojaveRoute(null, null, "clients/:id");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r2, rm.getRoute("/clients/123"));
@@ -64,8 +64,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_IgnoresParamRegion() {
-        Route r1 = new Route("cntrl", null, null);
-        Route r2 = new Route("cntrl", null, "clients/:id");
+        MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
+        MojaveRoute r2 = new MojaveRoute("cntrl", null, "clients/:id");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r1, rm.getRoute("/cntrl"));
@@ -73,8 +73,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_FindsParamRegion() {
-        Route r1 = new Route("cntrl", null, null);
-        Route r2 = new Route("cntrl", null, "clients/:id");
+        MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
+        MojaveRoute r2 = new MojaveRoute("cntrl", null, "clients/:id");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r2, rm.getRoute("/cntrl/clients/23455"));
@@ -82,8 +82,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_DistinguishesBetweenControllerAndAction() {
-        Route r1 = new Route("cntrl", null, null);
-        Route r2 = new Route(null, "actn", null);
+        MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
+        MojaveRoute r2 = new MojaveRoute(null, "actn", null);
         rm.add(r1);
         rm.add(r2);
         assertEquals(r2, rm.getRoute("/actn"));
@@ -91,8 +91,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_NotFound() {
-        Route r1 = new Route("cntrl", null, null);
-        Route r2 = new Route(null, "actn", null);
+        MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
+        MojaveRoute r2 = new MojaveRoute(null, "actn", null);
         rm.add(r1);
         rm.add(r2);
         assertNull(rm.getRoute("/test"));
@@ -100,8 +100,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_MultiParamRegions_Multiple() {
-        Route r1 = new Route("cntrl", "actn", ":id");
-        Route r2 = new Route("cntrl", "actn", ":id/:name");
+        MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id");
+        MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id/:name");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r2, rm.getRoute("/cntrl/actn/123/bob"));
@@ -109,8 +109,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_MultiParamRegions_Single() {
-        Route r1 = new Route("cntrl", "actn", ":id");
-        Route r2 = new Route("cntrl", "actn", ":id/:name");
+        MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id");
+        MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id/:name");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r1, rm.getRoute("/cntrl/actn/123"));
@@ -118,8 +118,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_CustomRegexAlpha() {
-        Route r1 = new Route("cntrl", "actn", ":id<[0-9]+>");
-        Route r2 = new Route("cntrl", "actn", ":id<[a-z]+>");
+        MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id<[0-9]+>");
+        MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id<[a-z]+>");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r2, rm.getRoute("/cntrl/actn/bob"));
@@ -127,8 +127,8 @@ public abstract class RouteMapContractTest {
     
     @Test
     public void getRoute_CustomRegexNumeric() {
-        Route r1 = new Route("cntrl", "actn", ":id<[0-9]+>");
-        Route r2 = new Route("cntrl", "actn", ":id<[a-z]+>");
+        MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id<[0-9]+>");
+        MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id<[a-z]+>");
         rm.add(r1);
         rm.add(r2);
         assertEquals(r1, rm.getRoute("/cntrl/actn/123"));

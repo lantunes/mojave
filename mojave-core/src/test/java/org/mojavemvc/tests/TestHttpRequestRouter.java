@@ -15,24 +15,18 @@
  */
 package org.mojavemvc.tests;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bigtesting.routd.RouteMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mojavemvc.core.HttpRequestRouter;
+import org.mojavemvc.core.MojaveRoute;
 import org.mojavemvc.core.ParameterMapSource;
-import org.mojavemvc.core.Route;
-import org.mojavemvc.core.RouteMap;
 import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.exception.NoMatchingRouteException;
 
@@ -79,7 +73,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route(null, null, null));
+            .thenReturn(new MojaveRoute(null, null, null));
         
         RoutedRequest routed = newRouter(pathInfo).route();
         
@@ -93,7 +87,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/cntrl";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route("cntrl", null, null));
+            .thenReturn(new MojaveRoute("cntrl", null, null));
         
         
         RoutedRequest routed = newRouter(pathInfo).route();
@@ -108,7 +102,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/cntrl/actn";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route("cntrl", "actn", null));
+            .thenReturn(new MojaveRoute("cntrl", "actn", null));
         
         RoutedRequest routed = newRouter(pathInfo).route();
         
@@ -136,7 +130,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/cntrl/actn/123";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route("cntrl", "actn", ":id"));
+            .thenReturn(new MojaveRoute("cntrl", "actn", ":id"));
         
         RoutedRequest routed = newRouter(pathInfo).route();
         
@@ -153,7 +147,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/cntrl/actn/123/tom";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route("cntrl", "actn", ":id/:name"));
+            .thenReturn(new MojaveRoute("cntrl", "actn", ":id/:name"));
         
         RoutedRequest routed = newRouter(pathInfo).route();
         
@@ -173,7 +167,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/cntrl/actn/123";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route("cntrl", "actn", ":id"));
+            .thenReturn(new MojaveRoute("cntrl", "actn", ":id"));
         paramMap.put("id", new String[]{"456"});
         
         RoutedRequest routed = newRouter(pathInfo).route();
@@ -191,7 +185,7 @@ public class TestHttpRequestRouter {
         
         String pathInfo = "/cntrl/actn/123";
         when(routeMap.getRoute(pathInfo))
-            .thenReturn(new Route("cntrl", "actn", ":id"));
+            .thenReturn(new MojaveRoute("cntrl", "actn", ":id"));
         paramMap.put("name", new String[]{"tom"});
         
         RoutedRequest routed = newRouter(pathInfo).route();

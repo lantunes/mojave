@@ -33,7 +33,6 @@ import org.junit.runners.Suite;
     TestDataModelView.class,
     TestHttpRequestRouter.class,
     TestParamPathHelper.class,
-    TestRouteHelper.class,
     TestRegexRouteMap.class,
     TestRegexRoute.class,
     TestRoute.class,

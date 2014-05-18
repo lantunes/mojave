@@ -26,6 +26,7 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
+import org.bigtesting.routd.RegexRouteMap;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;

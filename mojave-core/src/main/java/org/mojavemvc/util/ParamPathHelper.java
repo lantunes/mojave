@@ -15,7 +15,7 @@
  */
 package org.mojavemvc.util;
 
-import static org.mojavemvc.util.RouteHelper.*;
+import static org.bigtesting.routd.RouteHelper.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

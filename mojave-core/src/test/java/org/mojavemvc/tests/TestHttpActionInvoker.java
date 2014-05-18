@@ -33,6 +33,7 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.cglib.reflect.FastClass;
 
+import org.bigtesting.routd.RegexRouteMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,6 @@ import org.mojavemvc.core.ActionSignature;
 import org.mojavemvc.core.ControllerDatabase;
 import org.mojavemvc.core.HttpActionInvoker;
 import org.mojavemvc.core.MappedControllerDatabase;
-import org.mojavemvc.core.RegexRouteMap;
 import org.mojavemvc.core.RoutedRequest;
 import org.mojavemvc.core.ServletResourceModule;
 import org.mojavemvc.initialization.AppProperties;

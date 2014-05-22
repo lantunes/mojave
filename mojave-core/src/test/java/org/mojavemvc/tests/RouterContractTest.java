@@ -17,7 +17,7 @@ package org.mojavemvc.tests;
 
 import static org.junit.Assert.*;
 
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.Router;
 import org.junit.Before;
 import org.junit.Test;
 import org.mojavemvc.core.MojaveRoute;
@@ -26,111 +26,111 @@ import org.mojavemvc.core.MojaveRoute;
  * 
  * @author Luis Antunes
  */
-public abstract class RouteMapContractTest {
+public abstract class RouterContractTest {
 
-    private RouteMap rm;
+    private Router router;
     
     @Before
     public void beforeEachTest() {
-        rm = newRouteMap();
+        router = newRouter();
     }
     
-    protected abstract RouteMap newRouteMap();
+    protected abstract Router newRouter();
     
     @Test
     public void getRoute_Root() {
         MojaveRoute r1 = new MojaveRoute(null, null, null);
-        rm.add(r1);
-        assertEquals(r1, rm.getRoute("/"));
+        router.add(r1);
+        assertEquals(r1, router.route("/"));
     }
     
     @Test
     public void getRoute_SimilarMatchesConstant() {
         MojaveRoute r1 = new MojaveRoute(null, null, "clients/all");
         MojaveRoute r2 = new MojaveRoute(null, null, "clients/:id");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r1, rm.getRoute("/clients/all"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r1, router.route("/clients/all"));
     }
     
     @Test
     public void getRoute_SimilarMatchesParam() {
         MojaveRoute r1 = new MojaveRoute(null, null, "clients/all");
         MojaveRoute r2 = new MojaveRoute(null, null, "clients/:id");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r2, rm.getRoute("/clients/123"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r2, router.route("/clients/123"));
     }
     
     @Test
     public void getRoute_IgnoresParamRegion() {
         MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
         MojaveRoute r2 = new MojaveRoute("cntrl", null, "clients/:id");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r1, rm.getRoute("/cntrl"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r1, router.route("/cntrl"));
     }
     
     @Test
     public void getRoute_FindsParamRegion() {
         MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
         MojaveRoute r2 = new MojaveRoute("cntrl", null, "clients/:id");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r2, rm.getRoute("/cntrl/clients/23455"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r2, router.route("/cntrl/clients/23455"));
     }
     
     @Test
     public void getRoute_DistinguishesBetweenControllerAndAction() {
         MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
         MojaveRoute r2 = new MojaveRoute(null, "actn", null);
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r2, rm.getRoute("/actn"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r2, router.route("/actn"));
     }
     
     @Test
     public void getRoute_NotFound() {
         MojaveRoute r1 = new MojaveRoute("cntrl", null, null);
         MojaveRoute r2 = new MojaveRoute(null, "actn", null);
-        rm.add(r1);
-        rm.add(r2);
-        assertNull(rm.getRoute("/test"));
+        router.add(r1);
+        router.add(r2);
+        assertNull(router.route("/test"));
     }
     
     @Test
     public void getRoute_MultiParamRegions_Multiple() {
         MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id");
         MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id/:name");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r2, rm.getRoute("/cntrl/actn/123/bob"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r2, router.route("/cntrl/actn/123/bob"));
     }
     
     @Test
     public void getRoute_MultiParamRegions_Single() {
         MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id");
         MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id/:name");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r1, rm.getRoute("/cntrl/actn/123"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r1, router.route("/cntrl/actn/123"));
     }
     
     @Test
     public void getRoute_CustomRegexAlpha() {
         MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id<[0-9]+>");
         MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id<[a-z]+>");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r2, rm.getRoute("/cntrl/actn/bob"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r2, router.route("/cntrl/actn/bob"));
     }
     
     @Test
     public void getRoute_CustomRegexNumeric() {
         MojaveRoute r1 = new MojaveRoute("cntrl", "actn", ":id<[0-9]+>");
         MojaveRoute r2 = new MojaveRoute("cntrl", "actn", ":id<[a-z]+>");
-        rm.add(r1);
-        rm.add(r2);
-        assertEquals(r1, rm.getRoute("/cntrl/actn/123"));
+        router.add(r1);
+        router.add(r2);
+        assertEquals(r1, router.route("/cntrl/actn/123"));
     }
 }

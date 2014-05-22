@@ -25,7 +25,7 @@ import java.util.Set;
 import net.sf.cglib.reflect.FastClass;
 
 import org.bigtesting.routd.Route;
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.Router;
 import org.junit.Test;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterAction;
@@ -1975,7 +1975,7 @@ public class TestMappedControllerDatabase {
     
     /*-----------------------------------------------------------------*/
     
-    private static class FakeRouteMap implements RouteMap {
+    private static class FakeRouteMap implements Router {
 
         private final Set<Route> routes = new HashSet<Route>();
         
@@ -1993,7 +1993,7 @@ public class TestMappedControllerDatabase {
         }
         
         @Override
-        public MojaveRoute getRoute(String path) {
+        public MojaveRoute route(String path) {
             return null;
         }
     }

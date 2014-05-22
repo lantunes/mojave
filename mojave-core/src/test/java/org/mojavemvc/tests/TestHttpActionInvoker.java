@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.cglib.reflect.FastClass;
 
-import org.bigtesting.routd.RegexRouteMap;
+import org.bigtesting.routd.TreeRouter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -720,7 +720,7 @@ public class TestHttpActionInvoker {
     }
     
     private ControllerDatabase newControllerDatabase(Set<Class<?>> controllerClasses) {
-        return new MappedControllerDatabase(controllerClasses, new RegexRouteMap(), 
+        return new MappedControllerDatabase(controllerClasses, new TreeRouter(), 
                 new HashMap<String, EntityMarshaller>());
     }
     

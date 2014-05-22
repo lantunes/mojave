@@ -26,7 +26,7 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
-import org.bigtesting.routd.RegexRouteMap;
+import org.bigtesting.routd.TreeRouter;
 import org.mojavemvc.exception.ConfigurationException;
 import org.mojavemvc.exception.DefaultErrorHandlerFactory;
 import org.mojavemvc.exception.ErrorHandlerFactory;
@@ -217,7 +217,7 @@ public class FrameworkInitializer {
             Set<Class<?>> controllerClasses = scanControllerClasses();
             Map<String, EntityMarshaller> entityMarshallers = scanEntityMarshallers();
             ControllerDatabase controllerDatabase = 
-                    new MappedControllerDatabase(controllerClasses, new RegexRouteMap(), 
+                    new MappedControllerDatabase(controllerClasses, new TreeRouter(), 
                             entityMarshallers);
             context.setAttribute(ControllerDatabase.KEY, controllerDatabase);
 

@@ -20,7 +20,7 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.Router;
 
 /**
  * @author Luis Antunes
@@ -206,9 +206,9 @@ public interface ControllerDatabase {
     ActionSignature getHttpMethodActionSignature(Class<?> controllerClass, HttpMethod httpMethod);
     
     /**
-     * Get the RouteMap for the application.
+     * Get the Router for the application.
      * 
-     * @return the route map for the application
+     * @return the router for the application
      */
-    RouteMap getRouteMap();
+    Router getRouter();
 }

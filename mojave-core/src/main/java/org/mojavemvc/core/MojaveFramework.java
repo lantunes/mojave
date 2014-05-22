@@ -89,7 +89,7 @@ public class MojaveFramework {
         try {
             
             RequestRouter router = new HttpRequestRouter(path, 
-                    new HttpParameterMapSource(req), controllerDb.getRouteMap());
+                    new HttpParameterMapSource(req), controllerDb.getRouter());
             
             RoutedRequest routed = router.route();
             

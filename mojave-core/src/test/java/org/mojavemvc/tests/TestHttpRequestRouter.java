@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.Router;
 import org.junit.Before;
 import org.junit.Test;
 import org.mojavemvc.core.HttpRequestRouter;
@@ -37,13 +37,13 @@ public class TestHttpRequestRouter {
 
     private Map<String, Object> paramMap;
     private ParameterMapSource paramMapSource;
-    private RouteMap routeMap;
+    private Router router;
     
     @Before
     public void beforeEachTest() {
         
         paramMap = new HashMap<String, Object>();
-        routeMap = mock(RouteMap.class);
+        router = mock(Router.class);
         paramMapSource = mock(ParameterMapSource.class);        
         when(paramMapSource.getParameterMap()).thenReturn(paramMap);
     }
@@ -72,7 +72,7 @@ public class TestHttpRequestRouter {
     public void handlesRootPath() {
         
         String pathInfo = "/";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute(null, null, null));
         
         RoutedRequest routed = newRouter(pathInfo).route();
@@ -86,7 +86,7 @@ public class TestHttpRequestRouter {
     public void handlesControllerOnly() {
         
         String pathInfo = "/cntrl";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute("cntrl", null, null));
         
         
@@ -101,7 +101,7 @@ public class TestHttpRequestRouter {
     public void handlesControllerAndAction_NoPathParams() {
         
         String pathInfo = "/cntrl/actn";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute("cntrl", "actn", null));
         
         RoutedRequest routed = newRouter(pathInfo).route();
@@ -115,7 +115,7 @@ public class TestHttpRequestRouter {
     public void handlesRouteNotFound() {
         
         String pathInfo = "/cntrl/actn/unknown";
-        when(routeMap.getRoute(pathInfo)).thenReturn(null);
+        when(router.route(pathInfo)).thenReturn(null);
         
         try {
             newRouter(pathInfo).route();
@@ -129,7 +129,7 @@ public class TestHttpRequestRouter {
     public void handlesControllerAndAction_OnePathParam() {
         
         String pathInfo = "/cntrl/actn/123";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute("cntrl", "actn", ":id"));
         
         RoutedRequest routed = newRouter(pathInfo).route();
@@ -146,7 +146,7 @@ public class TestHttpRequestRouter {
     public void handlesControllerAndAction_TwoPathParams() {
         
         String pathInfo = "/cntrl/actn/123/tom";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute("cntrl", "actn", ":id/:name"));
         
         RoutedRequest routed = newRouter(pathInfo).route();
@@ -166,7 +166,7 @@ public class TestHttpRequestRouter {
     public void handlesControllerAndAction_OnePathParam_AlreadyExists() {
         
         String pathInfo = "/cntrl/actn/123";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute("cntrl", "actn", ":id"));
         paramMap.put("id", new String[]{"456"});
         
@@ -184,7 +184,7 @@ public class TestHttpRequestRouter {
     public void handlesControllerAndAction_OnePathParam_AnotherExists() {
         
         String pathInfo = "/cntrl/actn/123";
-        when(routeMap.getRoute(pathInfo))
+        when(router.route(pathInfo))
             .thenReturn(new MojaveRoute("cntrl", "actn", ":id"));
         paramMap.put("name", new String[]{"tom"});
         
@@ -204,6 +204,6 @@ public class TestHttpRequestRouter {
     /*----------------------*/
     
     private HttpRequestRouter newRouter(String pathInfo) {
-        return new HttpRequestRouter(pathInfo, paramMapSource, routeMap);
+        return new HttpRequestRouter(pathInfo, paramMapSource, router);
     }
 }

@@ -15,17 +15,17 @@
  */
 package org.mojavemvc.tests;
 
-import org.bigtesting.routd.RegexRouteMap;
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.RegexRouter;
+import org.bigtesting.routd.Router;
 
 /**
  * 
  * @author Luis Antunes
  */
-public class TestRegexRouteMap extends RouteMapContractTest {
+public class TestRegexRouter extends RouterContractTest {
 
     @Override
-    protected RouteMap newRouteMap() {
-        return new RegexRouteMap();
+    protected Router newRouter() {
+        return new RegexRouter();
     }
 }

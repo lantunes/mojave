@@ -20,8 +20,8 @@ import static org.bigtesting.routd.RouteHelper.*;
 import java.util.List;
 import java.util.Map;
 
-import org.bigtesting.routd.PathParameterElement;
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.NamedParameterElement;
+import org.bigtesting.routd.Router;
 import org.mojavemvc.exception.NoMatchingRouteException;
 
 /**
@@ -31,13 +31,13 @@ public class HttpRequestRouter implements RequestRouter {
 
     private final ParameterMapSource paramMapSource;
     private final String path;
-    private final RouteMap routeMap;
+    private final Router routeMap;
     
     public HttpRequestRouter(String path, 
-            ParameterMapSource paramMapSource, RouteMap routeMap) {
+            ParameterMapSource paramMapSource, Router router) {
         this.paramMapSource = paramMapSource;
         this.path = path;
-        this.routeMap = routeMap;
+        this.routeMap = router;
     }
     
     @Override
@@ -49,7 +49,7 @@ public class HttpRequestRouter implements RequestRouter {
         
         if (path != null && path.startsWith(PATH_ELEMENT_SEPARATOR)) {
             
-            MojaveRoute route = (MojaveRoute)routeMap.getRoute(path);
+            MojaveRoute route = (MojaveRoute)routeMap.route(path);
             
             if (route == null) {
                 throw new NoMatchingRouteException(
@@ -67,8 +67,8 @@ public class HttpRequestRouter implements RequestRouter {
     private void handleParameters(String path, 
             Map<String, Object> paramMap, MojaveRoute route) {
         
-        List<PathParameterElement> paramElements = 
-                route.pathParameterElements();
+        List<NamedParameterElement> paramElements = 
+                route.getNamedParameterElements();
         if (!paramElements.isEmpty()) {
             
             /*
@@ -77,7 +77,7 @@ public class HttpRequestRouter implements RequestRouter {
              * path as there are in the route path
              */
             String[] pathTokens = getPathElements(path);
-            for (PathParameterElement elem : paramElements) {
+            for (NamedParameterElement elem : paramElements) {
                 paramMap.put(elem.name(), new String[]{pathTokens[elem.index()]});
             }
         }

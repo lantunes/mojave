@@ -29,7 +29,7 @@ import java.util.Set;
 
 import net.sf.cglib.reflect.FastClass;
 
-import org.bigtesting.routd.RouteMap;
+import org.bigtesting.routd.Router;
 import org.mojavemvc.annotations.Action;
 import org.mojavemvc.annotations.AfterAction;
 import org.mojavemvc.annotations.AfterConstruct;
@@ -178,9 +178,9 @@ public class MappedControllerDatabase implements ControllerDatabase {
     private final Map<Class<?>, Map<HttpMethod, ActionSignature>> controllerClassToHttpMethodMap = new HashMap<Class<?>, Map<HttpMethod, ActionSignature>>();
     
     /*
-     * the route map to configure during initialization
+     * the router to configure during initialization
      */
-    private final RouteMap routeMap;
+    private final Router router;
 
     /*
      * the map of global entity marshallers
@@ -195,21 +195,21 @@ public class MappedControllerDatabase implements ControllerDatabase {
      * 
      * @param controllerClasses
      */
-    public MappedControllerDatabase(Set<Class<?>> controllerClasses, RouteMap routeMap, 
+    public MappedControllerDatabase(Set<Class<?>> controllerClasses, Router router, 
             Map<String, EntityMarshaller> entityMarshallerMap) {
 
-        this.routeMap = routeMap;
+        this.router = router;
         this.entityMarshallerMap = entityMarshallerMap;
         init(controllerClasses);
     }
 
     /**
-     * Get the RouteMap for the application.
+     * Get the Router for the application.
      * 
-     * @return the route map for the application
+     * @return the router for the application
      */
-    public RouteMap getRouteMap() {
-        return routeMap;
+    public Router getRouter() {
+        return router;
     }
     
     /**
@@ -880,11 +880,11 @@ public class MappedControllerDatabase implements ControllerDatabase {
         
         MojaveRoute route = new MojaveRoute(controllerVariable, actionVariable, paramPath);
         logger.debug("adding route " + route);
-        routeMap.add(route);
+        router.add(route);
         if (isDefaultController) {
             route = new MojaveRoute(null, actionVariable, paramPath);
             logger.debug("adding route " + route);
-            routeMap.add(route);
+            router.add(route);
         }
     }
 

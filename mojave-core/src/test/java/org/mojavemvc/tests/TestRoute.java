@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.bigtesting.routd.PathParameterElement;
+import org.bigtesting.routd.NamedParameterElement;
 import org.junit.Test;
 import org.mojavemvc.core.MojaveRoute;
 
@@ -167,16 +167,16 @@ public class TestRoute {
     @Test
     public void pathParameterElements_NoneExist() {
         MojaveRoute r = new MojaveRoute(null, "actn", null);
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertTrue(params.isEmpty());
     }
     
     @Test
     public void pathParameterElements_OneExistsWithAction() {
         MojaveRoute r = new MojaveRoute(null, "actn", ":id");
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertEquals(1, params.size());
-        PathParameterElement elem = params.get(0);
+        NamedParameterElement elem = params.get(0);
         assertEquals("id", elem.name());
         assertEquals(1, elem.index());
     }
@@ -184,9 +184,9 @@ public class TestRoute {
     @Test
     public void pathParameterElements_OneExistsAlone() {
         MojaveRoute r = new MojaveRoute(null, null, ":id");
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertEquals(1, params.size());
-        PathParameterElement elem = params.get(0);
+        NamedParameterElement elem = params.get(0);
         assertEquals("id", elem.name());
         assertEquals(0, elem.index());
     }
@@ -194,9 +194,9 @@ public class TestRoute {
     @Test
     public void pathParameterElements_ManyExistAlone() {
         MojaveRoute r = new MojaveRoute(null, null, ":id/:name");
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertEquals(2, params.size());
-        PathParameterElement elem = params.get(0);
+        NamedParameterElement elem = params.get(0);
         assertEquals("id", elem.name());
         assertEquals(0, elem.index());
         elem = params.get(1);
@@ -207,9 +207,9 @@ public class TestRoute {
     @Test
     public void pathParameterElements_ManyExistWithControllerAndAction() {
         MojaveRoute r = new MojaveRoute("cntrl", "actn", ":id/:name");
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertEquals(2, params.size());
-        PathParameterElement elem = params.get(0);
+        NamedParameterElement elem = params.get(0);
         assertEquals("id", elem.name());
         assertEquals(2, elem.index());
         elem = params.get(1);
@@ -220,9 +220,9 @@ public class TestRoute {
     @Test
     public void pathParameterElements_ManyExistWithRegexWithControllerAndAction() {
         MojaveRoute r = new MojaveRoute("cntrl", "actn", ":id<[0-9]+>/:name<[a-z]+>");
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertEquals(2, params.size());
-        PathParameterElement elem = params.get(0);
+        NamedParameterElement elem = params.get(0);
         assertEquals("id", elem.name());
         assertEquals(2, elem.index());
         elem = params.get(1);
@@ -233,9 +233,9 @@ public class TestRoute {
     @Test
     public void pathParameterElements_OneExistsWithRegexWithSlashWithControllerAndAction() {
         MojaveRoute r = new MojaveRoute("cntrl", "actn", ":id<[^/]+>/:name<[a-z]+>");
-        List<PathParameterElement> params = r.pathParameterElements();
+        List<NamedParameterElement> params = r.getNamedParameterElements();
         assertEquals(2, params.size());
-        PathParameterElement elem = params.get(0);
+        NamedParameterElement elem = params.get(0);
         assertEquals("id", elem.name());
         assertEquals(2, elem.index());
         elem = params.get(1);

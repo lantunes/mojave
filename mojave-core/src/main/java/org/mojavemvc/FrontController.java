@@ -157,6 +157,27 @@ public final class FrontController extends HttpServlet {
     protected void processRequest(HttpServletRequest req, HttpServletResponse res, HttpMethod httpMethod)
             throws ServletException, IOException {
 
-        framework.handleRequest(req, res, httpMethod, req.getPathInfo());
+        framework.handleRequest(req, res, httpMethod, undecodedPathInfo(req));
+    }
+    
+    private String undecodedPathInfo(HttpServletRequest req) {
+        
+        final String pathSeparator = "/";
+        final String contextPath = req.getContextPath();
+        final String servletPath = req.getServletPath();
+        
+        String pathInfo = req.getRequestURI();
+        if (contextPath.trim().length() > 0 && !contextPath.equals(pathSeparator)) {
+            pathInfo = pathInfo.substring(contextPath.length());
+        }
+        if (servletPath.trim().length() > 0 && !servletPath.equals(pathSeparator)) {
+            pathInfo = pathInfo.substring(servletPath.length());
+        }
+        
+        if (!pathInfo.startsWith(pathSeparator)) {
+            pathInfo = pathSeparator + pathInfo;
+        }
+        
+        return pathInfo;
     }
 }
